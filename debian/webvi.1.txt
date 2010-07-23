@@ -59,8 +59,11 @@ CONFIG FILE
   (section [site-youtube]):
 
   50  standard quality (320x240, i.e. what you get in the web browser)
-  60  medium quality (480x360 MP4)
-  70  HD quality (720p)
+  60  480x360 MP4
+  65  480p WebM
+  70  720p MP4
+  75  720p WebM
+  80  1080p MP4
 
 AUTHOR
    This manual page was written by Tobias Grimm <tg@e-tobi.net> and
