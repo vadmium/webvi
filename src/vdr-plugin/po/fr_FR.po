@@ -1,0 +1,156 @@
+# French translations for webvideo package.
+# Copyright (C) 2008 THE webvideo'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the webvideo package.
+# Bruno ROUSSEL <bruno.roussel@free.fr>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: webvideo 0.0.5\n"
+"Report-Msgid-Bugs-To: <see README>\n"
+"POT-Creation-Date: 2010-07-09 15:12+0300\n"
+"PO-Revision-Date: 2008-09-08 20:34+0100\n"
+"Last-Translator: Bruno ROUSSEL <bruno.roussel@free.fr>\n"
+"Language-Team: French\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "No streams on this page, create timer anyway?"
+msgstr ""
+
+msgid "Downloading in the background"
+msgstr "Téléchargement en tâche de fond"
+
+msgid "Starting player..."
+msgstr ""
+
+msgid "Retrieving..."
+msgstr "Récupération..."
+
+msgid "Back"
+msgstr "Arrière"
+
+msgid "Forward"
+msgstr "Avant"
+
+msgid "Create timer"
+msgstr ""
+
+msgid "Play"
+msgstr ""
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Timers"
+msgstr ""
+
+msgid "Unfinished downloads"
+msgstr ""
+
+msgid "No active downloads"
+msgstr ""
+
+#. TRANSLATORS: at most 5 characters
+msgid "Error"
+msgstr ""
+
+msgid "Error details"
+msgstr ""
+
+#, fuzzy
+msgid "Download details"
+msgstr "Status du téléchargement"
+
+msgid "Remove"
+msgstr ""
+
+msgid "Abort"
+msgstr ""
+
+msgid "Edit timer"
+msgstr ""
+
+msgid "Title"
+msgstr ""
+
+msgid "Once per day"
+msgstr ""
+
+msgid "Once per week"
+msgstr ""
+
+msgid "Once per month"
+msgstr ""
+
+msgid "Update interval"
+msgstr ""
+
+msgid "Execute now"
+msgstr ""
+
+#. TRANSLATORS: at most 24 chars
+msgid "Never"
+msgstr ""
+
+msgid "Last fetched:"
+msgstr ""
+
+msgid "Error on last refresh!"
+msgstr ""
+
+msgid "Timer running, can't remove"
+msgstr ""
+
+msgid "Remove timer?"
+msgstr ""
+
+msgid "Aborted"
+msgstr ""
+
+msgid "Download video files from the web"
+msgstr "Téléchargement du fichier vidéo depuis le web"
+
+msgid "Streaming failed: no URL"
+msgstr ""
+
+msgid "Failed to launch media player"
+msgstr ""
+
+msgid "timer"
+msgstr ""
+
+#, c-format
+msgid "One download completed, %d remains%s"
+msgstr "Un téléchargement terminé, il en reste %d%s"
+
+msgid "Download aborted"
+msgstr ""
+
+#, c-format
+msgid "Download failed (error = %d)"
+msgstr "Erreur de téléchargement (Erreur = %d)"
+
+#, c-format
+msgid "%d downloads not finished"
+msgstr "%d téléchargement(s) non terminé(s)."
+
+#~ msgid "<No title>"
+#~ msgstr "<Pas de titre>"
+
+#~ msgid "Can't download web page!"
+#~ msgstr "Impossible de télécharger la page web !"
+
+#~ msgid "XSLT transformation produced no URL!"
+#~ msgstr "La conversion XSLT n'a pas généré d'URL !"
+
+#~ msgid "XSLT transformation failed."
+#~ msgstr "Erreur de conversion XSLT."
+
+#~ msgid "Unknown error!"
+#~ msgstr "Erreur inconnue !"
+
+#~ msgid "Select video source"
+#~ msgstr "Sélectionner la source vidéo"

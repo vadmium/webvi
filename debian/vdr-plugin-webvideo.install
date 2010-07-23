@@ -1,0 +1,6 @@
+debian/tmp/usr/lib/vdr/plugins/libvdr-webvideo.so.*
+debian/tmp/usr/share/locale
+debian/tmp/var/lib/vdr/plugins/webvideo
+debian/plugin.webvideo.conf         etc/vdr/plugins/
+src/vdr-plugin/mime.types           var/lib/vdr/plugins/webvideo/
+debian/webvi.plugin.conf            var/lib/vdr/plugins/webvideo/

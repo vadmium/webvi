@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<service>
+  <title>SVT Play</title>
+  <ref>wvt:///svtplay/categories.xsl?srcurl=http://svtplay.se/kategorier</ref>
+  <description>Swedish Television, online TV service</description>
+</service>

@@ -1,0 +1,150 @@
+vdr-plugin-webvideo (0.3.0-1) unstable; urgency=low
+
+  * Scheduled downloading
+  * Show error details on status screen by pressing Info.
+  * Fix a crash when video URL is empty.
+  * INI file options for controlling the download quality.
+  * Add support for Finnish TV stations: MTV3 Katsomo, ruutu.fi, Subtv.
+  * Make all downloads abortable.
+  * Fixed Vimeo search.
+  * Get the lower quality video when streaming from Youtube
+
+ -- Antti Ajanki <antti@gaspode>  Mon, 12 Jul 2010 11:35:14 +0300
+
+vdr-plugin-webvideo (0.2.2-1) unstable; urgency=low
+
+  * New release
+  * Remember query terms and menu positions when moving in history.
+  * Reduce delays when navigating the menu.
+  * Show percentage as ??? on status page if the size is unknown.
+  * Fixed Youtube module.
+
+ -- Antti Ajanki <antti.ajanki@iki.fi>  Sun, 11 Apr 2010 11:46:34 +0300
+
+vdr-plugin-webvideo (0.2.1-1) unstable; urgency=low
+
+  * Support for all Python versions.
+  * Install the plugin with VDR's "make plugins".
+
+ -- Antti Ajanki <antti.ajanki@iki.fi>  Sat, 23 Jan 2010 15:03:45 +0200
+
+vdr-plugin-webvideo (0.2.0-1) unstable; urgency=low
+
+  * The daemon is replaced by Python library with C bindings.
+  * New video service: Vimeo
+  * Re-added support for YLE Areena
+  * Youtube: using the official API (except for video pages), this
+    should mean less breakage in the future. Various improvements on
+    the menus.
+  * Created new packages for the library: python-webvi, libwebvi0
+
+ -- Antti Ajanki <antti.ajanki@iki.fi>  Sun, 17 Jan 2010 22:01:50 +0200
+
+vdr-plugin-webvideo (0.1.7-1) unstable; urgency=low
+
+  * New upstream release
+    - Moved the default download directory to /var/lib/webvideo
+    - Standards-Version: 3.8.3
+  * Moved webvid daemon to new package webvid
+  * Removed non-standard shebang line from debian/rules
+  * Removed DVBDIR from debian/rules
+  * Added myself to Uploaders and Debian Maintainers
+
+ -- Thomas Günther <tom@toms-cafe.de>  Thu, 05 Nov 2009 02:34:31 +0100
+
+vdr-plugin-webvideo (0.1.6-1) unstable; urgency=low
+
+  * New release
+
+ -- Antti Ajanki <antti.ajanki@iki.fi>  Thu, 20 Aug 2009 20:10:32 +0300
+
+vdr-plugin-webvideo (0.1.5-1) unstable; urgency=low
+
+  * New release
+  * Call postinst scripts fragments in the correct order
+
+ -- Antti Ajanki <antti.ajanki@iki.fi>  Sun, 10 May 2009 20:24:06 +0300
+
+vdr-plugin-webvideo (0.1.4-1) unstable; urgency=low
+
+  * New release
+  * Moved the default download directory to /var/lib/webvideo.
+
+ -- Antti Ajanki <antti.ajanki@iki.fi>  Sun, 03 May 2009 21:06:00 +0300
+	
+vdr-plugin-webvideo (0.1.3-1) unstable; urgency=low
+
+  * New upstream release
+  * Bumped standards version to 3.8.1
+
+ -- Tobias Grimm <etobi@debian.org>  Sun, 19 Apr 2009 16:46:26 +0200
+
+vdr-plugin-webvideo (0.1.2-1) unstable; urgency=low
+
+  * New upstream release
+  * Changed XS-Python-Version to current to fix FTBS problem
+  * Changed maintainer to Debian VDR Team
+  * Added Python to dependencies
+  * Removed dh_make boilerplates from debian/copyright
+  * Fixed homepage field in debian/control
+  * Bumped standards version to 3.8.1
+  * Install init script as /etc/init.d/webvid
+  * Fixed LOCALEDIR to build locales in correct directory
+  * Deactivated postinst-script-order.diff - seems not to be required anymore
+  * Added debian/watch
+  * Depend on libmms0
+  * Dropped patchlevel control field
+  * Build-Depend on vdr-dev (>=1.6.0-5)
+  * Added manpages
+  * Changed section to "video"
+
+ -- Tobias Grimm <etobi@debian.org>  Sat, 11 Apr 2009 00:05:37 +0200
+
+vdr-plugin-webvideo (0.1.1-1) unstable; urgency=low
+
+  * New release
+
+ -- Antti Ajanki <antti.ajanki@iki.fi>  Tue, 24 Feb 2009 19:38:28 +0300
+
+vdr-plugin-webvideo (0.1.0-1) unstable; urgency=low
+
+  * New release
+
+ -- Antti Ajanki <antti.ajanki@iki.fi>  Sat, 7 Feb 2009 18:07:37 +0300
+
+vdr-plugin-webvideo (0.0.6-1) unstable; urgency=low
+
+  * New release
+
+ -- Antti Ajanki <antti.ajanki@iki.fi>  Sat, 6 Dec 2008 11:27:05 +0300
+
+vdr-plugin-webvideo (0.0.5-1) unstable; urgency=low
+
+  * New release
+
+ -- Antti Ajanki <antti.ajanki@iki.fi>  Tue, 2 Sep 2008 21:41:50 +0300
+
+vdr-plugin-webvideo (0.0.4-1) unstable; urgency=low
+
+  * New release
+
+ -- Antti Ajanki <antti.ajanki@iki.fi>  Thu, 21 Aug 2008 12:29:38 +0300
+
+vdr-plugin-webvideo (0.0.3-1) unstable; urgency=low
+
+  * New release
+
+ -- Antti Ajanki <antti.ajanki@iki.fi>  Tue, 19 Aug 2008 18:19:19 +0300
+
+vdr-plugin-webvideo (0.0.2-1) unstable; urgency=low
+
+  * New release
+
+ -- Antti Ajanki <antti.ajanki@iki.fi>  Thu, 24 Jul 2008 20:44:15 +0300
+
+vdr-plugin-webvideo (0.0.1-1) unstable; urgency=low
+
+  * Initial release
+
+ -- Antti Ajanki <antti.ajanki@iki.fi>  Wed,  25 Jun 2008 17:53:54 +0300
+

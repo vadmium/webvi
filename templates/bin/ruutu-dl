@@ -1,0 +1,36 @@
+#!/bin/sh
+
+# Downloads a video stream from ruutu.fi to stdout using
+# rtmpdump(-yle). The first parameter is the rtmp URL, the second
+# parameter is the video page URL.
+
+RTMPDUMP=
+
+which rtmpdump > /dev/null 2>&1
+if [ $? = 0 ]; then
+    RTMPDUMP=rtmpdump
+else
+    which rtmpdump-yle > /dev/null 2>&1
+    if [ $? = 0 ]; then
+	RTMPDUMP=rtmpdump-yle
+    fi
+fi
+
+if [ "x$RTMPDUMP" = "x" ]; then
+    echo "ERROR: neither rtmpdump nor rtmpdump-yle not on \$PATH" 1>&2
+    exit 1
+fi
+
+if [ "x$1" = "x" ]; then
+    echo "Expected rtmp URL as parameter" 1>&2
+    exit 1
+fi
+
+if [ "x$2" = "x" ]; then
+    echo "Expected ruutu.fi video page URL as parameter" 1>&2
+    exit 1
+fi
+
+$RTMPDUMP -r $1 -q --swfUrl http://n.sestatic.fi/sites/all/modules/media/Nelonen_mediaplayer_4.6.swf --pageUrl $2 -o -
+
+exit $?

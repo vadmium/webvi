@@ -1,0 +1,137 @@
+# Finnish translations for webvideo package.
+# Copyright (C) 2008,2009 THE webvideo'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the webvideo package.
+# Antti Ajanki <antti.ajanki@iki.fi>, 2008,2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: webvideo 0.1.1\n"
+"Report-Msgid-Bugs-To: <see README>\n"
+"POT-Creation-Date: 2010-07-09 15:12+0300\n"
+"PO-Revision-Date: 2008-06-07 18:03+0300\n"
+"Last-Translator: Antti Ajanki <antti.ajanki@iki.fi>\n"
+"Language-Team: Finnish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "No streams on this page, create timer anyway?"
+msgstr "Luo ajastin vaikka tällä sivulla ei videoita?"
+
+msgid "Downloading in the background"
+msgstr "Ladataan taustalla"
+
+msgid "Starting player..."
+msgstr "Käynnistetään toistin..."
+
+msgid "Retrieving..."
+msgstr "Ladataan..."
+
+msgid "Back"
+msgstr "Peruuta"
+
+msgid "Forward"
+msgstr "Eteenpäin"
+
+msgid "Create timer"
+msgstr "Luo ajastin"
+
+msgid "Play"
+msgstr "Toista"
+
+msgid "Status"
+msgstr "Tila"
+
+msgid "Timers"
+msgstr "Ajastimet"
+
+msgid "Unfinished downloads"
+msgstr "Ladattavat tiedostot"
+
+msgid "No active downloads"
+msgstr "Ei keskeneräisia latauksia"
+
+#. TRANSLATORS: at most 5 characters
+msgid "Error"
+msgstr "Virhe"
+
+msgid "Error details"
+msgstr "Virhe"
+
+msgid "Download details"
+msgstr "Latauksen tiedot"
+
+msgid "Remove"
+msgstr "Poista"
+
+msgid "Abort"
+msgstr "Keskeytä"
+
+msgid "Edit timer"
+msgstr "Muokkaa ajastinta"
+
+msgid "Title"
+msgstr "Nimi"
+
+msgid "Once per day"
+msgstr "Kerran päivässä"
+
+msgid "Once per week"
+msgstr "Kerran viikossa"
+
+msgid "Once per month"
+msgstr "Kerran kuussa"
+
+msgid "Update interval"
+msgstr "Päivitystahti"
+
+msgid "Execute now"
+msgstr "Suorita nyt"
+
+#. TRANSLATORS: at most 24 chars
+msgid "Never"
+msgstr "Ei koskaan"
+
+msgid "Last fetched:"
+msgstr "Viimeisin päivitys"
+
+msgid "Error on last refresh!"
+msgstr "Virhe edellisessä päivityksessä"
+
+msgid "Timer running, can't remove"
+msgstr "Poisto ei onnistu, koska ajastin on käynnissä"
+
+msgid "Remove timer?"
+msgstr "Poista ajastin?"
+
+msgid "Aborted"
+msgstr "Keskeytetty"
+
+msgid "Download video files from the web"
+msgstr "Lataa videotiedostoja Internetistä"
+
+msgid "Streaming failed: no URL"
+msgstr "Toisto epäonnistui: ei URLia"
+
+msgid "Failed to launch media player"
+msgstr "Toistimen käynnistäminen epäonnistui"
+
+msgid "timer"
+msgstr "ajastin"
+
+#, c-format
+msgid "One download completed, %d remains%s"
+msgstr "Yksi tiedosto ladattu, %d jäljellä%s"
+
+msgid "Download aborted"
+msgstr "Lataaminen keskeytetty"
+
+#, c-format
+msgid "Download failed (error = %d)"
+msgstr "Lataus epäonnistui (virhe = %d)"
+
+#, c-format
+msgid "%d downloads not finished"
+msgstr "%d tiedostoa lataamatta"

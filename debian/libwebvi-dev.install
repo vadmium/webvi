@@ -1,0 +1,3 @@
+src/libwebvi/libwebvi.so           usr/lib/
+src/libwebvi/libwebvi.h            usr/include/
+src/libwebvi/libwebvi.a            usr/lib/

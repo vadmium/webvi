@@ -1,0 +1,118 @@
+webvi - command line web video downloader
+
+Copyright 2009,2010 Antti Ajanki <antti.ajanki@iki.fi>
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or (at
+your option) any later version. See the file COPYING for more
+information.
+
+Description
+-----------
+
+Webvi is a tool for downloading and playing videos from popular video
+sharing webvites such as YouTube. See README for the full list of
+supported sites.
+
+Installation
+------------
+
+To compile and install the command line client (without VDR plugin;
+see main README if you have VDR installed) run
+
+make libwebvi
+make install-webvi
+
+By default the program is installed under /usr/local. You can specify
+a different installation location by
+
+make libwebvi PREFIX=/usr
+make install-webvi install-conf PREFIX=/usr
+
+If you use an alternative installation location, you may need to put
+PREFIX/lib/pythonX.Y/site-packages/ or
+PREFIX/lib/pythonX.Y/dist-packages/ to your PYTHONPATH environment
+variable.
+
+Running
+-------
+
+webvi --templatedir=/usr/local/share/webvi/templates
+
+The parameter --templatedir can be left out if the default PREFIX was
+used in make install-library.
+
+Command line parameters
+-----------------------
+
+-h, --help                  show this help message and exit
+-t DIR, --templatepath=DIR  read video site templates from DIR
+
+Usage
+-----
+
+The content of video sharing websites is presented as series of menus.
+The menus consists of two kinds of links. Navigation links, which are
+be identified by [brackets], are used to navigate the site.
+Non-bracketed links are media streams that can be downloaded or
+played.
+
+Following commands are recognized:
+
+help       Show help
+select x   Select a link whose index is x
+download x Download a media stream whose index is x
+stream x   Play a media stream whose index is x
+back       Go backward in history
+forward    Go forward in history
+display    Redisplay the current menu
+menu       Go back to the main menu
+quit       Quit the program
+
+x is an index of a link in the current menu. Entering an index number
+x without any command is a shorthand for "select x".
+
+Config file
+-----------
+
+Config files /etc/webvi.conf and ~/.webvi configure the behavior of
+the program. An example configuration file debian/webvi.conf is
+included in the sources.
+
+The config files are in ini format. The following items are recognized
+in section [webvi]:
+
+streamplayer1, ..., streamplayer9
+
+streamplayer1 to streamplayer9 are alternative media players to be
+used for streaming. The substring %s will be replaced by the stream
+URL. The players are tried one by one starting from streamplayer1
+until one of them succeeds playing the stream. If no players are
+defined in config files then vlc, totem, mplayer, and xine are tried
+(in that order).
+
+templatepath
+
+Path to video site templates.
+
+Quality of the downloaded and streamed videos can be selected in video
+site specific sections. Currently only Youtube module (section should
+be called [site-youtube]) supports multiple qualities. The following
+options are recognized:
+
+download-min-quality, download-max-quality
+
+Minimum and maximum allowed quality when saving the video to disc. The
+default is to download the best available version of the video.
+
+stream-min-quality, stream-max-quality
+
+Minimum and maximum allowed quality when playing the video. The
+default is to download the best available version of the video.
+
+For Youtube, the available quality scores are:
+
+  50: standard quality (320x240, i.e. what you get in the web browser)
+  60: medium quality (480x360 MP4)
+  70: HD quality (720p)

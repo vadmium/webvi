@@ -1,0 +1,152 @@
+libwebvi interface
+==================
+
+See src/libwebvi/libwebvi.h for C API, src/unittest/testlibwebvi.c for
+example code in C, and src/libwebvi/webvi/api.py for Python API.
+
+
+XSLT templates for video sites
+==============================
+
+libwebvi transforms the HTML of the web pages into a simple XML-based
+format using the sites specific XSLT stylesheets stored under
+templates directory. The XML describes navigation links and video
+streams found on the web pages. The VDR plugin or the command line
+client interprets the XML and displays a menu to the user.
+
+The following is an example libwebvi XML response for navigation page
+(WEBVIREQ_MENU) query:
+
+<wvmenu>
+  <title>Page title</title>
+
+  <link>
+    <label>Label of the link</label>
+    <ref>wvt:///youtube/description.xsl?srcurl=...</ref>
+    <stream>wvt:///youtube/video.xsl?srcurl=...</stream>
+  </link>
+
+  <textarea>
+    <label>Text that will be shown to the user</label>
+  </textarea>
+
+  <textfield name="search_query">
+    <label>Search terms</label>
+  </textfield>
+
+  <itemlist name="search_sort">
+    <label>Sort by</label>
+    <item value="">Relevance</item>
+    <item value="video_date_uploaded">Date Added</item>
+    <item value="video_view_count">View Count</item>
+    <item value="video_avg_rating">Rating</item>
+  </itemlist>
+
+  <button>
+    <label>Send</label>
+    <submission>wvt:///youtube/navigation.xsl?srcurl=...</submission>
+  </button>
+</wvmenu>
+
+<wvmenu> is the root node of a menu page. Possible children are
+<title>, <link>, <textfield>, <itemlist>, <textarea>, and <button>
+nodes.
+
+The content of <title> will be shown as the title of the menu.
+
+<link> is a navigation link. It must have a child <label>, which
+contains the text that will be shown to the user, and at least one of
+<ref> (a navigation reference) or <stream> (a media stream reference).
+The user interface provides three ways for selecting the link: a
+navigation action loads a new menu page by retrieving the reference in
+<ref> node from the library (using request type WEBVIREQ_MENU), a file
+action downloads the stream by requesting <stream> reference from the
+library (WEBVIREQ_FILE), stream URL action retrieves a direct URL to
+the stream by requesting reference <stream> (WEBVIREQ_STREAMURL).
+
+<textarea> defines a text widget. Again, child node <label> contains
+the text that will be displayed to the user.
+
+<textfield> defines a control for entering a string.
+
+<itemlist> defines a control for selecting one of the specified
+<item>s.
+
+<button> is a special kind of link. It encodes the state of
+<textfield>s and <itemlist>s into its reference. When the <button> is
+selected the state of other controls is send to the library. The
+reference is constructed by concatenating encoded values of each
+<textfield> and <itemlist> to the content of <submission> node. Each
+control is encoded as string "subst=name,value" where name is
+URL encoded presentation of the name nodes name attribute, and value
+is URL encoded presentation of the <textfield>'s UTF-8 input or value
+attribute of currently selected <item> in an <itemlist>. The encodings
+are joined by putting a "&" between them.
+
+
+Format of wvt:// references
+===========================
+
+In libwebvi, the navigation and menu requests are encoded encoded as
+URIs with scheme wvt:// . Typically, these references are extracted
+from <ref> or <stream> nodes in the XML menu documents. This section
+explains the format of the references.
+
+The references are of the form
+
+wvt://templatedir/template.xsl?srcurl=...&other_params=value
+
+The value of the srcurl parameter is a URL (typically an HTTP URL) of
+a web page on a video site. templatedir/template.xsl specifies a name
+of the XSLT template that is applied to the srcurl to get an XML menu.
+srcurl can be empty.
+
+templatedir called bin is a special directory. It contains executable
+programs or scripts instead of XSLT templates. When a reference to the
+bin directory is encountered, the named script is executed. Script's
+standard output is returned as the results of the operation. The
+script should return 0 on success.
+
+Parameters that affect the template processing can be appended to the
+reference. The parameter name and value are separated by '=',
+different parameters are separated by '&'. Following parameters are
+understood:
+
+param=name,value
+
+name and value are passed to the XSLT processor as an external
+parameter.
+
+subst=name,value
+
+Replaces string {name} in srcurl with value before retrieving it. This
+is used in search pages as discussed in previous section.
+
+contenttype=value
+
+value is used as content type if the server does not send a proper
+content type header.
+
+arg=value
+
+Used to pass command line arguments to the external scripts in the bin
+directory. There can be multiple args.
+
+minquality=value
+maxquality=value
+
+Only the streams whose quality ("priority" attribute of the "url" tag)
+is between minquality and maxquality are considered as candidates when
+selecting a stream to play. The default limits are 0 and 100.
+
+postprocess=json2xml
+
+The source is a JSON document which should be converted to XML before
+the XSLT transformation.
+
+http-header=headername,headervalue
+
+Append a HTTP header to the request. Ignored on transfers that use
+some other protocol besides HTTP.
+
+The reference to the main menu is wvt:///?srcurl=mainmenu .

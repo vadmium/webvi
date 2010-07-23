@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<service>
+  <title>YouTube</title>
+  <ref>wvt:///youtube/categories.xsl?srcurl=http://gdata.youtube.com/schemas/2007/categories.cat</ref>
+  <description>Video sharing service on which users worldwide can upload their videos</description>
+</service>

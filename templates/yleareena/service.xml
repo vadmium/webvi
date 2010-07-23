@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<service>
+  <title>YLE Areena</title>
+  <ref>wvt:///yleareena/mainmenu.xsl?srcurl=http%3A//areena.yle.fi/</ref>
+  <description>Video service by YLE, the Finland's national public service broadcasting company</description>
+</service>

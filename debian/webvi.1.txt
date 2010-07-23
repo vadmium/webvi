@@ -1,0 +1,67 @@
+### txt2man -s 1 -t WEBVI -v "download utility for media sharing websites"
+
+NAME
+  webvi - download video and audio from media sharing websites
+
+SYNOPSIS
+  webvi [options]
+
+DESCRIPTION
+  webvi is a command line tool for downloading video and audio files
+  from certain media sharing websites, such as YouTube or Google Video.
+
+OPTIONS
+  -h, --help                    show this help message and exit
+  -t DIR, --templatepath=DIR    read video site templates from DIR
+
+USAGE
+  The program communicates with webvid daemon, which must be running in
+  the background.
+
+  The content of video sharing websites is presented as series of menus.
+  The menus consists of two kinds of links. Navigation links, which can
+  be identified by [brackets], are used to navigate the site.
+  Non-bracketed links are media streams that can be downloaded.
+
+  Following commands are recognized:
+
+  help        Show help
+  select x    Select a link whose index is x
+  download x  Download a media stream whose index is x
+  stream x    Play a media stream whose index is x
+  back        Go backward in history
+  forward     Go forward in history
+  display     Redisplay the current menu
+  menu        Go back to the main menu
+  quit        Quit the program
+
+  x is an index of a link in the current menu. Entering an index number
+  x without any command is a shorthand for "select x".
+
+CONFIG FILE
+  webvi will read the following config files: /etc/webvi.conf and
+  ~/.webvi. The files are in INI format. The following options are
+  recognized in [webvi] section:
+
+  templatepath   Path to video site templates
+  streamplayers1 to streamplayer9  are alternative player commands to be used for streaming videos
+
+  It is possible to set lower and upper bounds for stream quality in
+  [site-*] sections:
+
+  download-min-quality  Minimum accepted quality for downloading
+  download-max-quality  Maximum accepted quality for downloading
+  stream-min-quality    Minimum accepted quality for streaming
+  stream-max-quality    Maximum accepted quality for streaming
+
+  Currently only Youtube module offers multiple versions of the
+  streams. These are the available quality scores for Youtube
+  (section [site-youtube]):
+
+  50  standard quality (320x240, i.e. what you get in the web browser)
+  60  medium quality (480x360 MP4)
+  70  HD quality (720p)
+
+AUTHOR
+   This manual page was written by Tobias Grimm <tg@e-tobi.net> and
+   Antti Ajanki <antti.ajanki@iki.fi>.

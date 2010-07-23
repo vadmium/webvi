@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# Downloads a video stream from Yle Areena to stdout using yle-dl
+# script. The first parameter is the video page URL.
+
+YLEDL=yle-dl
+
+which $YLEDL > /dev/null 2>&1
+if [ $? != 0 ]; then
+    echo "ERROR: $YLEDL is not on \$PATH" 1>&2
+    echo "Install rtmpdump-yle from http://users.tkk.fi/~aajanki/rtmpdump-yle/index.html" 1>&2
+    exit 1
+fi
+
+if [ "x$1" = "x" ]; then
+    echo "Expected Areena URL as parameter" 1>&2
+    exit 1
+fi
+
+$YLEDL $1 -q -o -
+
+exit $?

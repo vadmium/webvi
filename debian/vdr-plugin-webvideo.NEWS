@@ -1,0 +1,10 @@
+vdr-plugin-webvideo (0.1.4-1) unstable; urgency=low
+
+  The default download directory is now /var/lib/webvideo instead of
+  /var/lib/video/webvideo, because the video directory is expected to
+  hold only VDR's own files. The videos are NOT automatically copied
+  to the new location. If you want to keep using the old location (it
+  should not cause problems in practice), leave the path in
+  /etc/vdr/plugins/plugin.webvideo.conf unchanged.
+
+ -- Antti Ajanki <antti.ajanki@iki.fi>  Mon, 04 May 2009 20:42:36 +0300

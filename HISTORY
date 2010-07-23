@@ -1,0 +1,185 @@
+VDR Plugin 'webvideo' Revision History
+--------------------------------------
+
+2008-06-25: Version 0.0.1
+
+- Initial revision.
+
+2008-07-24: Version 0.0.2
+
+- Italian translation (thanks to Diego Pierotto)
+- Support for mms URLs using libmms
+- Guess the file extension from the Content-Type header, not from the
+  defaultext tag
+- New video service: YLE Areena (the web service of the Finland's
+  national broadcasting company). Only partial support, some of the
+  URLs do not work with libmms.
+- Youtube: Download higher quality MPEG-4 videos
+
+2008-08-20: Version 0.0.3
+
+- Support for video search
+- Updated Italian translation (thanks to Diego Pierotto)
+- Try mmsh if mms protocol fails (requires libmms 0.4 or later). Most
+  videos on YLE Areena seem to work after this fix.
+- Fix segfault when deleting the plugin at VDR exit
+- Youtube: switch back to low quality FLV videos because not all
+  videos have MP4 version
+
+2008-08-21: Version 0.0.4
+
+- Updated Italian translation (thanks to Diego Pierotto)
+- Include a workaround for a bug in the libmms header file mmsx.h
+  which caused the compilation to fail
+- Fix compiler warnings
+
+2008-09-08: Version 0.0.5
+
+- New video service: SVT Play. Contributed by Lars Olsson.
+- More robust parsing of .asx files
+- Workaround for buggy servers: if the server reports the Content-Type
+  of a video file as text/plain do not use it for deciding the file
+  extension. Try to extract the extension from the URL instead.
+- Sort service names alphabetically
+
+2008-12-06: Version 0.0.6
+
+- French translation (Thanks to Bruno Roussel)
+- Fixed Youtube parsing to accommodate to recent changes
+
+2009-02-08: Version 0.1.0
+
+- The downloader backend is now a separate server process. The user
+  interface is no longer blocked while the plugin is waiting for a web
+  server to respond.
+- Support for streaming
+- A new command line client that has the same capabilities as the plugin
+  but can be used without VDR.
+- Alternative URLs for videos. For example, Youtube module first tries
+  to download high quality version, and falls back to standard version
+  if high quality version is not available.
+- Cleaning up of the XML menu scheme. New menu items: textfields, item
+  lists, query buttons.
+- Status page that lists uncompleted downloads
+- Updated YouTube, Google, and SVTPlay modules to work with the recent
+  changes on these sites
+
+2009-02-24: Version 0.1.1
+
+- Simplified building: better Makefile, fixed instructions in README
+- Updated Italian translations (thanks to Diego Pierotto)
+- German translation (contributed by Andre L.)
+- Daemon stops downloads gracefully when client disconnects
+- Fixed segfault when a menu title is NULL (this happened for
+  example on YouTube search results page)
+- sane filenames: no slashs, no dots in the beginning
+- Try to start daemon process automatically if can't open a connection
+- Removed busy polling when loading the main menu
+- Remove temporary file if the request fails
+- Ability to cancel downloads (through the status screen)
+- URLencode function in the plugin was bogus: the percent encoded
+  values should be in hex, not in decimal
+- Fixed problem with downloads never finishing if the server sends
+  shorter file than expected
+- History forward skipped over one page
+- SVTPlay: various improvements to the parsing of the web pages
+
+2009-03-07: Version 0.1.2
+
+- Unescape the stream URL before passing it to xineliboutput to make
+  Youtube streaming work.
+- Youtube: More robust parsing of search results page. Updated
+  categories parsing according to recent changes.
+- Updated Italian translations (thanks to Diego Pierotto)
+- Fixed a typo in German translation (thanks to Halim Sahin)
+
+2009-04-08: Version 0.1.3
+
+Plugin:
+- Call libxslt.init() only it exists (old versions of libxslt don't
+  have init())
+- Update download progress indicators in the status screen at regular
+  intervals
+
+webvi, the command line client:
+- Show download progress
+
+Video site modules:
+- YLE Areena: show error message if search fails, show categories in
+  the main menu, various smaller parsing improvements
+- Youtube: show error message if no search results, fix parsing of
+  Movies category
+
+2009-05-05: Version 0.1.4
+
+- Updated Italian translation (thanks to Diego Pierotto)
+- Config file for webvi for defining player programs and the address
+  of the daemon
+- Streaming now reverts back to lower quality video if high quality
+  version is not available (like downloading already did before)
+
+Video site modules:
+- Support for a new video site: Metacafe
+- Youtube: adapted parsing to comply with recent changes on Youtube.
+  Download HD quality video when available.
+- YLE Areena: download high quality videos by default
+- Google Video: support for videos hosted on Metacafe. Made parsing a
+  bit more robust.
+
+2009-05-10: Version 0.1.5
+
+- Don't crash VDR if can't connect to the daemon
+- Updated to work with Python 2.6 (a parameter name has changed in
+  asynchat)
+- Force the installation prefix for Python scripts to be /usr, not
+  /usr/local
+- Command line argument --daemoncmd specifies the command for starting
+  the webvid daemon
+
+2009-08-20: Version 0.1.6
+
+- Fixed compilation on gcc4.4. Thanks to Anssi Hannula.
+- Fixed Youtube module.
+- Removed the outdated YLE Areena support.
+
+2009-10-27: Version 0.1.7
+
+- Compatibility fixes for Youtube and Metacafe modules.
+
+2010-01-17: Version 0.2.0
+
+- The daemon is replaced by Python library with C bindings. This
+  simplifies the invocation of the VDR plugin and the command line
+  client.
+- New video service: Vimeo
+- Re-added support for YLE Areena (requires rtmpdump-yle from
+  http://users.tkk.fi/~aajanki/rtmpdump-yle/index.html).
+- Youtube: using the official API (except for video pages), this
+  should mean less breakage in the future. Various improvements on
+  the menus.
+
+2010-01-23: Version 0.2.1
+
+- Support for all Python versions.
+- Install the plugin with VDR's "make plugins". (If you use make
+  plugins, you still need to install the library separately.)
+
+2010-04-11: Version 0.2.2
+
+- Remember query terms and menu positions when moving in history.
+- Reduce delays when navigating the menu.
+- Install libwebvi.so* links correctly. Run ldconfig.
+- Write correct path to /etc/webvi.conf when installing to an
+  alternative location.
+- Show percentage as ??? on status page if the size is unknown.
+- Fixed Youtube module.
+
+2010-07-12: Version 0.3.0
+
+- Scheduled downloading
+- Show error details on status screen by pressing Info
+- Fix a crash when video URL is empty.
+- INI file options for controlling the download quality.
+- Add support for Finnish TV stations: MTV3 Katsomo, ruutu.fi, Subtv.
+- Make all downloads abortable.
+- Fixed Vimeo search.

@@ -1,0 +1,4 @@
+debian/tmp/usr/lib/python*/site-packages/*
+debian/tmp/usr/bin/webvi
+debian/tmp/usr/share/webvi/templates/*
+debian/webvi.conf                           etc/

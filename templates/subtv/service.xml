@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<service>
+  <title>Subtv</title>
+  <ref>wvt:///subtv/mainmenu.xsl?srcurl=http%3A//www.sub.fi/katsonetista/</ref>
+  <description>Sub is the third biggest commercial tv channel in Finland.</description>
+</service>

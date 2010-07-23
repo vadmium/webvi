@@ -1,0 +1,137 @@
+# German translations for webvideo package.
+# Copyright (C) 2009 THE webvideo'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the webvideo package.
+# Antti Ajanki <antti.ajanki@iki.fi>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: webvideo 0.1.1\n"
+"Report-Msgid-Bugs-To: <see README>\n"
+"POT-Creation-Date: 2010-07-09 15:12+0300\n"
+"PO-Revision-Date: 2009-02-18 20:04+0200\n"
+"Last-Translator: <cnc@gmx.de>\n"
+"Language-Team: German\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
+
+msgid "No streams on this page, create timer anyway?"
+msgstr ""
+
+msgid "Downloading in the background"
+msgstr "Download im Hintergrund"
+
+msgid "Starting player..."
+msgstr "Player wird gestartet..."
+
+msgid "Retrieving..."
+msgstr "Abrufen..."
+
+msgid "Back"
+msgstr "Zurück"
+
+msgid "Forward"
+msgstr "Vor"
+
+msgid "Create timer"
+msgstr ""
+
+msgid "Play"
+msgstr "Play"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Timers"
+msgstr ""
+
+msgid "Unfinished downloads"
+msgstr "Nicht beendete Downloads"
+
+msgid "No active downloads"
+msgstr "Kein aktiver Download"
+
+#. TRANSLATORS: at most 5 characters
+msgid "Error"
+msgstr ""
+
+msgid "Error details"
+msgstr ""
+
+msgid "Download details"
+msgstr ""
+
+msgid "Remove"
+msgstr ""
+
+msgid "Abort"
+msgstr "Abbruch"
+
+msgid "Edit timer"
+msgstr ""
+
+msgid "Title"
+msgstr ""
+
+msgid "Once per day"
+msgstr ""
+
+msgid "Once per week"
+msgstr ""
+
+msgid "Once per month"
+msgstr ""
+
+msgid "Update interval"
+msgstr ""
+
+msgid "Execute now"
+msgstr ""
+
+#. TRANSLATORS: at most 24 chars
+msgid "Never"
+msgstr ""
+
+msgid "Last fetched:"
+msgstr ""
+
+msgid "Error on last refresh!"
+msgstr ""
+
+msgid "Timer running, can't remove"
+msgstr ""
+
+msgid "Remove timer?"
+msgstr ""
+
+#, fuzzy
+msgid "Aborted"
+msgstr "Abbruch"
+
+msgid "Download video files from the web"
+msgstr "Download Video Files aus dem Web"
+
+msgid "Streaming failed: no URL"
+msgstr "Streaming fehlgeschlagen: Keine URL"
+
+msgid "Failed to launch media player"
+msgstr "Media Player konnte nicht gestartet werden"
+
+msgid "timer"
+msgstr ""
+
+#, c-format
+msgid "One download completed, %d remains%s"
+msgstr "Ein Download komplett, %d verbleibend%s"
+
+msgid "Download aborted"
+msgstr ""
+
+#, c-format
+msgid "Download failed (error = %d)"
+msgstr "Download fehlgeschlagen (Error = %d)"
+
+#, c-format
+msgid "%d downloads not finished"
+msgstr "%d laufende Downloads"

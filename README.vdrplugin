@@ -1,0 +1,180 @@
+This is a "plugin" for the Video Disk Recorder (VDR).
+
+Written by:                  Antti Ajanki <antti.ajanki@iki.fi>
+
+Project's homepage:          http://users.tkk.fi/~aajanki/vdr/webvideo
+
+Latest version available at: http://users.tkk.fi/~aajanki/vdr/webvideo
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or (at
+your option) any later version. The project includes files from
+iniparse library under MIT license.
+
+See the file COPYING for more information.
+
+Description:
+
+Webvideo is a VDR plugin for downloading videos from popular video
+sharing webvites such as YouTube. With the help of xineliboutput
+plugin the videos can be played directly in VDR without downloading
+them first. See README for the full list of supported sites.
+
+Requirements:
+
+* VDR 1.6.0 or later
+* Python 2.5 or later (http://www.python.org/)
+* simplejson (on Python 2.5, not needed on later Python versions)
+* libcurl (http://curl.haxx.se/)
+* pycurl 7.18.2 or newer (http://pycurl.sourceforge.net/)
+* libxml and libxslt (http://xmlsoft.org/)
+* a video player for viewing the downloaded videos or streaming videos
+  without downloading, for example xineliboutput plugin
+
+Suggested:
+
+* mimms 3.0 or later for downloading mms URLs
+  (http://savannah.nongnu.org/projects/mimms/)
+* rtmpdump-yle (http://users.tkk.fi/~aajanki/rtmpdump-yle/index.html)
+
+On Debian these dependencies can be satisfied by installing packages
+vdr, python-libxml2, python-libxslt1, python-pycurl,
+python-simplejson, mimms, either vdr-plugin-xineliboutput or
+vdr-plugin-mplayer, and their dependencies. For building the Debian
+package vdr-dev, libxml2-dev, python-all-dev, python-central,
+debhelper, cdbs, txt2man, gettext, and libglib2.0-dev are needed, as
+well.
+
+Installation and running
+------------------------
+
+These are the general install instructions. If you are using Debian,
+it easier to build and install the Debian package as instructed in the
+next section.
+
+tar -xzf /put/your/path/here/vdr-webvideo-X.Y.Z.tgz
+cd webvideo-X.Y.Z
+make VDRDIR=/path/to/VDR
+make install VDRDIR=/path/to/VDR
+
+These steps install the library and the VDR plugin. It is not
+necessary call VDR's make plugins.
+
+The installation locations can be further customized by appending the
+following variables to make install invocation:
+
+PREFIX           prefix for the non-VDR files (default: /usr/local)
+VDRPLUGINDIR     VDR's plugin dir (default: VDRDIR/PLUGINS/lib)
+VDRPLUGINCONFDIR VDR's plugin conf directory (default: /video)
+VDRLOCALEDIR     VDR's locale directory (default: VDRDIR/locale)
+
+To start the VDR with the webvideo plugin run
+
+vdr -P "webvideo --templatedir=/usr/local/share/webvi/templates"
+
+The parameter --templatedir can be left out if the default PREFIX was
+used in make install.
+
+Installation on Debian
+----------------------
+
+tar -xzf /put/your/path/here/vdr-webvideo-X.Y.Z.tgz
+cd webvideo-X.Y.Z
+dpkg-buildpackage -rfakeroot -us -uc
+cd ..
+dpkg -i python-webvi_X.Y.Z-W_all.deb libwebvi0_X.Y.Z-W_i386.deb vdr-plugin-webvideo_X.Y.Z-W_i386.deb
+
+Debian's init scripts automatically load the plugin with proper
+parameters when VDR starts.
+
+VDR plugin command line parameters
+----------------------------------
+
+-d dir, --downloaddir=DIR  Save downloaded files to DIR. The default
+                           path is the VDR video directory.
+-t dir, --templatedir=DIR  Read video site templates from DIR (default
+                           /usr/local/share/webvi/templates)
+-c FILE,  --conf=FILE      Load settings from FILE
+
+Config file
+-----------
+
+Config file VDRPLUGINCONFDIR/webvi.plugin.conf (the default path can
+be overridden with the --conf argument) controls the quality of the
+downloaded and streamed videos.
+
+Currently only Youtube module supports multiple qualities. The
+following options are recognized in section [site-youtube]:
+
+download-min-quality, download-max-quality
+
+Minimum and maximum allowed quality when saving the video to disc. The
+default is to download the best available version of the video.
+
+stream-min-quality, stream-max-quality
+
+Minimum and maximum allowed quality when playing the video. The
+default is to download the best available version of the video.
+
+For Youtube, the available quality scores are (not all videos have the
+higher quality versions):
+
+  50: standard quality (320x240, i.e. what you get in the web browser)
+  60: medium quality (480x360 MP4)
+  70: HD quality (720p)
+
+For example, if you don't have enough network bandwidth for playing
+the high quality versions smoothly, you may want to limit the maximum
+streaming quality score but still get the HD version when downloading.
+To do this, add the following snippet to the ini-file:
+
+[site-youtube]
+stream-max-quality = 50
+
+Usage
+-----
+
+Navigation links that lead to a new menu pages are marker with
+brackets [ ]. They can be followed by selecting them and pushing OK.
+
+The links without brackets are video or audio streams. They can be
+downloaded in the background by pushing OK. Pressing Blue on a media
+stream starts playing it immediately in xineliboutput plugin. Pressing
+Info shows more information about a media stream.
+
+Keys:
+
+OK      Follow a link, or start to download a stream
+Red     Go back to the previous menu /
+        Show download status screen
+Green   Go forward in browsing history /
+        Edit timers
+Yellow  Create timer
+Blue    Play media stream without saving
+Info    Show details of a media stream
+0       More options
+
+In the status screen:
+
+Red     Cancel the selected download
+Info    Show download error details
+
+Scheduled downloading
+---------------------
+
+The plugin can be configured to fetch new videos automatically from
+certain pages at regular intervals. 
+
+To setup a timer, navigate to the page that contains the videos you
+want to fetch and press Yellow button. The the update interval can be
+set in the menu that opens. To save and execute the timer leave the
+timer menu with Back button.
+
+To list, edit or remove existing timers press 0 and Green.
+
+Hint: The timers work even on search results. To download new VDR
+related videos that appear in Youtube navigate to the Youtube search,
+enter "VDR Linux" as search term and "Date added" as sorting
+criterion, execute the search, and create a timer on the search
+results page.

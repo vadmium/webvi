@@ -1,0 +1,37 @@
+#!/usr/bin/make -f
+
+build/libwebvi0:: build/python-webvi
+build/vdr-plugin-webvideo:: build/libwebvi0
+
+DEB_PYTHON_SYSTEM := pycentral
+DEB_PYTHON_MODULE_PACKAGES := python-webvi
+
+# debhelper must be included before python-distutils
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/class/makefile.mk
+include /usr/share/cdbs/1/class/python-distutils.mk
+
+DEB_COMPRESS_EXCLUDE := .py
+
+DEB_MAKE_BUILD_TARGET := all-noinstall VDRDIR=/usr/include/vdr
+DEB_MAKE_INSTALL_TARGET := install-vdr-plugin install-python VDRDIR=/usr/include/vdr PREFIX=$(CURDIR)/debian/tmp/usr VDRPLUGINDIR=$(CURDIR)/debian/tmp/usr/lib/vdr/plugins VDRPLUGINCONFDIR=$(CURDIR)/debian/tmp/var/lib/vdr/plugins VDRLOCALEDIR=$(CURDIR)/debian/tmp/usr/share/locale
+DEB_MAKE_CHECK_TARGET =
+
+DEB_INSTALL_CHANGELOGS_ALL = HISTORY
+
+#DEB_DH_STRIP_ARGS = -Xlibvdr-webvideo -Xlibwebvi
+
+TXT2MANPAGES = debian/webvi.1
+
+$(TXT2MANPAGES): %.1: %.1.txt
+	cat $< | grep -v "^###" | \
+	eval "`cat $< | grep "^### txt2man" | sed "s/### //"`" >$@
+
+common-build-indep:: $(TXT2MANPAGES)
+
+cleanbuilddir::
+	$(MAKE) -o .dependencies clean
+	rm -f $(TXT2MANPAGES)
+
+common-binary-predeb-arch::
+	sh /usr/share/vdr-dev/dependencies.sh
