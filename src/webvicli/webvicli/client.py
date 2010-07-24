@@ -34,7 +34,7 @@ from ConfigParser import RawConfigParser
 from webvi.constants import WebviRequestType, WebviErr, WebviOpt, WebviInfo, WebviSelectBitmask, WebviConfig
 from . import menu
 
-VERSION = '0.3.0'
+VERSION = '0.3.1'
 
 # Default options
 DEFAULT_PLAYERS = ['vlc --play-and-exit "%s"', 
