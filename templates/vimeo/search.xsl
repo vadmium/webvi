@@ -22,7 +22,7 @@
 
   <button>
     <label>Search</label>
-    <submission>wvt:///vimeo/searchresults.xsl?srcurl=<xsl:value-of select="concat(str:encode-uri('http://vimeo.com/videos/search:', true()), '{keywords}/', substring(id('xsrft')/@value, 0, 9), '{orderby}')"/>&amp;HTTP-header=cookie,xsrft%3D<xsl:value-of select="substring(id('xsrft')/@value, 0, 9)"/></submission>
+    <submission>wvt:///vimeo/searchresults.xsl?srcurl=<xsl:value-of select="concat(str:encode-uri('http://vimeo.com/videos/search:', true()), '{keywords}/', substring(id('xsrft')/@value, 0, 9), '{orderby}')"/>&amp;HTTP-header=cookie,xsrft%3D<xsl:value-of select="substring(id('xsrft')/@value, 0, 9)"/>;searchtoken%3D<xsl:value-of select="substring(id('xsrft')/@value, 0, 9)"/>&amp;param=searchtoken,<xsl:value-of select="substring(id('xsrft')/@value, 0, 9)"/></submission>
   </button>
 </wvmenu>
 </xsl:template>

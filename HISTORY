@@ -188,5 +188,6 @@ Video site modules:
 
 - Updated Italian translation (thanks to Diego Pierotto).
 - Fixed Youtube extractor.
+- Fixed Vimeo search.
 - Timers are no longer marked as "Unfinished" after the download has
   been completed.

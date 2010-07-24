@@ -4,6 +4,8 @@
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:str="http://exslt.org/strings">
 
+<xsl:param name="searchtoken"/>
+
 <xsl:template match="/">
 <wvmenu>
   <title>Search results</title>
@@ -24,7 +26,7 @@
       <xsl:if test="img/@alt = 'next'">
         <label>Next</label>
       </xsl:if>
-      <ref>wvt:///vimeo/searchresults.xsl?srcurl=<xsl:value-of select="./@href"/></ref>
+      <ref>wvt:///vimeo/searchresults.xsl?srcurl=<xsl:value-of select="./@href"/>&amp;HTTP-header=cookie,xsrft%3D<xsl:value-of select="$searchtoken"/>;searchtoken%3D<xsl:value-of select="$searchtoken"/>&amp;param=searchtoken,<xsl:value-of select="$searchtoken"/></ref>
     </link>
   </xsl:for-each>
 
