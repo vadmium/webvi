@@ -67,7 +67,7 @@ cEditWebviTimerMenu::cEditWebviTimerMenu(cWebviTimer &timer,
 
   // still running?
   if (timer.Running()) {
-    Add(new cOsdItem("Timer active", osUnknown, false);
+    Add(new cOsdItem("Timer active", osUnknown, false));
   }
 
   // error
