@@ -15,11 +15,6 @@
 
 #define ARRAYSIZE(a) sizeof(a)/sizeof(a[0])
 
-/*
-const char *intervalNames[] = {trNOOP("Once per day"), trNOOP("Once per week"),
-                               trNOOP("Once per month")};
-*/
-
 const char *intervalNames[] = {NULL, NULL, NULL};
 const int intervalValues[] = {24*60*60, 7*24*60*60, 30*24*60*60};
 
@@ -69,6 +64,11 @@ cEditWebviTimerMenu::cEditWebviTimerMenu(cWebviTimer &timer,
 
   cString lastUpdated = cString::sprintf("%s\t%s", tr("Last fetched:"), lastTime);
   Add(new cOsdItem(lastUpdated, osUnknown, false));
+
+  // still running?
+  if (timer.Running()) {
+    Add(new cOsdItem("Timer active", osUnknown, false);
+  }
 
   // error
   if (!timer.Success()) {

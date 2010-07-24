@@ -83,7 +83,7 @@ void cWebviTimer::Execute() {
   cWebviThread::Instance().AddRequest(req);
 
   lastUpdate = time(NULL);
-  SetError("Unfinished");
+  SetError(NULL);
   parent->SetModified();
 
   activeStreams.Clear();
@@ -166,7 +166,6 @@ void cWebviTimer::DownloadStreams(const char *menuxml, cProgressVector& summarie
   xmlFreeDoc(doc);
 
   if (activeStreams.Size() == 0) {
-    SetError(NULL);
     running = false;
   }
 }
