@@ -1,3 +1,13 @@
+vdr-plugin-webvideo (0.3.1-1) unstable; urgency=low
+
+  * Updated Italian translation (thanks to Diego Pierotto).
+  * Fixed Youtube extractor.
+  * Fixed Vimeo search.
+  * Timers are no longer marked as "Unfinished" after the download has
+    been completed.
+
+ -- Antti Ajanki <antti.ajanki@iki.fi>  Sat, 24 Jul 2010 20:02:56 +0300
+
 vdr-plugin-webvideo (0.3.0-1) unstable; urgency=low
 
   * Scheduled downloading
@@ -9,7 +19,7 @@ vdr-plugin-webvideo (0.3.0-1) unstable; urgency=low
   * Fixed Vimeo search.
   * Get the lower quality video when streaming from Youtube
 
- -- Antti Ajanki <antti@gaspode>  Mon, 12 Jul 2010 11:35:14 +0300
+ -- Antti Ajanki <antti.ajanki@iki.fi>  Mon, 12 Jul 2010 11:35:14 +0300
 
 vdr-plugin-webvideo (0.2.2-1) unstable; urgency=low
 
