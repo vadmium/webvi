@@ -62,13 +62,12 @@ cEditWebviTimerMenu::cEditWebviTimerMenu(cWebviTimer &timer,
     strftime(lastTime, 25, "%x %X", localtime(&updateTime));
   }
 
-  cString lastUpdated = cString::sprintf("%s\t%s", tr("Last fetched:"), lastTime);
-  Add(new cOsdItem(lastUpdated, osUnknown, false));
+  const char *active ="";
+  if (timer.Running())
+          active = " (active)";
 
-  // still running?
-  if (timer.Running()) {
-    Add(new cOsdItem("Timer active", osUnknown, false));
-  }
+  cString lastUpdated = cString::sprintf("%s\t%s%s", tr("Last fetched:"), lastTime, active);
+  Add(new cOsdItem(lastUpdated, osUnknown, false));
 
   // error
   if (!timer.Success()) {
