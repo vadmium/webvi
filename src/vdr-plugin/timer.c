@@ -374,7 +374,6 @@ bool cWebviTimerManager::Save(const char *path) {
 }
 
 void cWebviTimerManager::Update() {
-  char timestr[25];
   cWebviTimer *timer = timers.First();
   if (!timer)
     return;
@@ -382,6 +381,8 @@ void cWebviTimerManager::Update() {
   time_t now = time(NULL);
 
 #ifdef DEBUG
+  char timestr[25];
+
   strftime(timestr, 25, "%x %X", localtime(&now));
   debug("Running webvi timers update at %s", timestr);
 #endif
