@@ -180,7 +180,7 @@ void cWebviTimer::RequestFinished(const char *ref, const char *errmsg) {
     SetError(errmsg);
 
   if (ref) {
-    if (parent)
+    if (!errmsg && parent)
       parent->MarkDownloaded(ref);
 
     int i = activeStreams.Find(ref);
