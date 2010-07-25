@@ -184,10 +184,11 @@ Video site modules:
 - Make all downloads abortable.
 - Fixed Vimeo search.
 
-2010-07-24: Version 0.3.1
+2010-07-25: Version 0.3.1
 
 - Updated Italian translation (thanks to Diego Pierotto).
 - Fixed Youtube extractor.
 - Fixed Vimeo search.
 - Timers are no longer marked as "Unfinished" after the download has
   been completed.
+- Retry failed timers again later.
