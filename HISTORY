@@ -192,3 +192,7 @@ Video site modules:
 - Timers are no longer marked as "Unfinished" after the download has
   been completed.
 - Retry failed timers again later.
+
+2010-xx-xx: Version 0.3.2
+
+- New video service: MoonTV (contributed by Matti Lehtimäki)
