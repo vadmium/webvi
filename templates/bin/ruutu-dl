@@ -17,7 +17,7 @@ else
 fi
 
 if [ "x$RTMPDUMP" = "x" ]; then
-    echo "ERROR: neither rtmpdump nor rtmpdump-yle not on \$PATH" 1>&2
+    echo "ERROR: neither rtmpdump nor rtmpdump-yle on \$PATH" 1>&2
     exit 1
 fi
 
@@ -31,6 +31,6 @@ if [ "x$2" = "x" ]; then
     exit 1
 fi
 
-$RTMPDUMP -r $1 -q --swfUrl http://n.sestatic.fi/sites/all/modules/media/Nelonen_mediaplayer_4.6.swf --pageUrl $2 -o -
+$RTMPDUMP -q -r "$1" -W http://n.sestatic.fi/sites/all/modules/media/Nelonen_mediaplayer_5.1.3.swf -p "$2" -o -
 
 exit $?
