@@ -193,7 +193,8 @@ Video site modules:
   been completed.
 - Retry failed timers again later.
 
-2010-xx-xx: Version 0.3.2
+2010-08-25: Version 0.3.2
 
 - New video service: MoonTV (contributed by Matti Lehtimäki)
 - ruutu.fi uses rtmpe for some videos
+- Possibility to run a script after downloading

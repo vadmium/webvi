@@ -1,8 +1,11 @@
 vdr-plugin-webvideo (0.3.2-1) unstable; urgency=low
 
   * Remove conffiles that have been obsolete since 0.2.0-1
+  * New video service: MoonTV (contributed by Matti Lehtimäki)
+  * ruutu.fi uses rtmpe for some videos
+  * Possibility to run a script after downloading
 
- -- Antti Ajanki <antti.ajanki@iki.fi>  Tue, 17 Aug 2010 19:46:49 +0300
+ -- Antti Ajanki <antti.ajanki@iki.fi>  Wed, 25 Aug 2010 20:51:00 +0300
 
 vdr-plugin-webvideo (0.3.1-1) unstable; urgency=low
 
