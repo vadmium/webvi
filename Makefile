@@ -35,7 +35,10 @@ build-python: webvi.conf
 	python setup.py build
 
 webvi.conf:
-	@echo "[webvi]\n\ntemplatepath = $(PREFIX)/share/webvi/templates" > webvi.conf
+	sed 's_templatepath = /usr/local/share/webvi/templates_templatepath = $(PREFIX)/share/webvi/templates_g' < examples/webvi.conf > webvi.conf
+
+webvi.plugin.conf:
+	cp -f examples/webvi.plugin.conf webvi.plugin.conf
 
 $(VDRPLUGINDIR)/libvdr-webvideo.so.$(APIVERSION): vdr-plugin
 	mkdir -p $(VDRPLUGINDIR)
@@ -53,8 +56,10 @@ install-libwebvi: libwebvi
 install-python:
 	python setup.py install --prefix $(PREFIX)
 
-install-conf: webvi.conf
+install-conf: webvi.conf webvi.plugin.conf
 	cp -f webvi.conf /etc/
+	mkdir -p $(VDRPLUGINCONFDIR)/webvideo
+	cp -f webvi.plugin.conf $(VDRPLUGINCONFDIR)/webvideo
 
 install-webvi: install-libwebvi install-python
 

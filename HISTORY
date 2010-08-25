@@ -198,3 +198,4 @@ Video site modules:
 - New video service: MoonTV (contributed by Matti Lehtimäki)
 - ruutu.fi uses rtmpe for some videos
 - Possibility to run a script after downloading
+- Stream low bandwidth Youtube videos by default (see /etc/webvi.conf)
