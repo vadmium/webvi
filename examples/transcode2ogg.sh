@@ -19,7 +19,7 @@ srcfile=`basename "$fullsrcname"`
 srcbasename=`echo "$srcfile" | sed 's/\.[^.]*$//'`
 destname="$videodir/$srcbasename.ogg"
 
-ffmpeg -i "$fullsrcname" -qscale 8 -vcodec libtheora -acodec libvorbis -ac 2 -y "$destname"
+nice -n 19 ffmpeg -i "$fullsrcname" -qscale 7 -vcodec libtheora -acodec libvorbis -ac 2 -y "$destname"
 
 if [ $? -eq 0 ]; then
     rm -f "$fullsrcname"
