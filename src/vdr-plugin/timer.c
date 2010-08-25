@@ -147,7 +147,6 @@ void cWebviTimer::DownloadStreams(const char *menuxml, cProgressVector& summarie
             activeStreams.Append(strdup(ref));
             cFileDownloadRequest *req = \
               new cFileDownloadRequest(REQ_ID_TIMER, ref,
-                                       webvideoConfig->GetDownloadPath(),
                                        summaries.NewDownload());
             req->SetTimer(this);
             cWebviThread::Instance().AddRequest(req);

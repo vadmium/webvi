@@ -95,7 +95,8 @@ VDR plugin command line parameters
                            path is the VDR video directory.
 -t dir, --templatedir=DIR  Read video site templates from DIR (default
                            /usr/local/share/webvi/templates)
--c FILE,  --conf=FILE      Load settings from FILE
+-c FILE, --conf=FILE       Load settings from FILE
+-p CMD, --postprocess=CMD  Execute CMD after downloading
 
 Config file
 -----------
@@ -178,3 +179,15 @@ related videos that appear in Youtube navigate to the Youtube search,
 enter "VDR Linux" as search term and "Date added" as sorting
 criterion, execute the search, and create a timer on the search
 results page.
+
+Executing a script after downloading
+------------------------------------
+
+The option -p sets a script that is called for each downloaded file.
+For example: vdr -P "webvideo -p /path/to/script.sh"
+
+The script will be called with a single argument: the name (including
+the path) of the downloaded file.
+
+An example script for transcoding the downloaded files to Ogg format
+is included in the source distribution in examples/transcode2ogg.sh.

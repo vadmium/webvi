@@ -37,6 +37,7 @@ private:
   cString templatedir;
   cString destdir;
   cString conffile;
+  cString postprocesscmd;
 
   static int nextMenuID;
 
@@ -88,7 +89,8 @@ const char *cPluginWebvideo::CommandLineHelp(void)
   // Return a string that describes all known command line options.
   return "  -d DIR,   --downloaddir=DIR  Save downloaded files to DIR\n" \
          "  -t DIR,   --templatedir=DIR  Read video site templates from DIR\n" \
-         "  -c FILE,  --conf=FILE        Load settings from FILE\n";
+         "  -c FILE,  --conf=FILE        Load settings from FILE\n" \
+         "  -p CMD,   --postprocess=CMD  Execute CMD after downloading\n";
 }
 
 bool cPluginWebvideo::ProcessArgs(int argc, char *argv[])
@@ -98,6 +100,7 @@ bool cPluginWebvideo::ProcessArgs(int argc, char *argv[])
     { "downloaddir", required_argument, NULL, 'd' },
     { "templatedir", required_argument, NULL, 't' },
     { "conf",        required_argument, NULL, 'c' },
+    { "postprocess", required_argument, NULL, 'p' },
     { NULL }
   };
 
@@ -112,6 +115,9 @@ bool cPluginWebvideo::ProcessArgs(int argc, char *argv[])
       break;
     case 'c':
       conffile = cString(optarg);
+      break;
+    case 'p':
+      postprocesscmd = cString(optarg);
       break;
     default:
       return false;
@@ -135,6 +141,7 @@ bool cPluginWebvideo::Initialize(void)
 
   webvideoConfig->SetDownloadPath(destdir);
   webvideoConfig->SetTemplatePath(templatedir);
+  webvideoConfig->SetPostProcessCmd(postprocesscmd);
   webvideoConfig->ReadConfigFile(conffile);
 
   cString mymimetypes = AddDirectory(ConfigDirectory(Name()), "mime.types");

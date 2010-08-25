@@ -63,6 +63,7 @@ cWebvideoConfig::cWebvideoConfig() {
   downloadPath = NULL;
   templatePath = NULL;
   preferXine = true;
+  postProcessCmd = NULL;
 }
 
 cWebvideoConfig::~cWebvideoConfig() {
@@ -70,6 +71,8 @@ cWebvideoConfig::~cWebvideoConfig() {
     free(downloadPath);
   if (templatePath)
     free(templatePath);
+  if (postProcessCmd)
+    free(postProcessCmd);
 }
 
 void cWebvideoConfig::SetDownloadPath(const char *path) {
@@ -196,4 +199,14 @@ const char *cWebvideoConfig::GetMinQuality(const char *site, eRequestType type) 
 
 const char *cWebvideoConfig::GetMaxQuality(const char *site, eRequestType type) {
   return GetQuality(site, type, 1);
+}
+
+void cWebvideoConfig::SetPostProcessCmd(const char *cmd) {
+  if (postProcessCmd)
+    free(postProcessCmd);
+  postProcessCmd = cmd ? strdup(cmd) : NULL;
+}
+
+const char *cWebvideoConfig::GetPostProcessCmd() {
+  return postProcessCmd;
 }

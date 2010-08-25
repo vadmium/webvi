@@ -455,7 +455,6 @@ eOSState cNavigationMenu::Select(cLinkBase *link, eLinkType type)
     cDownloadProgress *progress = summaries.NewDownload();
     cFileDownloadRequest *req = \
       new cFileDownloadRequest(history->Current()->GetID(), ref,
-                               webvideoConfig->GetDownloadPath(),
 			       progress);
     cWebviThread::Instance().AddRequest(req);
 

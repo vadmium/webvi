@@ -38,5 +38,7 @@ char *URLdecode(const char *s);
 // '!') and dots from the beginning. The string is modified in-place,
 // i.e. returns the pointer filename that was passed as argument.
 char *safeFilename(char *filename);
+// Escape s so that it can be passed as parameter to a shell command.
+cString shellEscape(const char *s);
 
 #endif // __WEBVIDEO_COMMON_H

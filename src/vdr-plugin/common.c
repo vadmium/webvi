@@ -180,3 +180,26 @@ char *safeFilename(char *filename) {
 
   return filename;
 }
+
+cString shellEscape(const char *s) {
+  char *buffer = (char *)malloc((4*strlen(s)+3)*sizeof(char));
+  const char *src = s;
+  char *dst = buffer;
+
+  *dst++ = '\'';
+  while (*src) {
+    if (*src == '\'') {
+      *dst++ = '\'';
+      *dst++ = '\\';
+      *dst++ = '\'';
+      *dst++ = '\'';
+      src++;
+    } else {
+      *dst++ = *src++;
+    }
+  }
+  *dst++ = '\'';
+  *dst = '\0';
+
+  return cString(buffer, true);
+}

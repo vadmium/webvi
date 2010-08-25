@@ -34,6 +34,7 @@ class cWebvideoConfig {
 private:
   char *downloadPath;
   char *templatePath;
+  char *postProcessCmd;
   bool preferXine;
   cList<cDownloadQuality> downloadLimits;
   cList<cDownloadQuality> streamLimits;
@@ -57,6 +58,9 @@ public:
 
   const char *GetMinQuality(const char *site, eRequestType type);
   const char *GetMaxQuality(const char *site, eRequestType type);
+
+  void SetPostProcessCmd(const char *cmd);
+  const char *GetPostProcessCmd();
 };
 
 extern cWebvideoConfig *webvideoConfig;

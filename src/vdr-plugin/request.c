@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -185,8 +186,9 @@ WebviHandle cMenuRequest::PrepareHandle() {
 }
 
 bool cMenuRequest::Start(WebviCtx webvictx) {
-  webvi = webvictx;
+  debug("starting request %d", reqID);
 
+  webvi = webvictx;
   if ((PrepareHandle() != -1) && (webvi_start_handle(webvi, handle) == WEBVIERR_OK)) {
     finished = false;
     return true;
@@ -195,13 +197,15 @@ bool cMenuRequest::Start(WebviCtx webvictx) {
 }
 
 void cMenuRequest::RequestDone(int errorcode, cString pharse) {
+  debug("RequestDone %d %s", errorcode, (const char *)pharse);
+
   finished = true;
   status = errorcode;
   statusPharse = pharse;
 }
 
 void cMenuRequest::Abort() {
-  if (finished || handle == -1)
+  if (aborted || finished || handle == -1)
     return;
 
   aborted = true;
@@ -228,12 +232,11 @@ cString cMenuRequest::GetResponse() {
 // --- cFileDownloadRequest ------------------------------------------------
 
 cFileDownloadRequest::cFileDownloadRequest(int ID, const char *streamref, 
-                                           const char *destdir,
                                            cDownloadProgress *progress)
 :  cMenuRequest(ID, streamref), title(NULL), bytesDownloaded(0),
-   contentLength(-1), destfile(NULL), progressUpdater(progress)
+   contentLength(-1), destfile(NULL), destfilename(NULL),
+   progressUpdater(progress), state(STATE_WEBVI)
 {
-  this->destdir = strdup(destdir);
   if (progressUpdater)
     progressUpdater->AssociateWith(this);
 
@@ -245,8 +248,8 @@ cFileDownloadRequest::~cFileDownloadRequest() {
     destfile->Close();
     delete destfile;
   }
-  if (destdir)
-    free(destdir);
+  if (destfilename)
+    free(destfilename);
   if (title)
     free(title);
   // do not delete progressUpdater
@@ -282,7 +285,7 @@ bool cFileDownloadRequest::OpenDestFile() {
   char *contentType;
   char *url;
   char *ext;
-  cString destfilename;
+  cString filename;
   int fd, i;
 
   if (handle == -1) {
@@ -315,18 +318,19 @@ bool cFileDownloadRequest::OpenDestFile() {
   free(url);
   free(contentType);
 
+  const char *destdir = webvideoConfig->GetDownloadPath();
   char *basename = strdup(title ? title : "???");
   basename = safeFilename(basename);
 
   i = 1;
-  destfilename = cString::sprintf("%s/%s%s", destdir, basename, ext);
+  filename = cString::sprintf("%s/%s%s", destdir, basename, ext);
   while (true) {
-    debug("trying to open %s", (const char *)destfilename);
+    debug("trying to open %s", (const char *)filename);
 
-    fd = destfile->Open(destfilename, O_WRONLY | O_CREAT | O_EXCL, DEFFILEMODE);
+    fd = destfile->Open(filename, O_WRONLY | O_CREAT | O_EXCL, DEFFILEMODE);
 
     if (fd == -1 && errno == EEXIST)
-      destfilename = cString::sprintf("%s/%s-%d%s", destdir, basename, i++, ext);
+      filename = cString::sprintf("%s/%s-%d%s", destdir, basename, i++, ext);
     else
       break;
   };
@@ -335,13 +339,16 @@ bool cFileDownloadRequest::OpenDestFile() {
   free(ext);
 
   if (fd < 0) {
-    error("Failed to open file %s: %m", (const char *)destfilename);
+    error("Failed to open file %s: %m", (const char *)filename);
     delete destfile;
     destfile = NULL;
     return false;
   }
 
-  info("Saving to %s", (const char *)destfilename);
+  if (destfilename)
+    free(destfilename);
+  destfilename = strdup(filename);
+  info("Saving to %s", destfilename);
 
   if (progressUpdater) {
     progressUpdater->SetTitle(title);
@@ -387,11 +394,102 @@ char *cFileDownloadRequest::GetExtension(const char *contentType, const char *ur
 }
 
 void cFileDownloadRequest::RequestDone(int errorcode, cString pharse) {
-  cMenuRequest::RequestDone(errorcode, pharse);
-  if (progressUpdater)
-    progressUpdater->MarkDone(errorcode, pharse);
-  if (destfile)
-    destfile->Close();
+  if (state == STATE_WEBVI) {
+    if (destfile)
+      destfile->Close();
+
+    if (errorcode == 0)
+      StartPostProcessing();
+    else
+      state = STATE_FINISHED;
+
+  } else if (state == STATE_POSTPROCESS) {
+    postProcessPipe.Close();
+    state = STATE_FINISHED;
+  }
+
+  if (state == STATE_FINISHED) {
+    cMenuRequest::RequestDone(errorcode, pharse);
+    if (progressUpdater)
+      progressUpdater->MarkDone(errorcode, pharse);
+  }
+}
+
+void cFileDownloadRequest::Abort() {
+  if (state == STATE_POSTPROCESS)
+    postProcessPipe.Close();
+
+  cMenuRequest::Abort();
+}
+
+void cFileDownloadRequest::StartPostProcessing() {
+  state = STATE_POSTPROCESS;
+
+  const char *script = webvideoConfig->GetPostProcessCmd();
+  if (!script || !destfilename) {
+    state = STATE_FINISHED;
+    return;
+  }
+
+  info("post-processing %s", destfilename);
+
+  cString cmd = cString::sprintf("%s %s", 
+                                 (const char *)shellEscape(script),
+                                 (const char *)shellEscape(destfilename));
+  debug("executing %s", (const char *)cmd);
+
+  if (!postProcessPipe.Open(cmd, "r")) {
+    state = STATE_FINISHED;
+    return;
+  }
+
+  int flags = fcntl(fileno(postProcessPipe), F_GETFL, 0);
+  flags |= O_NONBLOCK;
+  fcntl(fileno(postProcessPipe), F_SETFL, flags);
+}
+
+int cFileDownloadRequest::File() {
+  FILE *f = postProcessPipe;
+
+  if (f)
+    return fileno(f);
+  else
+    return -1;
+}
+
+bool cFileDownloadRequest::Read() {
+  const size_t BUF_LEN = 512;
+  char buf[BUF_LEN];
+
+  if (!(FILE *)postProcessPipe)
+    return false;
+  
+  while (true) {
+    ssize_t nbytes = read(fileno(postProcessPipe), buf, BUF_LEN);
+
+    if (nbytes < 0) {
+      if (errno != EAGAIN && errno != EINTR) {
+        LOG_ERROR_STR("post process pipe");
+        return false;
+      }
+    } else if (nbytes == 0) {
+      info("post-processing of %s finished", destfilename);
+
+      if (IsAborted())
+        RequestDone(-2, "Aborted");
+      else
+        RequestDone(0, "");
+
+      return true;
+    } else {
+      debug("pp: %.*s", nbytes, buf);
+
+      if (nbytes < (ssize_t)BUF_LEN)
+        return true;
+    }
+  }
+
+  return true;
 }
 
 // --- cStreamUrlRequest ---------------------------------------------------

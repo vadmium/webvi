@@ -83,8 +83,6 @@ void cWebviThread::ActivateNewRequest() {
       // start it.
       MoveToFinishedList(req);
     } else {
-      debug("starting request %d", req->GetID());
-
       if (!req->Start(webvi)) {
         error("Request failed to start");
         req->RequestDone(-1, "Request failed to start");
@@ -113,9 +111,9 @@ void cWebviThread::StopFinishedRequests() {
       requestMutex.Lock();
       req = activeRequestList.FindByHandle(donemsg->handle);
       if (req) {
-        debug("Finished request %d", req->GetID());
         req->RequestDone(donemsg->status_code, donemsg->data);
-        MoveToFinishedList(req);
+        if (req->IsFinished())
+          MoveToFinishedList(req);
       }
       requestMutex.Unlock();
     }
@@ -134,6 +132,7 @@ void cWebviThread::Action(void) {
   struct timeval timeout;
   long running_handles;
   bool check_done = false;
+  bool has_request_files = false;
 
   if (webvi == 0) {
     error("Failed to get libwebvi context");
@@ -148,6 +147,19 @@ void cWebviThread::Action(void) {
     FD_SET(newreqread, &readfds);
     if (newreqread > maxfd)
       maxfd = newreqread;
+
+    has_request_files = false;
+    requestMutex.Lock();
+    for (int i=0; i<activeRequestList.Size(); i++) {
+      int fd = activeRequestList[i]->File();
+      if (fd != -1) {
+        FD_SET(fd, &readfds);
+        if (fd > maxfd)
+          maxfd = fd;
+        has_request_files = true;
+      }
+    }
+    requestMutex.Unlock();
 
     timeout.tv_sec = 5;
     timeout.tv_usec = 0;
@@ -174,8 +186,26 @@ void cWebviThread::Action(void) {
               Cancel(-1);
             ActivateNewRequest();
           } else {
-            webvi_perform(webvi, fd, WEBVI_SELECT_READ, &running_handles);
-            check_done = true;
+            bool handled = false;
+
+            if (has_request_files) {
+              requestMutex.Lock();
+              for (int i=0; i<activeRequestList.Size(); i++) {
+                if (fd == activeRequestList[i]->File()) {
+                  activeRequestList[i]->Read();
+                  if (activeRequestList[i]->IsFinished())
+                    MoveToFinishedList(activeRequestList[i]);
+                  handled = true;
+                  break;
+                }
+              }
+              requestMutex.Unlock();
+            }
+
+            if (!handled) {
+              webvi_perform(webvi, fd, WEBVI_SELECT_READ, &running_handles);
+              check_done = true;
+            }
           }
         }
         if (FD_ISSET(fd, &writefds))

@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: webvideo 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2010-07-09 15:12+0300\n"
+"POT-Creation-Date: 2010-08-22 19:28+0300\n"
 "PO-Revision-Date: 2010-07-17 00:39+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: \n"
 "X-Poedit-Language: Italian\n"
 "X-Poedit-Country: ITALY\n"
 "X-Poedit-SourceCharset: utf-8\n"
@@ -140,14 +140,18 @@ msgstr "%d scaricamenti non conclusi"
 
 #~ msgid "<No title>"
 #~ msgstr "<Senza titolo>"
+
 #~ msgid "Can't download web page!"
 #~ msgstr "Impossibile scaricare la pagina web!"
+
 #~ msgid "XSLT transformation produced no URL!"
 #~ msgstr "La conversione XSLT non ha generato alcun URL!"
+
 #~ msgid "XSLT transformation failed."
 #~ msgstr "Conversione XSLT fallita."
+
 #~ msgid "Unknown error!"
 #~ msgstr "Errore sconosciuto!"
+
 #~ msgid "Select video source"
 #~ msgstr "Seleziona fonte video"
-

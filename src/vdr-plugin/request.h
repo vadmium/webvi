@@ -91,7 +91,7 @@ public:
   bool Start(WebviCtx webvictx);
   virtual void RequestDone(int errorcode, cString pharse);
   bool IsFinished() { return finished; }
-  void Abort();
+  virtual void Abort();
   bool IsAborted() { return aborted; }
 
   // Return true if the lastest status code indicates success.
@@ -108,33 +108,44 @@ public:
 
   void SetTimer(cWebviTimer *t) { timer = t; }
   cWebviTimer *GetTimer() { return timer; }
+
+  virtual int File() { return -1; }
+  virtual bool Read() { return true; }
 };
 
 // --- cFileDownloadRequest ------------------------------------------------
 
 class cFileDownloadRequest : public cMenuRequest {
 private:
-  char *destdir;
+  enum eDownloadState { STATE_WEBVI, STATE_POSTPROCESS, STATE_FINISHED };
+
   char *title;
   long bytesDownloaded;
   long contentLength;
   cUnbufferedFile *destfile;
+  char *destfilename;
   cDownloadProgress *progressUpdater;
+  cPipe postProcessPipe;
+  eDownloadState state;
 
 protected:
   virtual WebviHandle PrepareHandle();
   virtual ssize_t WriteData(const char *ptr, size_t len);
   bool OpenDestFile();
   char *GetExtension(const char *contentType, const char *url);
+  void StartPostProcessing();
 
 public:
   cFileDownloadRequest(int ID, const char *streamref, 
-                       const char *destdir,
                        cDownloadProgress *progress);
   virtual ~cFileDownloadRequest();
 
   eRequestType GetType() { return REQT_FILE; }
   void RequestDone(int errorcode, cString pharse);
+  void Abort();
+
+  int File();
+  bool Read();
 };
 
 // --- cStreamUrlRequest ---------------------------------------------------
