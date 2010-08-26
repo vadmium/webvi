@@ -186,23 +186,27 @@ void cWebviThread::Action(void) {
               Cancel(-1);
             ActivateNewRequest();
           } else {
-            bool handled = false;
+            cMenuRequest *match = NULL;
 
             if (has_request_files) {
               requestMutex.Lock();
               for (int i=0; i<activeRequestList.Size(); i++) {
                 if (fd == activeRequestList[i]->File()) {
-                  activeRequestList[i]->Read();
-                  if (activeRequestList[i]->IsFinished())
-                    MoveToFinishedList(activeRequestList[i]);
-                  handled = true;
+                  match = activeRequestList[i];
                   break;
                 }
               }
               requestMutex.Unlock();
+
+              // call Read() after releasing the mutex
+              if (match) {
+                match->Read();
+                if (match->IsFinished())
+                  MoveToFinishedList(match);
+              }
             }
 
-            if (!handled) {
+            if (!match) {
               webvi_perform(webvi, fd, WEBVI_SELECT_READ, &running_handles);
               check_done = true;
             }
