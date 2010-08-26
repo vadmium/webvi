@@ -201,3 +201,4 @@ Video site modules:
 - Stream low bandwidth Youtube videos by default (configurable in
   /etc/webvi.conf)
 - Fixed Google video module.
+- Disabled ruutu.fi search which is not working.

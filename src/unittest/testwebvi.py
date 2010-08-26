@@ -349,10 +349,9 @@ class TestServiceModules(unittest.TestCase):
     def testRuutuFi(self):
         # Category page
         ref = self.getServiceReference('../../templates/ruutufi')
-        links = self.downloadAndExtractLinks(ref, 4, 'category')
+        links = self.downloadAndExtractLinks(ref, 3, 'category')
 
-        # The first is "Search", the second is "Series"
-        seriesref = links[1].ref
+        seriesref = links[0].ref
 
         # Series page
         links = self.downloadAndExtractLinks(seriesref, 1, 'series')
@@ -365,19 +364,19 @@ class TestServiceModules(unittest.TestCase):
         self.assertNotEqual(videolink.stream, None, 'No media object in a video link')
         self.assertNotEqual(videolink.ref, None, 'No description page in a video link')
 
-    def testRuutuFiSearch(self):
-        menuobj = self.downloadMenuPage('wvt:///ruutufi/search.xsl', 'search')
-        self.assertTrue(len(menuobj) >= 2, 'Too few items in search menu')
+    # def testRuutuFiSearch(self):
+    #     menuobj = self.downloadMenuPage('wvt:///ruutufi/search.xsl', 'search')
+    #     self.assertTrue(len(menuobj) >= 2, 'Too few items in search menu')
 
-        self.assertTrue(isinstance(menuobj[0], menu.MenuItemTextField))
-        self.assertTrue(isinstance(menuobj[1], menu.MenuItemSubmitButton))
+    #     self.assertTrue(isinstance(menuobj[0], menu.MenuItemTextField))
+    #     self.assertTrue(isinstance(menuobj[1], menu.MenuItemSubmitButton))
 
-        # Query term
-        menuobj[0].value = 'nelonen'
+    #     # Query term
+    #     menuobj[0].value = 'nelonen'
 
-        resultref = menuobj[1].activate()
-        self.assertNotEqual(resultref, None)
-        self.downloadAndExtractLinks(resultref, 1, 'search result')
+    #     resultref = menuobj[1].activate()
+    #     self.assertNotEqual(resultref, None)
+    #     self.downloadAndExtractLinks(resultref, 1, 'search result')
 
     def testSubtv(self):
         # Category page

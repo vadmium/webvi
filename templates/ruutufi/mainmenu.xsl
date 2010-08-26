@@ -7,10 +7,12 @@
 <wvmenu>
   <title>Ruutu.fi</title>
 
+<!--
   <link>
     <label>Haku</label>
     <ref>wvt:///ruutufi/search.xsl</ref>
   </link>
+-->
 
   <link>
     <label>Listaa sarjat</label>
