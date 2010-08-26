@@ -124,7 +124,7 @@ class TestServiceModules(unittest.TestCase):
 
         self.assertTrue(isinstance(menuobj[0], menu.MenuItemTextField))
         self.assertTrue(isinstance(menuobj[1], menu.MenuItemList))
-        self.assertTrue(len(menuobj[1].items) >= 4)
+        self.assertTrue(len(menuobj[1].items) >= 2)
         self.assertTrue(isinstance(menuobj[2], menu.MenuItemList))
         self.assertTrue(len(menuobj[2].items) >= 4)
         self.assertTrue(isinstance(menuobj[3], menu.MenuItemSubmitButton))
