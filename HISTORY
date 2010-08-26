@@ -199,3 +199,4 @@ Video site modules:
 - ruutu.fi uses rtmpe for some videos
 - Possibility to run a script after downloading
 - Stream low bandwidth Youtube videos by default (see /etc/webvi.conf)
+- Fixed Google video module.

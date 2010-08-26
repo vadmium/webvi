@@ -14,23 +14,21 @@
 
   <itemlist name="so">
     <label>Sort by</label>
-    <item value="0">Relevance</item>
-    <item value="3">Rating</item>
-    <item value="4">Popularity</item>
-    <item value="1">Date</item>
+    <item value="">Relevance</item>
+    <item value=",sbd:1">Date</item>
   </itemlist>
 
   <itemlist name="dur">
     <label>Duration</label>
     <item value="">All durations</item>
-    <item value="1">Short (&lt; 4 min)</item>
-    <item value="2">Medium (4-20 min)</item>
-    <item value="3">Long (&gt; 20 min)</item>
+    <item value=",dur:s">Short (&lt; 4 min)</item>
+    <item value=",dur:m">Medium (4-20 min)</item>
+    <item value=",dur:l">Long (&gt; 20 min)</item>
   </itemlist>
 
   <button>
     <label>Search</label>
-    <submission>wvt:///google/searchresults.xsl?srcurl=<xsl:value-of select="str:encode-uri('http://video.google.com/videosearch?q={q}&amp;so={so}&amp;dur={dur}', true())"/></submission>
+    <submission>wvt:///google/searchresults.xsl?srcurl=<xsl:value-of select="str:encode-uri('http://www.google.com/search?q={q}&amp;tbs=vid:1{dur}{so}', true())"/>&amp;HTTP-header=User-Agent,Mozilla/5.0</submission>
   </button>
 </wvmenu>
 </xsl:template>

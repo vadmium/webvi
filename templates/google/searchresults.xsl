@@ -9,7 +9,7 @@
   <title>Search results</title>
 
   <xsl:choose>
-    <xsl:when test="not(//div[@class='rl-item'])">
+    <xsl:when test="not(//li[@class='g videobox s']/table/tr/td/h3/a)">
       <textarea>
         <label>
           <xsl:text>Your search did not return any results.</xsl:text>
@@ -18,64 +18,57 @@
     </xsl:when>
 
     <xsl:otherwise>
-      <xsl:for-each select="//div[@class='rl-item']">
+      <xsl:for-each select="//li[@class='g videobox s']/table/tr/td/h3/a">
         <xsl:choose>
-          <xsl:when test="starts-with(div/@srcurl, 'http://www.youtube.com/')">
+          <xsl:when test="starts-with(@href, 'http://www.youtube.com/')">
 	    <link>
-	      <label><xsl:value-of select="normalize-space(div/div/div[@class='rl-title']/a)" /></label>
-	      <stream>wvt:///youtube/video.xsl?srcurl=<xsl:value-of select="str:encode-uri(div/@srcurl, true())"/></stream>
-	      <ref>wvt:///youtube/description.xsl?srcurl=<xsl:value-of select="str:encode-uri(concat('http://gdata.youtube.com/feeds/api/videos/', substring-after(div/@srcurl, 'v='), '?v=2'), true())"/></ref>
+	      <label><xsl:value-of select="normalize-space(.)" /></label>
+	      <stream>wvt:///youtube/video.xsl?srcurl=<xsl:value-of select="str:encode-uri(@href, true())"/></stream>
+	      <ref>wvt:///youtube/description.xsl?srcurl=<xsl:value-of select="str:encode-uri(concat('http://gdata.youtube.com/feeds/api/videos/', substring-after(@href, 'v='), '?v=2'), true())"/></ref>
 	    </link>
           </xsl:when>
 
-          <xsl:when test="starts-with(div/@srcurl, 'http://video.google.com/')">
+          <xsl:when test="starts-with(@href, 'http://video.google.com/')">
 	    <link>
-	      <label><xsl:value-of select="normalize-space(div/div/div[@class='rl-title']/a)"/></label>
-	      <stream>wvt:///google/video.xsl?srcurl=<xsl:value-of select="str:encode-uri(div/@srcurl, true())"/></stream>
-	      <ref>wvt:///google/description.xsl?srcurl=<xsl:value-of select="str:encode-uri(div/@srcurl, true())"/></ref>
+	      <label><xsl:value-of select="normalize-space(.)"/></label>
+	      <stream>wvt:///google/video.xsl?srcurl=<xsl:value-of select="str:encode-uri(@href, true())"/></stream>
+	      <ref>wvt:///google/description.xsl?srcurl=<xsl:value-of select="str:encode-uri(@href, true())"/></ref>
 	    </link>
           </xsl:when>
 
-          <xsl:when test="starts-with(div/@srcurl, 'http://www.metacafe.com/')">
+          <xsl:when test="starts-with(@href, 'http://www.metacafe.com/')">
 	    <link>
-	      <label><xsl:value-of select="normalize-space(div/div/div[@class='rl-title']/a)"/></label>
-	      <stream>wvt:///metacafe/video.xsl?srcurl=<xsl:value-of select="str:encode-uri(div/@srcurl)"/></stream>
-	      <ref>wvt:///metacafe/description.xsl?srcurl=<xsl:value-of select="str:encode-uri(div/@srcurl)"/></ref>
+	      <label><xsl:value-of select="normalize-space(.)"/></label>
+	      <stream>wvt:///metacafe/video.xsl?srcurl=<xsl:value-of select="str:encode-uri(@href, true())"/></stream>
+	      <ref>wvt:///metacafe/description.xsl?srcurl=<xsl:value-of select="str:encode-uri(@href, true())"/></ref>
 	    </link>
           </xsl:when>
 
-          <xsl:when test="starts-with(div/@srcurl, 'http://vimeo.com/')">
+          <xsl:when test="starts-with(@href, 'http://vimeo.com/')">
 	    <link>
-	      <label><xsl:value-of select="normalize-space(div/div/div[@class='rl-title']/a)"/></label>
-	      <stream>wvt:///vimeo/video.xsl?srcurl=http://www.vimeo.com/moogaloop/load/clip:<xsl:value-of select="substring-after(div/@srcurl, 'http://vimeo.com/')"/></stream>
-	      <ref>wvt:///vimeo/description.xsl?srcurl=http://vimeo.com/api/v2/video/<xsl:value-of select="substring-after(div/@srcurl, 'http://vimeo.com/')"/>.xml</ref>
+	      <label><xsl:value-of select="normalize-space(.)"/></label>
+	      <stream>wvt:///vimeo/video.xsl?srcurl=http://www.vimeo.com/moogaloop/load/clip:<xsl:value-of select="substring-after(@href, 'http://vimeo.com/')"/></stream>
+	      <ref>wvt:///vimeo/description.xsl?srcurl=http://vimeo.com/api/v2/video/<xsl:value-of select="substring-after(@href, 'http://vimeo.com/')"/>.xml</ref>
 	    </link>
           </xsl:when>
 
-          <xsl:when test="starts-with(div/@srcurl, 'http://svtplay.se/')">
+          <xsl:when test="starts-with(@href, 'http://svtplay.se/')">
 	    <link>
-	      <label><xsl:value-of select="normalize-space(div/div/div[@class='rl-title']/a)"/></label>
-              <stream>wvt:///svtplay/video.xsl?srcurl=<xsl:value-of select="str:encode-uri(div/@srcurl, true())"/></stream>
-              <ref>wvt:///svtplay/description.xsl?srcurl=<xsl:value-of select="str:encode-uri(div/@srcurl, true())"/></ref>
+	      <label><xsl:value-of select="normalize-space(.)"/></label>
+              <stream>wvt:///svtplay/video.xsl?srcurl=<xsl:value-of select="str:encode-uri(@href, true())"/></stream>
+              <ref>wvt:///svtplay/description.xsl?srcurl=<xsl:value-of select="str:encode-uri(@href, true())"/></ref>
 	    </link>
           </xsl:when>
 
         </xsl:choose>
       </xsl:for-each>
 
-      <xsl:if test="//td[@class='prev']/a">
+      <xsl:for-each select="id('nav')//td[@class='b']/a">
         <link>
-          <label>Previous</label>
-          <ref>wvt:///google/searchresults.xsl?srcurl=<xsl:value-of select="str:encode-uri(//td[@class='prev']/a/@href, true())"/></ref>
+          <label><xsl:value-of select="span[2]/text()"/></label>
+          <ref>wvt:///google/searchresults.xsl?srcurl=<xsl:value-of select="str:encode-uri(@href, true())"/></ref>
         </link>
-      </xsl:if>
-
-      <xsl:if test="//td[@class='next']/a">
-        <link>
-          <label>Next</label>
-          <ref>wvt:///google/searchresults.xsl?srcurl=<xsl:value-of select="str:encode-uri(//td[@class='next']/a/@href, true())"/></ref>
-        </link>
-      </xsl:if>
+      </xsl:for-each>
     </xsl:otherwise>
   </xsl:choose>
 
