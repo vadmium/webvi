@@ -195,7 +195,7 @@ Video site modules:
 
 2010-08-26: Version 0.3.2
 
-- Possibility to run a script after downloading.
+- Plugin: Possibility to run a script after downloading.
 - New video service: MoonTV (contributed by Matti Lehtimäki).
 - ruutu.fi uses rtmpe for some videos.
 - Stream low bandwidth Youtube videos by default (configurable in
