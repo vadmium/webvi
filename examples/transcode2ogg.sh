@@ -3,7 +3,7 @@
 # An example post-processing script for VDR plugin webvideo.
 #
 # Copyright: Antti Ajanki <antti.ajanki@iki.fi>
-# License: GPL3, see the file COPYING for the full license
+# License: GPL3 or later, see the file COPYING for the full license
 #
 # This script transcodes a video file using Ogg Theora and Vorbis
 # codecs. The first parameter is the name of the video file.
