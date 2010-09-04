@@ -1,4 +1,5 @@
 PREFIX ?= /usr/local
+SYSLIBDIR = $(PREFIX)/lib
 
 LIBNAME=libwebvi.so
 LIBSONAME=$(LIBNAME).0
@@ -27,8 +28,8 @@ clean:
 	rm -f webvi/*.pyc webvi/*~
 
 install: $(LIBMINOR)
-	mkdir -p $(PREFIX)/lib
-	cp --remove-destination -d $(LIBNAME)* $(PREFIX)/lib
-	/sbin/ldconfig $(PREFIX)/lib
+	mkdir -p $(DESTDIR)$(SYSLIBDIR)
+	cp --remove-destination -d $(LIBNAME)* $(DESTDIR)$(SYSLIBDIR)
+	/sbin/ldconfig $${DESTDIR:+-N} $(DESTDIR)$(SYSLIBDIR)
 
 .PHONY: clean install

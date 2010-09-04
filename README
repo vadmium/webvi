@@ -2,7 +2,7 @@ Written by:                  Antti Ajanki <antti.ajanki@iki.fi>
 Project's homepage:          http://users.tkk.fi/~aajanki/vdr/webvideo
 
 Webvi is a tool for downloading and playing videos from popular video
-sharing webvites such as YouTube. There are two interfaces: a plugin
+sharing websites such as YouTube. There are two interfaces: a plugin
 for Video Disk Recorder (VDR), and a command line client. The two
 interfaces are described in README.vdrplugin and README.webvi.
 
@@ -22,7 +22,7 @@ Supported video sites:
 * YLE Areena [2]
 * YouTube
 
-[1] Only videos hosted by Google, Youtube, Vimeo and SVT
+[1] Only videos hosted by Google, YouTube, Vimeo and SVT
 
 [2] Requires rtmpdump-yle
     (http://users.tkk.fi/~aajanki/rtmpdump-yle/index.html). Streaming

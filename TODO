@@ -18,3 +18,7 @@ when using external downloader process (YLE Areena)
 Streaming does not work with external downloader process (YLE Areena)
 
 Fix support for mplayer plugin
+
+Ville Skytän patchit
+
+transcode: GPL3 or later

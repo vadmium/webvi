@@ -17,7 +17,7 @@ See the file COPYING for more information.
 Description:
 
 Webvideo is a VDR plugin for downloading videos from popular video
-sharing webvites such as YouTube. With the help of xineliboutput
+sharing websites such as YouTube. With the help of xineliboutput
 plugin the videos can be played directly in VDR without downloading
 them first. See README for the full list of supported sites.
 

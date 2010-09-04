@@ -26,7 +26,7 @@ all-noinstall: libwebvi vdr-plugin
 all: libwebvi vdr-plugin $(LIBDIR)/libvdr-webvideo.so.$(APIVERSION) webvi.conf
 
 vdr-plugin: libwebvi
-	$(MAKE) -C src/vdr-plugin LOCALEDIR=./locale LIBDIR=. VDRDIR=$(VDRDIR) CXXFLAGS="-fPIC -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses"
+	$(MAKE) -C src/vdr-plugin LOCALEDIR=./locale LIBDIR=. VDRDIR=$(VDRDIR) CXXFLAGS="-fPIC -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses $(CXXFLAGS)"
 
 libwebvi: build-python
 	$(MAKE) -C src/libwebvi all libwebvi.a
@@ -34,32 +34,30 @@ libwebvi: build-python
 build-python: webvi.conf
 	python setup.py build
 
-webvi.conf:
-	sed 's_templatepath = /usr/local/share/webvi/templates_templatepath = $(PREFIX)/share/webvi/templates_g' < examples/webvi.conf > webvi.conf
-
-webvi.plugin.conf:
-	cp -f examples/webvi.plugin.conf webvi.plugin.conf
+webvi.conf webvi.plugin.conf: %.conf: examples/%.conf
+	sed 's_templatepath = /usr/local/share/webvi/templates_templatepath = $(PREFIX)/share/webvi/templates_g' < $< > $@
 
 $(VDRPLUGINDIR)/libvdr-webvideo.so.$(APIVERSION): vdr-plugin
-	mkdir -p $(VDRPLUGINDIR)
-	cp -f src/vdr-plugin/libvdr-webvideo.so.$(APIVERSION) $(VDRPLUGINDIR)/libvdr-webvideo.so.$(APIVERSION)
+	mkdir -p $(DESTDIR)$(VDRPLUGINDIR)
+	cp -f src/vdr-plugin/libvdr-webvideo.so.$(APIVERSION) $(DESTDIR)$(VDRPLUGINDIR)/libvdr-webvideo.so.$(APIVERSION)
 
 install-vdr-plugin: vdr-plugin $(VDRPLUGINDIR)/libvdr-webvideo.so.$(APIVERSION)
-	mkdir -p $(VDRLOCALEDIR)
-	cp -rf src/vdr-plugin/locale/* $(VDRLOCALEDIR)
-	mkdir -p $(VDRPLUGINCONFDIR)/webvideo
-	cp -f src/vdr-plugin/mime.types $(VDRPLUGINCONFDIR)/webvideo
+	mkdir -p $(DESTDIR)$(VDRLOCALEDIR)
+	cp -rf src/vdr-plugin/locale/* $(DESTDIR)$(VDRLOCALEDIR)
+	mkdir -p $(DESTDIR)$(VDRPLUGINCONFDIR)/webvideo
+	cp -f src/vdr-plugin/mime.types $(DESTDIR)$(VDRPLUGINCONFDIR)/webvideo
 
 install-libwebvi: libwebvi
 	$(MAKE) -C src/libwebvi install
 
 install-python:
-	python setup.py install --prefix $(PREFIX)
+	python setup.py install --skip-build --prefix $(PREFIX) $${DESTDIR:+--root $(DESTDIR)}
 
 install-conf: webvi.conf webvi.plugin.conf
-	cp -f webvi.conf /etc/
-	mkdir -p $(VDRPLUGINCONFDIR)/webvideo
-	cp -f webvi.plugin.conf $(VDRPLUGINCONFDIR)/webvideo
+	mkdir -p $(DESTDIR)/etc
+	cp -f webvi.conf $(DESTDIR)/etc
+	mkdir -p $(DESTDIR)$(VDRPLUGINCONFDIR)/webvideo
+	cp -f webvi.plugin.conf $(DESTDIR)$(VDRPLUGINCONFDIR)/webvideo
 
 install-webvi: install-libwebvi install-python
 
