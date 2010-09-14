@@ -26,7 +26,7 @@ all-noinstall: libwebvi vdr-plugin
 all: libwebvi vdr-plugin $(LIBDIR)/libvdr-webvideo.so.$(APIVERSION) webvi.conf
 
 vdr-plugin: libwebvi
-	$(MAKE) -C src/vdr-plugin LOCALEDIR=./locale LIBDIR=. VDRDIR=$(VDRDIR) CXXFLAGS="-fPIC -Woverloaded-virtual -Wno-parentheses $(CXXFLAGS)"
+	$(MAKE) -C src/vdr-plugin LOCALEDIR=./locale LIBDIR=. VDRDIR=$(VDRDIR) CXXFLAGS="-fPIC -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses $(CXXFLAGS)"
 
 libwebvi: build-python
 	$(MAKE) -C src/libwebvi all libwebvi.a
