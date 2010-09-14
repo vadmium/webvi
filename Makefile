@@ -26,7 +26,7 @@ all-noinstall: libwebvi vdr-plugin
 all: libwebvi vdr-plugin $(LIBDIR)/libvdr-webvideo.so.$(APIVERSION) webvi.conf
 
 vdr-plugin: libwebvi
-	$(MAKE) -C src/vdr-plugin LOCALEDIR=./locale LIBDIR=. VDRDIR=$(VDRDIR) CXXFLAGS="-fPIC -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses $(CXXFLAGS)"
+	$(MAKE) -C src/vdr-plugin LOCALEDIR=./locale LIBDIR=. VDRDIR=$(VDRDIR) CXXFLAGS="-fPIC -Woverloaded-virtual -Wno-parentheses $(CXXFLAGS)"
 
 libwebvi: build-python
 	$(MAKE) -C src/libwebvi all libwebvi.a
@@ -37,11 +37,11 @@ build-python: webvi.conf
 webvi.conf webvi.plugin.conf: %.conf: examples/%.conf
 	sed 's_templatepath = /usr/local/share/webvi/templates_templatepath = $(PREFIX)/share/webvi/templates_g' < $< > $@
 
-$(VDRPLUGINDIR)/libvdr-webvideo.so.$(APIVERSION): vdr-plugin
+$(DESTDIR)$(VDRPLUGINDIR)/libvdr-webvideo.so.$(APIVERSION): vdr-plugin
 	mkdir -p $(DESTDIR)$(VDRPLUGINDIR)
 	cp -f src/vdr-plugin/libvdr-webvideo.so.$(APIVERSION) $(DESTDIR)$(VDRPLUGINDIR)/libvdr-webvideo.so.$(APIVERSION)
 
-install-vdr-plugin: vdr-plugin $(VDRPLUGINDIR)/libvdr-webvideo.so.$(APIVERSION)
+install-vdr-plugin: $(DESTDIR)$(VDRPLUGINDIR)/libvdr-webvideo.so.$(APIVERSION)
 	mkdir -p $(DESTDIR)$(VDRLOCALEDIR)
 	cp -rf src/vdr-plugin/locale/* $(DESTDIR)$(VDRLOCALEDIR)
 	mkdir -p $(DESTDIR)$(VDRPLUGINCONFDIR)/webvideo

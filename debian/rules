@@ -11,10 +11,8 @@ include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/makefile.mk
 include /usr/share/cdbs/1/class/python-distutils.mk
 
-DEB_COMPRESS_EXCLUDE := .py
-
 DEB_MAKE_BUILD_TARGET := all-noinstall VDRDIR=/usr/include/vdr
-DEB_MAKE_INSTALL_TARGET := install-vdr-plugin install-python VDRDIR=/usr/include/vdr PREFIX=$(CURDIR)/debian/tmp/usr VDRPLUGINDIR=$(CURDIR)/debian/tmp/usr/lib/vdr/plugins VDRPLUGINCONFDIR=$(CURDIR)/debian/tmp/var/lib/vdr/plugins VDRLOCALEDIR=$(CURDIR)/debian/tmp/usr/share/locale
+DEB_MAKE_INSTALL_TARGET := install-vdr-plugin install-python DESTDIR=$(CURDIR)/debian/tmp/ PREFIX=/usr VDRDIR=/usr/include/vdr VDRPLUGINDIR=/usr/lib/vdr/plugins VDRLOCALEDIR=/usr/share/locale VDRPLUGINCONFDIR=/var/lib/vdr/plugins
 DEB_MAKE_CHECK_TARGET =
 
 DEB_INSTALL_CHANGELOGS_ALL = HISTORY
