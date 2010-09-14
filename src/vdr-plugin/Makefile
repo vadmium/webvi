@@ -32,6 +32,7 @@ LIBS = `xml2-config --libs` -L../libwebvi -lwebvi
 
 ### Allow user defined options to overwrite defaults:
 
+-include $(VDRDIR)/Make.global
 -include $(VDRDIR)/Make.config
 
 ### The version number of VDR's plugin API (taken from VDR's "config.h"):

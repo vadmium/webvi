@@ -207,5 +207,6 @@ Video site modules:
 
 - correct template path in webvi.plugin.conf, use user CXXFLAGS,
   SYSLIBDIR and DESTDIR in Makefiles, fix typos (patches by Ville
-  Skyttä)
-- Command line arguments override config file
+  Skyttä).
+- Command line arguments override config file.
+- Support VDR 1.7 series (Make.global). Untested!
