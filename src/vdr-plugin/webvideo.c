@@ -135,14 +135,18 @@ bool cPluginWebvideo::Initialize(void)
 
   // default values if not given on the command line
   if ((const char *)destdir == NULL)
-    destdir = cString(VideoDirectory);
+    webvideoConfig->SetDownloadPath(cString(VideoDirectory));
   if ((const char *)conffile == NULL)
     conffile = AddDirectory(ConfigDirectory(Name()), "webvi.plugin.conf");
 
-  webvideoConfig->SetDownloadPath(destdir);
-  webvideoConfig->SetTemplatePath(templatedir);
-  webvideoConfig->SetPostProcessCmd(postprocesscmd);
   webvideoConfig->ReadConfigFile(conffile);
+
+  if ((const char *)destdir)
+    webvideoConfig->SetDownloadPath(destdir);
+  if ((const char *)templatedir)
+    webvideoConfig->SetTemplatePath(templatedir);
+  if ((const char *)postprocesscmd)
+    webvideoConfig->SetPostProcessCmd(postprocesscmd);
 
   cString mymimetypes = AddDirectory(ConfigDirectory(Name()), "mime.types");
   const char *mimefiles [] = {"/etc/mime.types", (const char *)mymimetypes, NULL};
