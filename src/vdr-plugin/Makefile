@@ -18,7 +18,7 @@ VERSION = $(shell grep 'const char \*VERSION *=' $(PLUGIN).c | awk '{ print $$5 
 ### The C++ compiler and options:
 
 CXX      ?= g++
-CXXFLAGS ?= -fPIC -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses
+CXXFLAGS ?= -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses
 
 ### The directory environment:
 
@@ -30,9 +30,12 @@ TMPDIR = /tmp
 
 LIBS = `xml2-config --libs` -L../libwebvi -lwebvi
 
-### Allow user defined options to overwrite defaults:
+### Make sure that necessary options are included:
 
 -include $(VDRDIR)/Make.global
+
+### Allow user defined options to overwrite defaults:
+
 -include $(VDRDIR)/Make.config
 
 ### The version number of VDR's plugin API (taken from VDR's "config.h"):

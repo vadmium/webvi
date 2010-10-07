@@ -209,4 +209,4 @@ Video site modules:
   SYSLIBDIR and DESTDIR in Makefiles, fix typos (patches by Ville
   Skyttä).
 - Command line arguments override config file.
-- Support VDR 1.7 series (Make.global). Untested!
+- Support VDR 1.7 series by including Make.global.
