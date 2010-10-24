@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-
-<service>
-  <title>Metacafe</title>
-  <ref>wvt:///metacafe/categories.xsl?srcurl=http%3A//www.metacafe.com/videos/</ref>
-  <description>Video sharing site specializing in short-form original content</description>
-</service>

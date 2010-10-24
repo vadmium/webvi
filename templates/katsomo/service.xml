@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<service>
-  <title>MTV3 Katsomo</title>
-  <ref>wvt:///katsomo/mainmenu.xsl?srcurl=http%3A//katsomo.fi/</ref>
-  <description>Net TV service of the Finnish broadcasting company MTV3</description>
-</service>
