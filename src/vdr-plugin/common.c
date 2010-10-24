@@ -39,6 +39,36 @@ char *extensionFromUrl(const char *url) {
   return NULL;
 }
 
+cString parseDomain(const char *url) {
+  const char *schemesep = strstr(url, "://");
+  if (!schemesep)
+    return "";
+
+  const char *domainstart = schemesep+3;
+  const char *domainend = strchr(domainstart, '/');
+
+  int len = domainend-domainstart;
+  char *domain = (char *)malloc((len+1)*sizeof(char));
+  strncpy(domain, domainstart, len);
+  domain[len] = '\0';
+
+  const char *user = strchr(domain, '@');
+  if (user) {
+    len -= user+1 - domain;
+    memmove(domain, user+1, len+1);
+  }
+
+  const char *port = strchr(domain, ':');
+  if (port) {
+    len = port - domain;
+    domain[len] = '\0';
+  }
+
+  strlower(domain);
+
+  return cString(domain, true);
+}
+
 char *validateFileName(const char *filename) {
   if (!filename)
     return NULL;
@@ -202,4 +232,16 @@ cString shellEscape(const char *s) {
   *dst = '\0';
 
   return cString(buffer, true);
+}
+
+char *strlower(char *s) {
+  if (!s) return NULL;
+
+  char *p = s;
+  while (*p) {
+    *p = tolower(*p);
+    p++;
+  }
+
+  return s;
 }

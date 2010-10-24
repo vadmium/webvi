@@ -24,6 +24,8 @@
 // Return the extension of the url or NULL, if the url has no
 // extension. The caller must free the returned string.
 char *extensionFromUrl(const char *url);
+// Return the domain part from url.
+cString parseDomain(const char *url);
 // Returns a "safe" version of filename. Currently just removes / from
 // the name. The caller must free the returned string.
 char *validateFileName(const char *filename);
@@ -40,5 +42,7 @@ char *URLdecode(const char *s);
 char *safeFilename(char *filename);
 // Escape s so that it can be passed as parameter to a shell command.
 cString shellEscape(const char *s);
+// Convert string s to lower case
+char *strlower(char *s);
 
 #endif // __WEBVIDEO_COMMON_H

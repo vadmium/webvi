@@ -120,11 +120,17 @@ bool cWebvideoConfig::ReadConfigFile(const char *inifile) {
   for (int i=0; i<iniparser_getnsec(conf); i++) {
     const char *section = iniparser_getsecname(conf, i);
 
-    if (strncmp(section, "site-", 5) == 0) {
-      const char *sitename = section+5;
-      const int maxsectionlen = 40;
-      char key[64];
+    if (strcmp(section, "webvi") != 0) {
+      const int maxsectionlen = 100;
+      char key[128];
       char *keyname;
+      const char *sitename;
+
+      cString domain = parseDomain(section);
+      if (domain == "")
+        sitename = section;
+      else
+        sitename = domain;
 
       strncpy(key, section, maxsectionlen);
       key[maxsectionlen] = '\0';

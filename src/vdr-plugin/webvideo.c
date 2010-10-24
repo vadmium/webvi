@@ -46,6 +46,7 @@ private:
   bool StartStreaming(const cString &streamurl);
   void ExecuteTimers(void);
   void HandleFinishedRequests(void);
+  cString CreateWvtRef(const char *url);
 
 public:
   cPluginWebvideo(void);
@@ -399,14 +400,54 @@ bool cPluginWebvideo::Service(const char *Id, void *Data)
 
 const char **cPluginWebvideo::SVDRPHelpPages(void)
 {
-  // Return help text for SVDRP commands this plugin implements
-  return NULL;
+  static const char *HelpPages[] = {
+    "PLAY <file>\n"
+    "    Stream a media file.",
+    "DWLD <file>\n"
+    "    Download a media file.",
+    NULL
+    };
+  return HelpPages;
 }
 
 cString cPluginWebvideo::SVDRPCommand(const char *Command, const char *Option, int &ReplyCode)
 {
-  // Process SVDRP commands this plugin implements
+  if(strcasecmp(Command, "PLAY") == 0 || strcasecmp(Command, "DWLD") == 0) {
+    if(*Option) {
+      debug("SVDRP(%s, %s)", Command, Option);
+      cString twvtref = CreateWvtRef(Option);
+      if (twvtref != "") {
+        cMenuRequest *req;
+        if (strcasecmp(Command, "PLAY") == 0)
+          req = new cStreamUrlRequest(0, twvtref);
+        else
+          req = new cFileDownloadRequest(0, twvtref, summaries.NewDownload());
+        cWebviThread::Instance().AddRequest(req);
+        ReplyCode = 250; // Ok
+        return cString("Downloading video file");
+      } else {
+        ReplyCode = 550; // Requested action not taken
+        return cString("Unable to parse URL");
+      }
+    } else {
+      ReplyCode = 550; // Requested action not taken
+      return cString("File name missing");
+    }
+  }
+
   return NULL;
+}
+
+cString cPluginWebvideo::CreateWvtRef(const char *url) {
+  cString domain = parseDomain(url);
+  if (domain == "")
+    return "";
+  
+  char *encoded = URLencode(url);
+  cString res = cString::sprintf("wvt:///%s/videopage.xsl?srcurl=%s",
+                                 (const char *)domain, encoded);
+  free(encoded);
+  return res;
 }
 
 void cPluginWebvideo::UpdateOSDFromHistory(const char *statusmsg) {
