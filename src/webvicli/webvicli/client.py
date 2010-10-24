@@ -26,11 +26,13 @@ import os.path
 import subprocess
 import time
 import re
+import urllib
 import libxml2
 import webvi.api
 import webvi.utils
 from optparse import OptionParser
 from ConfigParser import RawConfigParser
+from urlparse import urlparse
 from webvi.constants import WebviRequestType, WebviErr, WebviOpt, WebviInfo, WebviSelectBitmask, WebviConfig
 from . import menu
 
@@ -387,7 +389,6 @@ class WVClient:
     def get_quality_params(self, videosite, streamtype):
         params = []
         lim = self.quality_limits[streamtype].get(videosite, {})
-
         if lim.has_key('min'):
             params.append('minquality=' + lim['min'])
         if lim.has_key('max'):
@@ -558,6 +559,13 @@ class WVShell(cmd.Cmd):
             self.stdout.write('Invalid selection: %s\n' % arg)
             return None
         return menupage[v]
+
+    def url_to_wvtref(self, url):
+        domain = urlparse(url).netloc.lower()
+        if domain == '':
+            return None
+
+        return 'wvt:///%s/videopage.xsl?srcurl=%s' % (domain, urllib.quote(url, ''))
         
     def do_select(self, arg):
         """select x
@@ -580,28 +588,45 @@ Select the link whose index is x.
 
     def do_download(self, arg):
         """download x
-Download media stream whose index is x to a file. Downloadable items
-are the ones without brackets.
+Download a stream to a file. x can be an integer referring to a
+downloadable item (item without brackets) in the current menu or an
+URL of a video page.
         """
-        menuitem = self._get_numbered_item(arg)
-        if menuitem is None:
-            return False
-        elif hasattr(menuitem, 'stream') and menuitem.stream is not None:
-            self.client.download(menuitem.stream)
+        stream = None
+        try:
+            menuitem = self._get_numbered_item(int(arg))
+            if menuitem is not None:
+                stream = menuitem.stream
+        except (ValueError, AttributeError):
+            pass
+
+        if stream is None and arg.find('://') != -1:
+            stream = self.url_to_wvtref(arg)
+
+        if stream is not None:
+            self.client.download(stream)
         else:
             self.stdout.write('Not a stream\n')
         return False
 
     def do_stream(self, arg):
         """stream x
-Play the media file whose index is x. Streams are the ones
-without brackets.
+Play a stream. x can be an integer referring to a downloadable item
+(item without brackets) in the current menu or an URL of a video page.
         """
-        menuitem = self._get_numbered_item(arg)
-        if menuitem is None:
-            return False
-        elif hasattr(menuitem, 'stream') and menuitem.stream is not None:
-            self.client.play_stream(menuitem.stream)
+        stream = None
+        try:
+            menuitem = self._get_numbered_item(int(arg))
+            if menuitem is not None:
+                stream = menuitem.stream
+        except (ValueError, AttributeError):
+            pass
+
+        if stream is None and arg.find('://') != -1:
+            stream = self.url_to_wvtref(arg)
+
+        if stream is not None:
+            self.client.play_stream(stream)
         else:
             self.stdout.write('Not a stream\n')
         return False
@@ -655,8 +680,10 @@ def load_config(options):
             for opt, val in cfgprs.items('webvi'):
                 options[opt] = val
 
-        elif sec.startswith('site-'):
-            sitename = sec[5:]
+        else:
+            sitename = urlparse(sec).netloc
+            if sitename == '':
+                sitename = sec
 
             if not options.has_key('download-limits'):
                 options['download-limits'] = {}
