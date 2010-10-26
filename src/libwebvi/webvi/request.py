@@ -327,6 +327,9 @@ class Request:
                 continue
 
             filename = os.path.join(template_path, f, 'service.xml')
+            if not os.path.isfile(filename):
+                continue
+
             try:
                 doc = libxml2.parseFile(filename)
             except libxml2.parserError:
