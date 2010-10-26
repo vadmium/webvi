@@ -5,7 +5,7 @@ VDRDIR ?= /usr/src/vdr-1.6.0
 # VDR's library directory
 VDRPLUGINDIR ?= $(VDRDIR)/PLUGINS/lib
 # VDR's plugin conf directory
-VDRPLUGINCONFDIR ?= /video
+VDRPLUGINCONFDIR ?= /video/plugins
 # VDR's locale directory
 VDRLOCALEDIR ?= $(VDRDIR)/locale
 
