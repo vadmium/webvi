@@ -11,7 +11,7 @@
 <xsl:template match="atom:entry">
   <link>
     <label><xsl:value-of select="atom:title"/></label>
-    <stream>wvt:///www.youtube.com/video.xsl?srcurl=http://www.youtube.com/get_video_info?video_id=<xsl:value-of select="media:group/yt:videoid"/></stream>
+    <stream>wvt:///www.youtube.com/videopage.xsl?srcurl=http://www.youtube.com/watch?v=<xsl:value-of select="media:group/yt:videoid"/></stream>
     <ref>wvt:///www.youtube.com/description.xsl?srcurl=<xsl:value-of select="str:encode-uri(atom:link[@rel='self']/@href, true())"/></ref>
   </link>
 </xsl:template>

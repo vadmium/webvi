@@ -8,7 +8,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     <label><xsl:value-of select="title" /></label>
     <xsl:choose>
       <xsl:when test="starts-with(id, 'yt-')">
-        <stream>wvt:///www.youtube.com/video.xsl?srcurl=http://www.youtube.com/get_video_info?video_id=<xsl:value-of select="substring(id, 4)"/></stream>
+        <stream>wvt:///www.youtube.com/videopage.xsl?srcurl=http://www.youtube.com/watch?v=<xsl:value-of select="substring(id, 4)"/></stream>
       </xsl:when>
       <xsl:otherwise>
         <stream>wvt:///www.metacafe.com/videopage.xsl?srcurl=<xsl:value-of select="link"/></stream>
