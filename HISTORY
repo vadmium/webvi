@@ -210,3 +210,6 @@ Video site modules:
   Skyttä).
 - Command line arguments override config file.
 - Support VDR 1.7 series by including Make.global.
+- SVDRP commands for playing and downloading videos (based on a patch
+  by Matti Lehtimäki).
+- Some Youtube links were broken.
