@@ -62,16 +62,17 @@ Following commands are recognized:
 
 help       Show help
 select x   Select a link whose index is x
-download x Download a media stream whose index is x
-stream x   Play a media stream whose index is x
+download x Download a media stream. x is menu index or video page URL.
+stream x   Play a media stream. x is menu index or video page URL.
 back       Go backward in history
 forward    Go forward in history
 display    Redisplay the current menu
 menu       Go back to the main menu
 quit       Quit the program
 
-x is an index of a link in the current menu. Entering an index number
-x without any command is a shorthand for "select x".
+x is an index of menu item or an address of a video page (download and
+stream commands). A number x without any command is a shorthand for
+"select x".
 
 Config file
 -----------
