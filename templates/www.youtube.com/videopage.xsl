@@ -75,7 +75,8 @@
   </mediaurl>
 </xsl:template>
 
-<xsl:template match="/">
+<!-- This is also called by youtu.be/videopage.xsl -->
+<xsl:template name="main">
   <xsl:variable name="videoinfo">
     <xsl:value-of select="substring-before(substring-after(//script[contains(., 'flashvars=\&quot;')], 'flashvars=\&quot;'), '\&quot;')"/>
   </xsl:variable>
@@ -84,6 +85,10 @@
     <xsl:with-param name="videoinfo" select="$videoinfo"/>
     <xsl:with-param name="title" select="/html/head/meta/@content"/>
   </xsl:call-template>
+</xsl:template>
+
+<xsl:template match="/">
+  <xsl:call-template name="main"/>
 </xsl:template>
 
 </xsl:stylesheet>
