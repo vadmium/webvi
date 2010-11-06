@@ -127,7 +127,7 @@ bool cWebvideoConfig::ReadConfigFile(const char *inifile) {
       const char *sitename;
 
       cString domain = parseDomain(section);
-      if (domain == "")
+      if (strlen(domain) == 0)
         sitename = section;
       else
         sitename = domain;
