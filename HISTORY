@@ -213,3 +213,4 @@ Video site modules:
 - SVDRP commands for playing and downloading videos (based on a patch
   by Matti Lehtimäki).
 - Some Youtube links were broken.
+- Fixed metacafe video module.
