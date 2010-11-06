@@ -437,6 +437,10 @@ class WVClient:
             print 'Did not find URL'
             return False
 
+        if streamurl.startswith('wvt://'):
+            print 'Streaming not supported, try downloading'
+            return False
+
         # Found url, now find a working media player
         for player in self.streamplayers:
             if '%s' not in player:

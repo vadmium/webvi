@@ -254,6 +254,8 @@ void cPluginWebvideo::HandleFinishedRequests(void)
         streamurl = req->GetResponse();
         if (streamurl[0] == '\0')
           Skins.Message(mtError, tr("Streaming failed: no URL"));
+        else if (strncmp(streamurl, "wvt://", 6) == 0)
+          Skins.Message(mtError, tr("Streaming not supported, try downloading"));
         else if (!StartStreaming(streamurl))
           Skins.Message(mtError, tr("Failed to launch media player"));
 	break;
