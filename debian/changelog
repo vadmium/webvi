@@ -1,3 +1,9 @@
+vdr-plugin-webvideo (0.3.3-1) unstable; urgency=low
+
+  * New version
+
+ -- Antti Ajanki <antti.ajanki@iki.fi>  Sat, 06 Nov 2010 10:40:54 +0200
+
 vdr-plugin-webvideo (0.3.2-1) unstable; urgency=low
 
   * Remove conffiles that have been obsolete since 0.2.0-1

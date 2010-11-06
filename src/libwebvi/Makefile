@@ -5,7 +5,7 @@ LIBNAME=libwebvi.so
 LIBSONAME=$(LIBNAME).0
 LIBMINOR=$(LIBSONAME).4
 
-VERSION:=$(shell cat ../version)
+VERSION:=$(shell grep VERSION webvi/version.py | cut -d \' -f 2)
 PYLIB:=$(shell python pythonlibname.py)
 DEFINES:=-DPYTHONSHAREDLIB=\"$(PYLIB)\" -DLIBWEBVI_VERSION=\"$(VERSION)\"
 # append -DDEBUG to DEFINES to get debug output

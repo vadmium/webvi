@@ -9,7 +9,7 @@ VDRPLUGINCONFDIR ?= /video/plugins
 # VDR's locale directory
 VDRLOCALEDIR ?= $(VDRDIR)/locale
 
-VERSION := $(shell cat src/version)
+VERSION := $(shell grep VERSION src/libwebvi/webvi/version.py | cut -d \' -f 2)
 
 TMPDIR = /tmp
 ARCHIVE = webvideo-$(VERSION)
