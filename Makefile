@@ -50,7 +50,7 @@ install-vdr-plugin: $(DESTDIR)$(VDRPLUGINDIR)/libvdr-webvideo.so.$(APIVERSION)
 install-libwebvi: libwebvi
 	$(MAKE) -C src/libwebvi install
 
-install-python:
+install-python: uninstall-deprecated-templates
 	python setup.py install --skip-build --prefix $(PREFIX) $${DESTDIR:+--root $(DESTDIR)}
 
 install-conf: webvi.conf webvi.plugin.conf
@@ -62,6 +62,19 @@ install-conf: webvi.conf webvi.plugin.conf
 install-webvi: install-libwebvi install-python
 
 install: install-vdr-plugin install-webvi install-conf
+
+# Template directories were renamed in 0.3.3. Remove old templates.
+uninstall-deprecated-templates:
+	rm -rf $(DESTDIR)$(PREFIX)/share/webvi/templates/youtube
+	rm -rf $(DESTDIR)$(PREFIX)/share/webvi/templates/svtplay
+	rm -rf $(DESTDIR)$(PREFIX)/share/webvi/templates/moontv
+	rm -rf $(DESTDIR)$(PREFIX)/share/webvi/templates/metacafe
+	rm -rf $(DESTDIR)$(PREFIX)/share/webvi/templates/vimeo
+	rm -rf $(DESTDIR)$(PREFIX)/share/webvi/templates/katsomo
+	rm -rf $(DESTDIR)$(PREFIX)/share/webvi/templates/subtv
+	rm -rf $(DESTDIR)$(PREFIX)/share/webvi/templates/ruutufi
+	rm -rf $(DESTDIR)$(PREFIX)/share/webvi/templates/google
+	rm -rf $(DESTDIR)$(PREFIX)/share/webvi/templates/yleareena
 
 dist: clean
 	@-rm -rf $(TMPDIR)/$(ARCHIVE)

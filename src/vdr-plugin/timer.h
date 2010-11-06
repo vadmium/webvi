@@ -77,6 +77,7 @@ private:
   cStringList refHistory;
   bool modified;
   bool disableSaving;
+  bool convertTemplatePaths;
 
   cWebviTimerManager();
   ~cWebviTimerManager() {};
@@ -85,14 +86,17 @@ private:
 
   void LoadTimers(FILE *f);
   void LoadHistory(FILE *f);
-  void SaveTimers(FILE *f);
+  void SaveTimers(FILE *f, const char *version);
   void SaveHistory(FILE *f);
  
+  char *UpgradedTemplatePath(char *ref);
+  void ConvertTimerHistoryTemplates();
+
 public:
   static cWebviTimerManager &Instance();
 
   bool Load(const char *path);
-  bool Save(const char *path);
+  bool Save(const char *path, const char *version);
 
   cWebviTimer *Create(const char *title, const char *reference,
                       bool getExisting=true);

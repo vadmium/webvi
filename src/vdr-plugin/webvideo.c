@@ -179,7 +179,7 @@ void cPluginWebvideo::Stop(void)
   cWebviThread::Instance().Stop();
   delete MimeTypes;
 
-  cWebviTimerManager::Instance().Save(ConfigDirectory(Name()));
+  cWebviTimerManager::Instance().Save(ConfigDirectory(Name()), Version());
 
   xmlCleanupParser();
 }
@@ -188,7 +188,7 @@ void cPluginWebvideo::Housekeeping(void)
 {
   // Perform any cleanup or other regular tasks.
 
-  cWebviTimerManager::Instance().Save(ConfigDirectory(Name()));
+  cWebviTimerManager::Instance().Save(ConfigDirectory(Name()), Version());
 }
 
 void cPluginWebvideo::MainThreadHook(void)

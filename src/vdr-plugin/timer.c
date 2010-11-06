@@ -200,7 +200,7 @@ void cWebviTimer::RequestFinished(const char *ref, const char *errmsg) {
 // --- cWebviTimerManager ----------------------------------------
 
 cWebviTimerManager::cWebviTimerManager()
-  : nextID(1), modified(false), disableSaving(false)
+: nextID(1), modified(false), disableSaving(false), convertTemplatePaths(false)
 {
 }
 
@@ -222,11 +222,14 @@ void cWebviTimerManager::LoadTimers(FILE *f) {
   int n, i;
 
   ver = rl.Read(f);
-  if (strcmp(ver, "# WVTIMER1") != 0) {
+  if (strcmp(ver, "# WVTIMER1") != 0 &&
+      strncmp(ver, "# WVTIMER1/", 11) != 0) {
     error("Can't load timers. Unknown format: %s", ver);
     disableSaving = true;
     return;
   }
+
+  convertTemplatePaths = (strcmp(ver, "# WVTIMER1") == 0);
 
   i = 1;
   while (true) {
@@ -239,6 +242,14 @@ void cWebviTimerManager::LoadTimers(FILE *f) {
       }
 
       break;
+    }
+
+    if (convertTemplatePaths) {
+      char *newref = UpgradedTemplatePath(ref);
+      if (newref) {
+        free(ref);
+        ref = newref;
+      }
     }
 
     title = rl.Read(f);
@@ -266,11 +277,11 @@ void cWebviTimerManager::LoadHistory(FILE *f) {
   debug("loaded history: len = %d", refHistory.Size());
 }
 
-void cWebviTimerManager::SaveTimers(FILE *f) {
+void cWebviTimerManager::SaveTimers(FILE *f, const char *version) {
   // Format: space separated field in this order:
   // lastUpdate interval lastSucceeded reference title
 
-  fprintf(f, "# WVTIMER1\n");
+  fprintf(f, "# WVTIMER1/%s\n", version);
 
   cWebviTimer *t = timers.First();
   while (t) {
@@ -303,6 +314,48 @@ void cWebviTimerManager::SaveHistory(FILE *f) {
   }
 }
 
+char *cWebviTimerManager::UpgradedTemplatePath(char *ref) {
+  // template names changed in 0.3.3
+  const char *templateNameMap[10][2] = \
+    {{"wvt:///youtube/", "wvt:///www.youtube.com/"},
+     {"wvt:///svtplay/", "wvt:///svtplay.se/"}, 
+     {"wvt:///moontv/", "wvt:///moontv.fi/"},
+     {"wvt:///metacafe/", "wvt:///www.metacafe.com/"},
+     {"wvt:///vimeo/", "wvt:///www.vimeo.com/"},
+     {"wvt:///katsomo/", "wvt:///www.katsomo.fi/"},
+     {"wvt:///subtv/", "wvt:///www.sub.fi/"},
+     {"wvt:///ruutufi/", "wvt:///www.ruutu.fi/"},
+     {"wvt:///google/", "wvt:///video.google.com/"},
+     {"wvt:///yleareena/", "wvt:///areena.yle.fi/"}};
+
+  for (int i=0; i<10; i++) {
+    int oldlen = strlen(templateNameMap[i][0]);
+    if (strncmp(ref, templateNameMap[i][0], oldlen) == 0) {
+      int newlen = strlen(templateNameMap[i][1]) + strlen(ref);
+      char *newref = (char *)malloc((newlen+1)*sizeof(char));
+      strcpy(newref, templateNameMap[i][1]);
+      strcat(newref, ref+oldlen);
+      return newref;
+    }
+  }
+
+  return NULL;
+}
+
+void cWebviTimerManager::ConvertTimerHistoryTemplates() {
+  for (int i=0; i<refHistory.Size(); i++) {
+    char *oldref = refHistory[i];
+    char *newref = UpgradedTemplatePath(oldref);
+    if (!newref)
+      continue;
+
+    refHistory[i] = newref;
+    free(oldref);
+  }
+
+  modified = true;
+}
+
 bool cWebviTimerManager::Load(const char *path) {
   FILE *f;
   bool ok = true;
@@ -331,10 +384,13 @@ bool cWebviTimerManager::Load(const char *path) {
     ok = false;
   }
   
+  if (convertTemplatePaths)
+    ConvertTimerHistoryTemplates();
+
   return ok;
 }
 
-bool cWebviTimerManager::Save(const char *path) {
+bool cWebviTimerManager::Save(const char *path, const char *version) {
   FILE *f;
   bool ok = true;
 
@@ -349,7 +405,7 @@ bool cWebviTimerManager::Save(const char *path) {
   f = fopen(timersname, "w");
   if (f) {
     debug("saving webvi timers to %s", (const char *)timersname);
-    SaveTimers(f);
+    SaveTimers(f, version);
     fclose(f);
   } else {
     LOG_ERROR_STR("Can't save webvi timers");
