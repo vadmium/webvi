@@ -212,5 +212,6 @@ Video site modules:
 - Support VDR 1.7 series by including Make.global.
 - SVDRP commands for playing and downloading videos (based on a patch
   by Matti Lehtimäki).
+- Bookmarklet for sending a video from web browser to VDR.
 - Some Youtube links were broken.
 - Fixed metacafe video module.
