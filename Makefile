@@ -15,7 +15,7 @@ TMPDIR = /tmp
 ARCHIVE = webvideo-$(VERSION)
 PACKAGE = vdr-$(ARCHIVE)
 
-APIVERSION := $(shell sed -ne '/define APIVERSION/s/^.*"\(.*\)".*$$/\1/p' $(VDRDIR)/config.h)
+APIVERSION := $(shell sed -ne '/define APIVERSION/s/^.*"\(.*\)".*$$/\1/p' $(VDRDIR)/config.h 2> /dev/null)
 LIBDIR = $(VDRPLUGINDIR)
 
 # Default target compiles everything but does not install anything.
@@ -38,8 +38,13 @@ webvi.conf webvi.plugin.conf: %.conf: examples/%.conf
 	sed 's_templatepath = /usr/local/share/webvi/templates_templatepath = $(PREFIX)/share/webvi/templates_g' < $< > $@
 
 $(DESTDIR)$(VDRPLUGINDIR)/libvdr-webvideo.so.$(APIVERSION): vdr-plugin
+ifeq ($(APIVERSION),)
+	@echo "No APIVERSION in $(VDRDIR)/config.h"
+	@exit 1
+else
 	mkdir -p $(DESTDIR)$(VDRPLUGINDIR)
 	cp -f src/vdr-plugin/libvdr-webvideo.so.$(APIVERSION) $(DESTDIR)$(VDRPLUGINDIR)/libvdr-webvideo.so.$(APIVERSION)
+endif
 
 install-vdr-plugin: $(DESTDIR)$(VDRPLUGINDIR)/libvdr-webvideo.so.$(APIVERSION)
 	mkdir -p $(DESTDIR)$(VDRLOCALEDIR)
