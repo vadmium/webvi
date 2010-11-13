@@ -194,3 +194,42 @@ the path) of the downloaded file.
 
 An example script for transcoding the downloaded files to Ogg format
 is included in the source distribution in examples/transcode2ogg.sh.
+
+SVDRP interface
+---------------
+
+The plugin provides the following SVDRP commands:
+
+PLAY <url>
+    Stream a media file embedded on web page at <url>.
+DWLD <url>
+    Download a media file embedded on web page at <url>.
+
+Note: <url> should be the the address of the web page that contains
+the video, not the address of the video file itself. If you know the
+direct address to the video file, use xineliboutput SVDRP commands
+instead. See README for the list of supported sites.
+
+"Watch on VDR" bookmarklet
+--------------------------
+
+It is possible to send the video you are watching on your web browser
+to VDR and view it on your TV.
+
+1. Create a new bookmark on your web browser and paste the content of
+examples/watchonvdr_bookmarklet.js as the address of the new bookmark.
+If your VDR is running on a different machine than your browser, put
+VDR's address into vdrserver variable near the beginning of the
+bookmarklet.
+
+2. Set up the firewall of the VDR machine to allow incoming
+connections on port 43280 only from the machine where you are running
+your web browser. WARNING: Unrestricted access to port 43280 means
+that anyone in the Internet can instruct your VDR to play videos.
+
+3. Run examples/bookmarklet_proxy.py on VDR machine. If the SVDRP port
+differs from 2001 (the default changed to 6419 in VDR 1.7.15) use -s
+option.
+
+4. When viewing a video on one of the supported sites click "watch on
+VDR" bookmarklet. The video starts playing on VDR.

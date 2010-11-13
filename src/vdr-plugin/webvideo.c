@@ -403,10 +403,10 @@ bool cPluginWebvideo::Service(const char *Id, void *Data)
 const char **cPluginWebvideo::SVDRPHelpPages(void)
 {
   static const char *HelpPages[] = {
-    "PLAY <file>\n"
-    "    Stream a media file.",
-    "DWLD <file>\n"
-    "    Download a media file.",
+    "PLAY <url>\n"
+    "    Stream a media file embedded on web page at <url>.",
+    "DWLD <url>\n"
+    "    Download a media file embedded on web page at <url>.",
     NULL
     };
   return HelpPages;
