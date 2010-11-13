@@ -14,9 +14,9 @@
 import urllib
 import socket
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
+from optparse import OptionParser
 
-SVDRP_ADDRESS = ('', 2001)
-LISTEN_ADDRESS = ('', 50080)
+SVDRP_ADDRESS = ('', 2001)  # default port is 6419 starting from VDR 1.7.15
 
 class SVDRPRequestHandler(BaseHTTPRequestHandler):
     def send(self, cmd):
@@ -58,7 +58,19 @@ class SVDRPRequestHandler(BaseHTTPRequestHandler):
             self.end_headers()
     
 def main():
-    httpd = HTTPServer(LISTEN_ADDRESS, SVDRPRequestHandler)
+    parser = OptionParser()
+    parser.add_option('-s', '--svdrpport', dest='svdrpport',
+                      type='int', default=2001, help='set SVDRP port')
+    parser.add_option('-d', '--svdrpaddress', dest='svdrpaddress',
+                      default='', help='set SVDRP address')
+    parser.add_option('-l', '--listen', dest='listenport',
+                      type='int', default=43280, help='listen to connection on this port')
+    (options, args) = parser.parse_args()
+
+    global SVDRP_ADDRESS
+    SVDRP_ADDRESS = (options.svdrpaddress, options.svdrpport)
+
+    httpd = HTTPServer(('', options.listenport), SVDRPRequestHandler)
     httpd.serve_forever()
 
 if __name__ == '__main__':
