@@ -29,6 +29,8 @@ through links on the video sites.
 import unittest
 import sys
 import re
+import urllib
+from urlparse import urlparse
 
 sys.path.append('../webvicli')
 sys.path.append('../libwebvi')
@@ -74,6 +76,37 @@ class TestServiceModules(unittest.TestCase):
         self.assertNotEqual(m, None, 'no <ref> in service.xml')
         return m.group(1)
 
+    def urlToWvtref(self, url):
+        domain = urlparse(url).netloc.lower()
+        if domain == '':
+            return None
+
+        return 'wvt:///%s/videopage.xsl?srcurl=%s' % (domain, urllib.quote(url, ''))
+
+    def extractQueryParams(self, ref):
+        res = {}
+        params = {}
+        splitref = ref.split('?', 1)
+        if len(splitref) == 1:
+            return (res, params)
+
+        for param in splitref[1].split('&'):
+            keyval = param.split('=', 1)
+            key = keyval[0].lower()
+            if len(keyval) == 2:
+                val = keyval[1]
+
+            if key == 'param':
+                psplit = val.split(',', 1)
+                pname = psplit[0].lower()
+                if len(psplit) == 2:
+                    pvalue = psplit[1]
+                
+                params[pname] = pvalue
+
+            res[key] = urllib.unquote(val)
+        return (res, params)
+
     # ========== Tests for supported websites ==========
 
     def testMainMenu(self):
@@ -81,7 +114,7 @@ class TestServiceModules(unittest.TestCase):
 
     def testYoutube(self):
         # Category page
-        ref = self.getServiceReference('../../templates/youtube')
+        ref = self.getServiceReference('../../templates/www.youtube.com')
         links = self.downloadAndExtractLinks(ref, 3, 'category')
 
         # Navigation page
@@ -94,9 +127,9 @@ class TestServiceModules(unittest.TestCase):
         self.assertNotEqual(videolink.stream, None, 'No media object in a video link')
         self.assertNotEqual(videolink.ref, None, 'No description page in a video link')
         self.checkMediaUrl(videolink.stream)
-        
+
     def testYoutubeSearch(self):
-        menuobj = self.downloadMenuPage('wvt:///youtube/search.xsl', 'search')
+        menuobj = self.downloadMenuPage('wvt:///www.youtube.com/search.xsl', 'search')
         self.assertTrue(len(menuobj) >= 4, 'Too few items in search menu')
 
         self.assertTrue(isinstance(menuobj[0], menu.MenuItemTextField))
@@ -118,7 +151,7 @@ class TestServiceModules(unittest.TestCase):
         self.downloadAndExtractLinks(resultref, 1, 'search result')
 
     def testGoogleSearch(self):
-        ref = self.getServiceReference('../../templates/google')
+        ref = self.getServiceReference('../../templates/video.google.com')
         menuobj = self.downloadMenuPage(ref, 'search')
         self.assertTrue(len(menuobj) == 4, 'Unexpected number of items in Google search menu')
 
@@ -142,7 +175,7 @@ class TestServiceModules(unittest.TestCase):
 
     def testSVTPlay(self):
         # Category page
-        ref = self.getServiceReference('../../templates/svtplay')
+        ref = self.getServiceReference('../../templates/svtplay.se')
         links = self.downloadAndExtractLinks(ref, 3, 'category')
 
         # Navigation page
@@ -161,7 +194,7 @@ class TestServiceModules(unittest.TestCase):
 
     def testMetacafe(self):
         # Category page
-        ref = self.getServiceReference('../../templates/metacafe')
+        ref = self.getServiceReference('../../templates/www.metacafe.com')
         links = self.downloadAndExtractLinks(ref, 3, 'category')
 
         # The first is "Search", the second is "Channels" and the
@@ -182,7 +215,7 @@ class TestServiceModules(unittest.TestCase):
         links = self.downloadAndExtractLinks(channelsref, 3, 'channel list')
 
     def testMetacafeSearch(self):
-        menuobj = self.downloadMenuPage('wvt:///metacafe/search.xsl', 'search')
+        menuobj = self.downloadMenuPage('wvt:///www.metacafe.com/search.xsl', 'search')
         self.assertTrue(len(menuobj) >= 4, 'Too few items in search menu')
 
         self.assertTrue(isinstance(menuobj[0], menu.MenuItemTextField))
@@ -197,7 +230,7 @@ class TestServiceModules(unittest.TestCase):
         # Sort by: most discussed
         menuobj[1].current = 2
         # Published: Anytime
-        menuobj[2].current = 2
+        menuobj[2].current = 0
 
         resultref = menuobj[3].activate()
         self.assertNotEqual(resultref, None)
@@ -205,7 +238,7 @@ class TestServiceModules(unittest.TestCase):
 
     def testVimeo(self):
         # Category page
-        ref = self.getServiceReference('../../templates/vimeo')
+        ref = self.getServiceReference('../../templates/vimeo.com')
         links = self.downloadAndExtractLinks(ref, 3, 'Vimeo main page')
 
         # The first is "Search", the second is "Channels" and the
@@ -225,6 +258,12 @@ class TestServiceModules(unittest.TestCase):
         self.assertNotEqual(videolink.ref, None, 'No description page in a video link')
         self.checkMediaUrl(videolink.stream)
 
+        queries, params = self.extractQueryParams(videolink.stream)
+        self.assertTrue('srcurl' in queries, 'Required parameter missing in video link')
+        videopageurl = 'http://vimeo.com/' + queries['srcurl'].split(':')[-1]
+        videopageref = self.urlToWvtref(videopageurl)
+        self.checkMediaUrl(videopageref)
+
         # User groups
         links = self.downloadAndExtractLinks(groupsref, 2, 'channel list')
 
@@ -232,7 +271,7 @@ class TestServiceModules(unittest.TestCase):
         links = self.downloadAndExtractLinks(links[0].ref, 2, 'groups navigation')
 
     def testVimeoSearch(self):
-        menuobj = self.downloadMenuPage('wvt:///vimeo/search.xsl?srcurl=http://www.vimeo.com/', 'search')
+        menuobj = self.downloadMenuPage('wvt:///vimeo.com/search.xsl?srcurl=http://www.vimeo.com/', 'search')
         self.assertTrue(len(menuobj) >= 3, 'Too few items in search menu')
 
         self.assertTrue(isinstance(menuobj[0], menu.MenuItemTextField))
@@ -251,7 +290,7 @@ class TestServiceModules(unittest.TestCase):
 
     def testYLEAreena(self):
         # Category page
-        ref = self.getServiceReference('../../templates/yleareena')
+        ref = self.getServiceReference('../../templates/areena.yle.fi')
         links = self.downloadAndExtractLinks(ref, 3, 'category')
 
         # The first is "Search", the second is "live", the third is
@@ -267,11 +306,18 @@ class TestServiceModules(unittest.TestCase):
         self.assertNotEqual(videolink.stream, None, 'No media object in a video link')
         self.assertNotEqual(videolink.ref, None, 'No description page in a video link')
 
+        # Direct video page link
+        queries, params = self.extractQueryParams(videolink.stream)
+        self.assertTrue('srcurl' in queries, 'Required parameter missing in video link')
+        videopageurl = queries['srcurl']
+        videopageref = self.urlToWvtref(videopageurl)
+        self.checkMediaUrl(videopageref)
+
         # live broadcasts
         links = self.downloadAndExtractLinks(liveref, 2, 'live broadcasts')
 
     def testYLEAreenaSearch(self):
-        menuobj = self.downloadMenuPage('wvt:///yleareena/search.xsl?srcurl=http://areena.yle.fi/haku', 'search')
+        menuobj = self.downloadMenuPage('wvt:///areena.yle.fi/search.xsl?srcurl=http://areena.yle.fi/haku', 'search')
         self.assertTrue(len(menuobj) >= 8, 'Too few items in search menu')
 
         self.assertTrue(isinstance(menuobj[0], menu.MenuItemTextField))
@@ -310,7 +356,7 @@ class TestServiceModules(unittest.TestCase):
 
     def testKatsomo(self):
         # Category page
-        ref = self.getServiceReference('../../templates/katsomo')
+        ref = self.getServiceReference('../../templates/katsomo.fi')
         links = self.downloadAndExtractLinks(ref, 2, 'category')
 
         # The first is "Search", the rest are navigation links.
@@ -330,10 +376,10 @@ class TestServiceModules(unittest.TestCase):
             if link.stream is not None:
                 foundVideo = True
 
-        self.assertTrue(link, 'No a video links in the program page')
+        self.assertTrue(foundVideo, 'No a video links in the program page')
 
     def testKatsomoSearch(self):
-        menuobj = self.downloadMenuPage('wvt:///katsomo/search.xsl', 'search')
+        menuobj = self.downloadMenuPage('wvt:///katsomo.fi/search.xsl', 'search')
         self.assertTrue(len(menuobj) >= 2, 'Too few items in search menu')
 
         self.assertTrue(isinstance(menuobj[0], menu.MenuItemTextField))
@@ -348,7 +394,7 @@ class TestServiceModules(unittest.TestCase):
 
     def testRuutuFi(self):
         # Category page
-        ref = self.getServiceReference('../../templates/ruutufi')
+        ref = self.getServiceReference('../../templates/www.ruutu.fi')
         links = self.downloadAndExtractLinks(ref, 3, 'category')
 
         seriesref = links[0].ref
@@ -364,8 +410,18 @@ class TestServiceModules(unittest.TestCase):
         self.assertNotEqual(videolink.stream, None, 'No media object in a video link')
         self.assertNotEqual(videolink.ref, None, 'No description page in a video link')
 
+        # Direct video page link
+        queries, params = self.extractQueryParams(links[0].stream)
+        self.assertTrue('srcurl' in queries, 'Required parameter missing in video link')
+        queries, params = self.extractQueryParams(queries['srcurl'])
+        self.assertTrue('q' in queries, 'Required parameter missing in video link')
+        vt, vid = queries['q'].split('/')
+        videopageurl = 'http://www.ruutu.fi/video?vt=%s&vid=%s' % (vt, vid)
+        videopageref = self.urlToWvtref(videopageurl)
+        self.checkMediaUrl(videopageref)
+        
     # def testRuutuFiSearch(self):
-    #     menuobj = self.downloadMenuPage('wvt:///ruutufi/search.xsl', 'search')
+    #     menuobj = self.downloadMenuPage('wvt:///www.ruutu.fi/search.xsl', 'search')
     #     self.assertTrue(len(menuobj) >= 2, 'Too few items in search menu')
 
     #     self.assertTrue(isinstance(menuobj[0], menu.MenuItemTextField))
@@ -380,7 +436,7 @@ class TestServiceModules(unittest.TestCase):
 
     def testSubtv(self):
         # Category page
-        ref = self.getServiceReference('../../templates/subtv')
+        ref = self.getServiceReference('../../templates/www.sub.fi')
         links = self.downloadAndExtractLinks(ref, 4, 'series')
 
         # Program page
@@ -391,11 +447,19 @@ class TestServiceModules(unittest.TestCase):
         self.assertNotEqual(videolink.stream, None, 'No media object in a video link')
         self.assertNotEqual(videolink.ref, None, 'No description page in a video link')
 
+        # Direct video page link
+        queries, params = self.extractQueryParams(links[0].stream)
+        self.assertTrue('srcurl' in queries and 'pid' in params, 'Required parameter missing in video link')
+        videopageurl = queries['srcurl'] + '?' + params['pid']
+        videopageref = self.urlToWvtref(videopageurl)
+        self.checkMediaUrl(videopageref)
+        
+
 
 if __name__ == '__main__':
     testnames = sys.argv[1:]
 
-    if testnames == []:
+    if not testnames:
         # Run all tests
         unittest.main()
     else:
