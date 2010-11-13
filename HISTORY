@@ -214,4 +214,4 @@ Video site modules:
   by Matti Lehtimäki).
 - Bookmarklet for sending a video from web browser to VDR.
 - Some Youtube links were broken.
-- Fixed metacafe video module.
+- Fixed Metacafe and Google video modules.

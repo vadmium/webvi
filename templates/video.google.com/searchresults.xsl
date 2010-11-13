@@ -9,7 +9,7 @@
   <title>Search results</title>
 
   <xsl:choose>
-    <xsl:when test="not(//li[@class='g videobox s']/table/tr/td/h3/a)">
+    <xsl:when test="not(//li[contains(@class, 'videobox')]//td/h3/a)">
       <textarea>
         <label>
           <xsl:text>Your search did not return any results.</xsl:text>
@@ -18,7 +18,7 @@
     </xsl:when>
 
     <xsl:otherwise>
-      <xsl:for-each select="//li[@class='g videobox s']/table/tr/td/h3/a">
+      <xsl:for-each select="//li[contains(@class, 'videobox')]//td/h3/a">
         <xsl:choose>
           <xsl:when test="starts-with(@href, 'http://www.youtube.com/')">
 	    <link>
