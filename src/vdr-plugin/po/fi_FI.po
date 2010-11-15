@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: webvideo 0.1.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2010-08-22 19:28+0300\n"
+"POT-Creation-Date: 2010-11-15 19:23+0200\n"
 "PO-Revision-Date: 2008-06-07 18:03+0300\n"
 "Last-Translator: Antti Ajanki <antti.ajanki@iki.fi>\n"
 "Language-Team: Finnish\n"
@@ -114,6 +114,9 @@ msgstr "Lataa videotiedostoja Internetistä"
 
 msgid "Streaming failed: no URL"
 msgstr "Toisto epäonnistui: ei URLia"
+
+msgid "Streaming not supported, try downloading"
+msgstr "Toisto ei tuettu, yritä ladata"
 
 msgid "Failed to launch media player"
 msgstr "Toistimen käynnistäminen epäonnistui"
