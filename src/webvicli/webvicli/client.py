@@ -533,7 +533,12 @@ class WVShell(cmd.Cmd):
     def precmd(self, arg):
         try:
             int(arg)
-            return 'select ' + arg
+            menuitem = self._get_numbered_item(int(arg))
+            if getattr(menuitem, 'ref', None) is None and \
+                    getattr(menuitem, 'stream', None) is not None:
+                return 'download ' + arg
+            else:
+                return 'select ' + arg
         except ValueError:
             return arg
 
