@@ -71,8 +71,9 @@ menu       Go back to the main menu
 quit       Quit the program
 
 x is an index of menu item or an address of a video page (download and
-stream commands). A number x without any command is a shorthand for
-"select x".
+stream commands). A plain number without a command follows a link
+(like "select") or downloads a stream (like "download") if the item is
+not a navigation link.
 
 Config file
 -----------
