@@ -37,10 +37,13 @@ xmlns:media="http://search.yahoo.com/mrss/">
   </textarea>
 
   <textarea>
-    <label>published: <xsl:value-of select="/rss/channel/item/pubDate"/></label>
+    <label>Published: <xsl:value-of select="/rss/channel/item/pubDate"/></label>
   </textarea>
 
-
+  <link>
+    <label>Download this video</label>
+    <stream>wvt:///www.metacafe.com/videopage.xsl?srcurl=<xsl:value-of select="/rss/channel/item/link"/></stream>
+  </link>
 </wvmenu>
 </xsl:template>
 

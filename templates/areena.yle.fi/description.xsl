@@ -3,6 +3,8 @@
 <xsl:stylesheet version="1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
+<xsl:param name="docurl"/>
+
 <xsl:template match="/">
 <wvmenu>
   <title><xsl:value-of select="normalize-space(//h1[@class='cliptitle'])"/></title>
@@ -25,6 +27,10 @@
     <!-- Kanava -->
     <label><xsl:value-of select="id('relatedinfo')//div[@class='relatedinfo-text meta']/ul/li[1]"/></label>
   </textarea>
+  <link>
+    <label>Download this video</label>
+    <stream>wvt:///areena.yle.fi/videopage.xsl?srcurl=<xsl:value-of select="$docurl"/></stream>
+  </link>
 </wvmenu>
 </xsl:template>
 
