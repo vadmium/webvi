@@ -13,8 +13,10 @@
 
 import urllib
 import socket
+import os.path
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from optparse import OptionParser
+from urlparse import urlparse
 
 SVDRP_ADDRESS = ('', 2001)  # default port is 6419 starting from VDR 1.7.15
 
@@ -22,6 +24,10 @@ class SVDRPRequestHandler(BaseHTTPRequestHandler):
     def send(self, cmd):
         self.sock.sendall(cmd)
         self.sock.sendall('\r\n')
+
+    def is_video_file(self, url):
+        ext = os.path.splitext(urlparse(url).path)[1]
+        return ext not in ('', '.html', '.html')
 
     def do_GET(self):
         if self.path.startswith('/play?url='):
@@ -35,7 +41,15 @@ class SVDRPRequestHandler(BaseHTTPRequestHandler):
                 self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 self.sock.settimeout(10)
                 self.sock.connect(SVDRP_ADDRESS)
-                self.send('plug webvideo play %s' % videopage)
+
+                # If this is a video file ask xineliboutput to play
+                # it. Otherwise assume it is a video page from one of
+                # the supported sites and let webvideo extract the
+                # video address from the page.
+                if self.is_video_file(videopage):
+                    self.send('plug xineliboutput pmda %s' % videopage)
+                else:
+                    self.send('plug webvideo play %s' % videopage)
                 self.send('quit')
                 while len(self.sock.recv(4096)) > 0:
                     pass
