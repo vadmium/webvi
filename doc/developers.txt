@@ -150,3 +150,19 @@ Append a HTTP header to the request. Ignored on transfers that use
 some other protocol besides HTTP.
 
 The reference to the main menu is wvt:///?srcurl=mainmenu .
+
+
+SVDRP interface
+===============
+
+The plugin provides the following SVDRP commands:
+
+PLAY <url>
+    Stream a media file embedded on web page at <url>.
+DWLD <url>
+    Download a media file embedded on web page at <url>.
+
+Note: <url> should be the the address of the web page that contains
+the video, not the address of the video file itself. If you know the
+direct address to the video file, use xineliboutput SVDRP commands
+instead. See README for the list of supported sites.

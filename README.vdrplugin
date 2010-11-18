@@ -195,21 +195,6 @@ the path) of the downloaded file.
 An example script for transcoding the downloaded files to Ogg format
 is included in the source distribution in examples/transcode2ogg.sh.
 
-SVDRP interface
----------------
-
-The plugin provides the following SVDRP commands:
-
-PLAY <url>
-    Stream a media file embedded on web page at <url>.
-DWLD <url>
-    Download a media file embedded on web page at <url>.
-
-Note: <url> should be the the address of the web page that contains
-the video, not the address of the video file itself. If you know the
-direct address to the video file, use xineliboutput SVDRP commands
-instead. See README for the list of supported sites.
-
 "Watch on VDR" bookmarklet
 --------------------------
 
