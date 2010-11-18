@@ -203,7 +203,7 @@ Video site modules:
 - Fixed Google video module.
 - Disabled ruutu.fi search which is not working.
 
-2010-11-19: Version 0.4.0
+2010-11-18: Version 0.4.0
 
 - SVDRP commands for playing and downloading videos (based on a patch
   by Matti Lehtimäki).
