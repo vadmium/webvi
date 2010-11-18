@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: webvideo 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2010-08-22 19:28+0300\n"
+"POT-Creation-Date: 2010-11-18 20:19+0200\n"
 "PO-Revision-Date: 2010-07-17 00:39+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian\n"
@@ -116,6 +116,9 @@ msgstr "Scarica file video dal web"
 
 msgid "Streaming failed: no URL"
 msgstr "Trasmissione fallita: nessun URL"
+
+msgid "Streaming not supported, try downloading"
+msgstr ""
 
 msgid "Failed to launch media player"
 msgstr "Impossibile avviare il lettore multimediale"

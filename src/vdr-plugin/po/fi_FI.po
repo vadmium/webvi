@@ -116,7 +116,7 @@ msgid "Streaming failed: no URL"
 msgstr "Toisto epäonnistui: ei URLia"
 
 msgid "Streaming not supported, try downloading"
-msgstr "Toisto ei tuettu, yritä ladata"
+msgstr "Toisto ei tuettu, kokeile lataamista"
 
 msgid "Failed to launch media player"
 msgstr "Toistimen käynnistäminen epäonnistui"
