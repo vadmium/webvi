@@ -315,7 +315,7 @@ void cWebviTimerManager::SaveHistory(FILE *f) {
 }
 
 char *cWebviTimerManager::UpgradedTemplatePath(char *ref) {
-  // template names changed in 0.3.3
+  // template names changed in 0.4.0
   const char *templateNameMap[10][2] = \
     {{"wvt:///youtube/", "wvt:///www.youtube.com/"},
      {"wvt:///svtplay/", "wvt:///svtplay.se/"}, 

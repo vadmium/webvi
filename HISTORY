@@ -203,15 +203,14 @@ Video site modules:
 - Fixed Google video module.
 - Disabled ruutu.fi search which is not working.
 
-2010-xx-xx: Version 0.3.3
+2010-11-19: Version 0.4.0
 
-- correct template path in webvi.plugin.conf, use user CXXFLAGS,
-  SYSLIBDIR and DESTDIR in Makefiles, fix typos (patches by Ville
-  Skyttä).
-- Command line arguments override config file.
-- Support VDR 1.7 series by including Make.global.
 - SVDRP commands for playing and downloading videos (based on a patch
   by Matti Lehtimäki).
 - Bookmarklet for sending a video from web browser to VDR.
-- Some Youtube links were broken.
-- Fixed Metacafe and Google video modules.
+- Correct template path in webvi.plugin.conf, respect user CXXFLAGS,
+  SYSLIBDIR and DESTDIR in Makefiles, fix typos (patches by Ville
+  Skyttä).
+- Support VDR 1.7 series by including Make.global.
+- Command line arguments override config file options.
+- Fixes for Youtube, Metacafe and Google modules.

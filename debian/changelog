@@ -1,15 +1,14 @@
-vdr-plugin-webvideo (0.3.3-1) unstable; urgency=low
+vdr-plugin-webvideo (0.4.0-1) unstable; urgency=low
 
-  * Command line arguments override config file.
-  * Support VDR 1.7 series by including Make.global.
   * SVDRP commands for playing and downloading videos (based on a patch
     by Matti Lehtimäki).
-  * Some Youtube links were broken.
-  * Fixed Metacafe and Google video modules.
+  * Support VDR 1.7 series by including Make.global.
+  * Command line arguments override config file options.
+  * Fixes for Youtube, Metacafe and Google modules.
   * Bump standards version to 3.9.1.0
   * Bump source format to 3.0 (native)
 
- -- Antti Ajanki <antti.ajanki@iki.fi>  Mon, 15 Nov 2010 20:49:43 +0200
+ -- Antti Ajanki <antti.ajanki@iki.fi>  Thu, 18 Nov 2010 20:10:09 +0200
 
 vdr-plugin-webvideo (0.3.2-1) unstable; urgency=low
 

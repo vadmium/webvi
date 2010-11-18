@@ -68,7 +68,7 @@ install-webvi: install-libwebvi install-python
 
 install: install-vdr-plugin install-webvi install-conf
 
-# Template directories were renamed in 0.3.3. Remove old templates.
+# Template directories were renamed in 0.4.0. Remove old templates.
 uninstall-deprecated-templates:
 	rm -rf $(DESTDIR)$(PREFIX)/share/webvi/templates/youtube
 	rm -rf $(DESTDIR)$(PREFIX)/share/webvi/templates/svtplay
