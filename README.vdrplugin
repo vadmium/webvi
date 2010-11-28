@@ -143,9 +143,11 @@ Navigation links that lead to a new menu pages are marker with
 brackets [ ]. They can be followed by selecting them and pushing OK.
 
 The links without brackets are video or audio streams. They can be
-downloaded in the background by pushing OK. Pressing Blue on a media
-stream starts playing it immediately in xineliboutput plugin. Pressing
-Info shows more information about a media stream.
+downloaded in the background by pushing OK. Pressing Info shows more
+information about the stream. Pressing Blue starts to play the stream
+using xineliboutput or mplayer plugin if one of them is installed.
+Xineliboutput works straight out of the box. For mplayer, add
+following to mplayersouces.conf: /tmp;Webvideo;0;*.m3u
 
 Keys:
 
@@ -155,9 +157,9 @@ Red     Go back to the previous menu /
 Green   Go forward in browsing history /
         Edit timers
 Yellow  Create timer
-Blue    Play media stream without saving
-Info    Show details of a media stream
-0       More options
+Blue    Play a stream without saving
+Info    Show details about a stream
+0       Switch between history and status modes
 
 In the status screen:
 
