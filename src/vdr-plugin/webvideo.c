@@ -38,6 +38,7 @@ private:
   cString destdir;
   cString conffile;
   cString postprocesscmd;
+  bool prefermplayer;
 
   static int nextMenuID;
 
@@ -77,6 +78,7 @@ cPluginWebvideo::cPluginWebvideo(void)
   // Initialize any member variables here.
   // DON'T DO ANYTHING ELSE THAT MAY HAVE SIDE EFFECTS, REQUIRE GLOBAL
   // VDR OBJECTS TO EXIST OR PRODUCE ANY OUTPUT!
+  prefermplayer = false;
 }
 
 cPluginWebvideo::~cPluginWebvideo()
@@ -91,22 +93,24 @@ const char *cPluginWebvideo::CommandLineHelp(void)
   return "  -d DIR,   --downloaddir=DIR  Save downloaded files to DIR\n" \
          "  -t DIR,   --templatedir=DIR  Read video site templates from DIR\n" \
          "  -c FILE,  --conf=FILE        Load settings from FILE\n" \
-         "  -p CMD,   --postprocess=CMD  Execute CMD after downloading\n";
+         "  -p CMD,   --postprocess=CMD  Execute CMD after downloading\n" \
+         "  -m,       --prefermplayer    Prefer mplayer over xineliboutput when streaming\n";
 }
 
 bool cPluginWebvideo::ProcessArgs(int argc, char *argv[])
 {
   // Implement command line argument processing here if applicable.
   static struct option long_options[] = {
-    { "downloaddir", required_argument, NULL, 'd' },
-    { "templatedir", required_argument, NULL, 't' },
-    { "conf",        required_argument, NULL, 'c' },
-    { "postprocess", required_argument, NULL, 'p' },
+    { "downloaddir",   required_argument, NULL, 'd' },
+    { "templatedir",   required_argument, NULL, 't' },
+    { "conf",          required_argument, NULL, 'c' },
+    { "postprocess",   required_argument, NULL, 'p' },
+    { "prefermplayer", no_argument,       NULL, 'm' },
     { NULL }
   };
 
   int c;
-  while ((c = getopt_long(argc, argv, "d:t:c:p:", long_options, NULL)) != -1) {
+  while ((c = getopt_long(argc, argv, "d:t:c:p:m", long_options, NULL)) != -1) {
     switch (c) {
     case 'd':
       destdir = cString(optarg);
@@ -119,6 +123,9 @@ bool cPluginWebvideo::ProcessArgs(int argc, char *argv[])
       break;
     case 'p':
       postprocesscmd = cString(optarg);
+      break;
+    case 'm':
+      prefermplayer = true;
       break;
     default:
       return false;
@@ -148,6 +155,8 @@ bool cPluginWebvideo::Initialize(void)
     webvideoConfig->SetTemplatePath(templatedir);
   if ((const char *)postprocesscmd)
     webvideoConfig->SetPostProcessCmd(postprocesscmd);
+  if (prefermplayer)
+    webvideoConfig->SetPreferXineliboutput(false);
 
   cString mymimetypes = AddDirectory(ConfigDirectory(Name()), "mime.types");
   const char *mimefiles [] = {"/etc/mime.types", (const char *)mymimetypes, NULL};

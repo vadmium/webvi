@@ -97,6 +97,7 @@ VDR plugin command line parameters
                            /usr/local/share/webvi/templates)
 -c FILE, --conf=FILE       Load settings from FILE
 -p CMD, --postprocess=CMD  Execute CMD after downloading
+-m,     --prefermplayer    Prefer mplayer over xineliboutput when streaming
 
 Config file
 -----------

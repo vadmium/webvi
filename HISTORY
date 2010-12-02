@@ -218,4 +218,5 @@ Video site modules:
 Version 0.4.1
 
 - Accept -p as alternative to --postprocess (thanks to Matti Lehtimäki).
-
+- New option --prefermplayer prefers mplayer over xineliboutput when
+  streaming (thanks to Matti Lehtimäki).
