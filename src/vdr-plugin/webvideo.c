@@ -106,7 +106,7 @@ bool cPluginWebvideo::ProcessArgs(int argc, char *argv[])
   };
 
   int c;
-  while ((c = getopt_long(argc, argv, "d:t:c:", long_options, NULL)) != -1) {
+  while ((c = getopt_long(argc, argv, "d:t:c:p:", long_options, NULL)) != -1) {
     switch (c) {
     case 'd':
       destdir = cString(optarg);

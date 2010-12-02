@@ -214,3 +214,8 @@ Video site modules:
 - Support VDR 1.7 series by including Make.global.
 - Command line arguments override config file options.
 - Fixes for Youtube, Metacafe and Google modules.
+
+Version 0.4.1
+
+- Accept -p as alternative to --postprocess (thanks to Matti Lehtimäki).
+
