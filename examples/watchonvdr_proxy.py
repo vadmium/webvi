@@ -3,8 +3,8 @@
 # Proxy for relaying commands to play a video on VDR from a web
 # browser to VDR.
 #
-# Listens for HTTP GET /play?url=XXX requests where XXX is the address
-# of the video page (not address of the video stream) and converts
+# Listens for HTTP GET /play?url=XXX requests, where XXX is the address
+# of the video page (not the address of the video stream), and converts
 # them to webvideo plugin SVDRP commands. The bookmarklet in
 # webvi_bookmarklet.js generates such requests. See README for the
 # list of supported video sites.
@@ -27,49 +27,57 @@ class SVDRPRequestHandler(BaseHTTPRequestHandler):
 
     def is_video_file(self, url):
         ext = os.path.splitext(urlparse(url).path)[1]
-        return ext not in ('', '.html', '.html')
+        return ext not in ('', '.htm', '.html')
 
     def do_GET(self):
         if self.path.startswith('/play?url='):
             videopage = urllib.unquote(self.path[len('/play?url='):])
+            operation = "play"
 
-            # Strip everything after the first linefeed to prevent
-            # SVDRP command injection.
-            videopage = videopage.split('\r', 1)[0].split('\n', 1)[0]
+        elif self.path.startswith('/download?url='):
+            videopage = urllib.unquote(self.path[len('/download?url='):])
+            operation = "dwld"
 
-            try:
-                self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                self.sock.settimeout(10)
-                self.sock.connect(SVDRP_ADDRESS)
-
-                # If this is a video file ask xineliboutput to play
-                # it. Otherwise assume it is a video page from one of
-                # the supported sites and let webvideo extract the
-                # video address from the page.
-                if self.is_video_file(videopage):
-                    self.send('plug xineliboutput pmda %s' % videopage)
-                else:
-                    self.send('plug webvideo play %s' % videopage)
-                self.send('quit')
-                while len(self.sock.recv(4096)) > 0:
-                    pass
-                self.sock.close()
-
-                self.send_response(204, 'OK')
-                self.send_header('Access-Control-Allow-Origin', '*')
-                self.end_headers()
-            except socket.error, exc:
-                self.send_response(503, 'SVDRP connection error: %s' % exc)
-                self.send_header('Access-Control-Allow-Origin', '*')
-                self.end_headers()
-            except socket.timeout:
-                self.send_response(504, 'SVDRP timeout')
-                self.send_header('Access-Control-Allow-Origin', '*')
-                self.end_headers()
         else:
             self.send_response(404, 'Not found')
             self.send_header('Access-Control-Allow-Origin', '*')
             self.end_headers()
+            return
+
+        # Strip everything after the first linefeed to prevent
+        # SVDRP command injection.
+        videopage = videopage.split('\r', 1)[0].split('\n', 1)[0]
+
+        try:
+            self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.sock.settimeout(10)
+            self.sock.connect(SVDRP_ADDRESS)
+
+            # If this is a video file ask xineliboutput to play
+            # it. Otherwise assume it is a video page from one of
+            # the supported sites and let webvideo extract the
+            # video address from the page.
+            if self.is_video_file(videopage) and operation == "play":
+                self.send('plug xineliboutput pmda %s' % videopage)
+            else:
+                self.send('plug webvideo %s %s' % (operation, videopage) )
+            self.send('quit')
+            while len(self.sock.recv(4096)) > 0:
+                pass
+            self.sock.close()
+
+            self.send_response(204, 'OK')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+        except socket.error, exc:
+            self.send_response(503, 'SVDRP connection error: %s' % exc)
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+        except socket.timeout:
+            self.send_response(504, 'SVDRP timeout')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+
     
 def main():
     parser = OptionParser()
