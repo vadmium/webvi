@@ -1,4 +1,4 @@
-PREFIX ?= /usr/local
+PREFIX ?= /usr/
 SYSLIBDIR = $(PREFIX)/lib
 
 LIBNAME=libwebvi.so
@@ -6,17 +6,17 @@ LIBSONAME=$(LIBNAME).0
 LIBMINOR=$(LIBSONAME).4
 
 VERSION:=$(shell grep VERSION webvi/version.py | cut -d \' -f 2)
-PYLIB:=$(shell python pythonlibname.py)
+PYLIB:=$(shell python2 pythonlibname.py)
 DEFINES:=-DPYTHONSHAREDLIB=\"$(PYLIB)\" -DLIBWEBVI_VERSION=\"$(VERSION)\"
 # append -DDEBUG to DEFINES to get debug output
 
 all: $(LIBMINOR)
 
 libwebvi.o: libwebvi.c libwebvi.h
-	$(CC) -fPIC -Wall -O2 -g $(CFLAGS) $(DEFINES) `python-config --cflags` -c -o libwebvi.o libwebvi.c
+	$(CC) -fPIC -Wall -O2 -g $(CFLAGS) $(DEFINES) `python2-config --cflags` -c -o libwebvi.o libwebvi.c
 
 $(LIBMINOR): libwebvi.o
-	$(CC) -shared -Wl,-soname,$(LIBSONAME) -Wl,--as-needed libwebvi.o `python-config --ldflags` -o $(LIBMINOR)
+	$(CC) -shared -Wl,-soname,$(LIBSONAME) -Wl,--as-needed libwebvi.o `python2-config --ldflags` -o $(LIBMINOR)
 	ln -sf $(LIBMINOR) $(LIBSONAME)
 	ln -sf $(LIBSONAME) $(LIBNAME)
 

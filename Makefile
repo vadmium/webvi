@@ -1,5 +1,5 @@
 # prefix for non-VDR stuff
-PREFIX ?= /usr/local
+PREFIX ?= /usr/
 # VDR directory
 VDRDIR ?= /usr/src/vdr-1.6.0
 # VDR's library directory
@@ -32,7 +32,7 @@ libwebvi: build-python
 	$(MAKE) -C src/libwebvi all libwebvi.a
 
 build-python: webvi.conf
-	python setup.py build
+	python2 setup.py build
 
 webvi.conf webvi.plugin.conf: %.conf: examples/%.conf
 	sed 's_templatepath = /usr/local/share/webvi/templates_templatepath = $(PREFIX)/share/webvi/templates_g' < $< > $@
@@ -56,7 +56,7 @@ install-libwebvi: libwebvi
 	$(MAKE) -C src/libwebvi install
 
 install-python: uninstall-deprecated-templates
-	python setup.py install --skip-build --prefix $(PREFIX) $${DESTDIR:+--root $(DESTDIR)}
+	python2 setup.py install --skip-build --prefix $(PREFIX) $${DESTDIR:+--root $(DESTDIR)}
 
 install-conf: webvi.conf webvi.plugin.conf
 	mkdir -p $(DESTDIR)/etc
@@ -93,7 +93,7 @@ clean:
 	$(MAKE) -C src/vdr-plugin clean
 	$(MAKE) -C src/libwebvi clean
 	rm -rf src/vdr-plugin/locale webvi.conf
-	python setup.py clean -a
+	python2 setup.py clean -a
 	find . -name "*~" -exec rm {} \;
 	find . -name "*.pyc" -exec rm {} \;
 
