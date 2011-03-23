@@ -78,7 +78,7 @@
 <!-- This is also called by youtu.be/videopage.xsl -->
 <xsl:template name="main">
   <xsl:variable name="videoinfo">
-    <xsl:value-of select="substring-before(substring-after(//script[contains(., 'flashvars=\&quot;')], 'flashvars=\&quot;'), '\&quot;')"/>
+    <xsl:value-of select="id('watch-player')/embed/@flashvars"/>
   </xsl:variable>
 
   <xsl:call-template name="mediaurl">
