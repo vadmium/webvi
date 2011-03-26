@@ -99,6 +99,12 @@ def set_config(conf, value):
     if conf == WebviConfig.TEMPLATE_PATH:
         request.set_template_path(value)
         return WebviErr.OK
+    elif conf == WebviConfig.DEBUG:
+        if value == '0':
+            request.DEBUG = False
+        else:
+            request.DEBUG = True
+        return WebviErr.OK
     else:
         return WebviErr.INVALID_PARAMETER
 

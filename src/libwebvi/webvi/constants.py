@@ -48,3 +48,4 @@ class WebviSelectBitmask:
 
 class WebviConfig:
     TEMPLATE_PATH = 0
+    DEBUG = 1

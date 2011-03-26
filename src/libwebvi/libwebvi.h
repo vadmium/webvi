@@ -73,7 +73,8 @@ typedef enum {
 } WebviSelectBitmask;
 
 typedef enum {
-  WEBVI_CONFIG_TEMPLATE_PATH
+  WEBVI_CONFIG_TEMPLATE_PATH,
+  WEBVI_CONFIG_DEBUG
 } WebviConfig;
 
 typedef long WebviCtx;
@@ -131,8 +132,9 @@ const char* webvi_strerror(WebviCtx ctx, WebviResult err);
 /*
  * Set a new value for a global configuration option conf.
  *
- * Currently the only legal value for conf is TEMPLATE_PATH, which
- * sets the base directory for the XSLT templates.
+ * Possible values and their meanings:
+ * TEMPLATE_PATH   Set the base directory for the XSLT templates
+ * DEBUG           If value is not "0", print debug output to stdin
  *
  * The string pointed by value is copied to the library.
  */

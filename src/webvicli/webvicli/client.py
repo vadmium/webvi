@@ -719,10 +719,14 @@ def parse_command_line(cmdlineargs, options):
                       dest='templatepath',
                       help='read video site templates from DIR', metavar='DIR',
                       default=None)
+    parser.add_option('-v', '--verbose', action='store_const', const=1,
+                      dest='verbose', help='debug output', default=0)
     cmdlineopt = parser.parse_args(cmdlineargs)[0]
 
     if cmdlineopt.templatepath is not None:
         options['templatepath'] = cmdlineopt.templatepath
+    if cmdlineopt.verbose > 0:
+        options['verbose'] = cmdlineopt.verbose
 
     return options
 
@@ -753,6 +757,8 @@ def main(argv):
     options = load_config({})
     options = parse_command_line(argv, options)
 
+    if options.has_key('verbose'):
+        webvi.api.set_config(WebviConfig.DEBUG, options['verbose'])
     if options.has_key('templatepath'):
         webvi.api.set_config(WebviConfig.TEMPLATE_PATH, options['templatepath'])
 
