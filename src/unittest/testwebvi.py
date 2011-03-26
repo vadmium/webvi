@@ -256,13 +256,9 @@ class TestServiceModules(unittest.TestCase):
         videolink = links[0]
         self.assertNotEqual(videolink.stream, None, 'No media object in a video link')
         self.assertNotEqual(videolink.ref, None, 'No description page in a video link')
-        self.checkMediaUrl(videolink.stream)
-
         queries, params = self.extractQueryParams(videolink.stream)
         self.assertTrue('srcurl' in queries, 'Required parameter missing in video link')
-        videopageurl = 'http://vimeo.com/' + queries['srcurl'].split(':')[-1]
-        videopageref = self.urlToWvtref(videopageurl)
-        self.checkMediaUrl(videopageref)
+        self.checkMediaUrl(videolink.stream)
 
         # User groups
         links = self.downloadAndExtractLinks(groupsref, 2, 'channel list')
