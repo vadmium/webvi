@@ -13,6 +13,8 @@ DESCRIPTION
 OPTIONS
   -h, --help                    show this help message and exit
   -t DIR, --templatepath=DIR    read video site templates from DIR
+  -v, --verbose                 debug output
+  --vfat                        generate Windows compatible filenames
 
 USAGE
   The program communicates with webvid daemon, which must be running in
@@ -45,6 +47,7 @@ CONFIG FILE
 
   templatepath   Path to video site templates
   streamplayers1 to streamplayer9  are alternative player commands to be used for streaming videos
+  vfat           Generate Windows compatible file names (values: true, false)
 
   It is possible to set lower and upper bounds for stream quality in
   [site-*] sections:
