@@ -2,7 +2,8 @@
 
 <xsl:stylesheet version="1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  xmlns:str="http://exslt.org/strings">
+  xmlns:str="http://exslt.org/strings"
+  exclude-result-prefixes="str">
 
 <!-- Convert $seconds to hours:min:sec format -->
 <xsl:template name="pretty-print-seconds">
@@ -50,7 +51,7 @@
 
   <link>
     <label>Download this video</label>
-    <stream>wvt:///vimeo.com/video.xsl?srcurl=http://www.vimeo.com/moogaloop/load/clip:<xsl:value-of select="/videos/video/id"/></stream>
+    <stream>wvt:///vimeo.com/video.xsl?srcurl=http://www.vimeo.com/moogaloop/load/clip:<xsl:value-of select="/videos/video/id"/>&amp;HTTP-header=user-agent,Wget/1.2%20%28linux-gnu%29</stream>
   </link>
 
 </wvmenu>
