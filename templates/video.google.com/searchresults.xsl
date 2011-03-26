@@ -52,14 +52,6 @@
 	    </link>
           </xsl:when>
 
-          <xsl:when test="starts-with(@href, 'http://svtplay.se/')">
-	    <link>
-	      <label><xsl:value-of select="normalize-space(.)"/></label>
-              <stream>wvt:///svtplay.se/videopage.xsl?srcurl=<xsl:value-of select="str:encode-uri(@href, true())"/></stream>
-              <ref>wvt:///svtplay.se/description.xsl?srcurl=<xsl:value-of select="str:encode-uri(@href, true())"/></ref>
-	    </link>
-          </xsl:when>
-
         </xsl:choose>
       </xsl:for-each>
 

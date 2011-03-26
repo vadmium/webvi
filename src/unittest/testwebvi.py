@@ -173,25 +173,6 @@ class TestServiceModules(unittest.TestCase):
         self.assertNotEqual(resultref, None)
         self.downloadAndExtractLinks(resultref, 1, 'search result')
 
-    def testSVTPlay(self):
-        # Category page
-        ref = self.getServiceReference('../../templates/svtplay.se')
-        links = self.downloadAndExtractLinks(ref, 3, 'category')
-
-        # Navigation page
-        navigationref = links[0].ref
-        links = self.downloadAndExtractLinks(navigationref, 2, 'navigation')
-
-        # Single program
-        programref = links[0].ref
-        links = self.downloadAndExtractLinks(programref, 1, 'program')
-
-        # Video link
-        videolink = links[0]
-        self.assertNotEqual(videolink.stream, None, 'No media object in a video link')
-        self.assertNotEqual(videolink.ref, None, 'No description page in a video link')
-        self.checkMediaUrl(videolink.stream)
-
     def testMetacafe(self):
         # Category page
         ref = self.getServiceReference('../../templates/www.metacafe.com')

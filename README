@@ -17,12 +17,11 @@ Supported video sites:
 * MTV3 Katsomo
 * ruutu.fi [2]
 * Subtv
-* SVT Play
 * Vimeo
 * YLE Areena [2]
 * YouTube
 
-[1] Only videos hosted by Google, YouTube, Vimeo and SVT
+[1] Only videos hosted by Google, YouTube, Vimeo
 
 [2] Requires rtmpdump-yle
     (http://users.tkk.fi/~aajanki/rtmpdump-yle/index.html). Streaming
@@ -30,7 +29,6 @@ Supported video sites:
 
 Known problems:
 
-SVT Play: not all videos are working
 MTV3 Katsomo and Subtv: often the connection is lost before the
   video is fully downloaded.
 

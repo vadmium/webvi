@@ -6,8 +6,6 @@ Show a poster image next to video's name
 
 plugin: scrolling does not work on video description pages
 
-SVTPlay: add search
-
 metacafe: fails to find video URL for videos with ID sy-*, cb-*
 (others?). The videos are probably hosted on some other sites (like
 yt-* -> youtube).
