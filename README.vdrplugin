@@ -212,13 +212,13 @@ is included in the source distribution in examples/transcode2ogg.sh.
 --------------------------
 
 It is possible to send the video you are watching on your web browser
-to VDR and view it on your TV.
+to VDR and view or save it on your TV.
 
 1. Create a new bookmark on your web browser and paste the content of
-examples/watchonvdr_bookmarklet.js as the address of the new bookmark.
-If your VDR is running on a different machine than your browser, put
-VDR's address into vdrserver variable near the beginning of the
-bookmarklet.
+examples/watchonvdr_bookmarklet.js or savevideo_bookmarklet.js as the
+address of the new bookmark. If your VDR is running on a different
+machine than your browser, put VDR's address into vdrserver variable
+near the beginning of the bookmarklet.
 
 2. Set up the firewall of the VDR machine to allow incoming
 connections on port 43280 only from the machine where you are running
