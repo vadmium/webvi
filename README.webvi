@@ -48,6 +48,8 @@ Command line parameters
 
 -h, --help                  show this help message and exit
 -t DIR, --templatepath=DIR  read video site templates from DIR
+--vfat                      generate Windows compatible filenames
+-v, --verbose               debug output
 
 Usage
 -----
@@ -97,6 +99,14 @@ defined in config files then vlc, totem, mplayer, and xine are tried
 templatepath
 
 Path to video site templates.
+
+vfat
+
+Generate Windows compatible filenames.
+
+verbose
+
+Write debug output to stdin.
 
 Quality of the downloaded and streamed videos can be selected in video
 site specific sections. Currently only YouTube module (section should
