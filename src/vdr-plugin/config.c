@@ -64,6 +64,7 @@ cWebvideoConfig::cWebvideoConfig() {
   templatePath = NULL;
   preferXine = true;
   postProcessCmd = NULL;
+  vfatNames = false;
 }
 
 cWebvideoConfig::~cWebvideoConfig() {
@@ -216,3 +217,12 @@ void cWebvideoConfig::SetPostProcessCmd(const char *cmd) {
 const char *cWebvideoConfig::GetPostProcessCmd() {
   return postProcessCmd;
 }
+
+void cWebvideoConfig::SetUseVFATNames(bool vfat) {
+  vfatNames = vfat;
+}
+
+bool cWebvideoConfig::GetUseVFATNames() {
+  return vfatNames;
+}
+

@@ -44,7 +44,7 @@ class TestServiceModules(unittest.TestCase):
 
     def setUp(self):
         webvi.api.set_config(WebviConfig.TEMPLATE_PATH, '../../templates')
-        self.client = client.WVClient([], {}, {})
+        self.client = client.WVClient([], {}, {}, False)
     
     def getLinks(self, menuobj):
         links = []

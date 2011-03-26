@@ -49,11 +49,19 @@ mimetypes.init()
 mimetypes.add_type('video/flv', '.flv')
 mimetypes.add_type('video/x-flv', '.flv')
 
-def safe_filename(name):
-    """Sanitize a filename. No paths (replace '/' -> '!') and no
-    names starting with a dot."""
-    res = name.replace('/', '!').lstrip('.')
+def safe_filename(name, vfat):
+    """Sanitize a filename. If vfat is False, replace '/' with '_', if
+    vfat is True, replace also other characters that are illegal on
+    VFAT. Remove dots from the beginning of the filename."""
+    if vfat:
+        excludechars = r'[\\"*/:<>?|]'
+    else:
+        excludechars = r'[/]'
+
+    res = re.sub(excludechars, '_', name)
+    res = res.lstrip('.')
     res = res.encode(sys.getfilesystemencoding(), 'ignore')
+
     return res
 
 class DownloadData:
@@ -173,12 +181,13 @@ class ProgressMeter:
 
 
 class WVClient:
-    def __init__(self, streamplayers, downloadlimits, streamlimits):
+    def __init__(self, streamplayers, downloadlimits, streamlimits, vfatfilenames):
         self.streamplayers = streamplayers
         self.history = []
         self.history_pointer = 0
         self.quality_limits = {'download': downloadlimits,
                                 'stream': streamlimits}
+        self.vfatfilenames = vfatfilenames
 
     def parse_page(self, page):
         if page is None:
@@ -335,7 +344,9 @@ class WVClient:
         contentlength = webvi.api.get_info(dldata.handle, WebviInfo.CONTENT_LENGTH)[1]
         url = webvi.api.get_info(dldata.handle, WebviInfo.URL)[1]
         ext = self.guess_extension(contenttype, url)
-        destfilename = self.next_available_file_name(safe_filename(title), ext)
+
+        safename = safe_filename(title, self.vfatfilenames)
+        destfilename = self.next_available_file_name(safename, ext)
 
         try:
             destfile = open(destfilename, 'w')
@@ -721,12 +732,16 @@ def parse_command_line(cmdlineargs, options):
                       default=None)
     parser.add_option('-v', '--verbose', action='store_const', const=1,
                       dest='verbose', help='debug output', default=0)
+    parser.add_option('--vfat', action='store_true',
+                      dest='vfat', default=False,
+                      help='generate Windows compatible filenames')
     cmdlineopt = parser.parse_args(cmdlineargs)[0]
 
     if cmdlineopt.templatepath is not None:
         options['templatepath'] = cmdlineopt.templatepath
     if cmdlineopt.verbose > 0:
         options['verbose'] = cmdlineopt.verbose
+    options['vfat'] = cmdlineopt.vfat
 
     return options
 
@@ -764,7 +779,8 @@ def main(argv):
 
     shell = WVShell(WVClient(player_list(options),
                              options.get('download-limits', {}),
-                             options.get('stream-limits', {})))
+                             options.get('stream-limits', {}),
+                             options.get('vfat', False)))
     shell.cmdloop()
 
 if __name__ == '__main__':

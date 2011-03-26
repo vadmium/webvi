@@ -39,6 +39,7 @@ private:
   cString conffile;
   cString postprocesscmd;
   bool prefermplayer;
+  bool vfatnames;
 
   static int nextMenuID;
 
@@ -79,6 +80,7 @@ cPluginWebvideo::cPluginWebvideo(void)
   // DON'T DO ANYTHING ELSE THAT MAY HAVE SIDE EFFECTS, REQUIRE GLOBAL
   // VDR OBJECTS TO EXIST OR PRODUCE ANY OUTPUT!
   prefermplayer = false;
+  vfatnames = false;
 }
 
 cPluginWebvideo::~cPluginWebvideo()
@@ -94,6 +96,7 @@ const char *cPluginWebvideo::CommandLineHelp(void)
          "  -t DIR,   --templatedir=DIR  Read video site templates from DIR\n" \
          "  -c FILE,  --conf=FILE        Load settings from FILE\n" \
          "  -p CMD,   --postprocess=CMD  Execute CMD after downloading\n" \
+         "  --vfat                       Generate Windows compatible filenames\n" \
          "  -m,       --prefermplayer    Prefer mplayer over xineliboutput when streaming\n";
 }
 
@@ -106,11 +109,12 @@ bool cPluginWebvideo::ProcessArgs(int argc, char *argv[])
     { "conf",          required_argument, NULL, 'c' },
     { "postprocess",   required_argument, NULL, 'p' },
     { "prefermplayer", no_argument,       NULL, 'm' },
+    { "vfat",          no_argument,       NULL, 'v' },
     { NULL }
   };
 
   int c;
-  while ((c = getopt_long(argc, argv, "d:t:c:p:m", long_options, NULL)) != -1) {
+  while ((c = getopt_long(argc, argv, "d:t:c:p:mv", long_options, NULL)) != -1) {
     switch (c) {
     case 'd':
       destdir = cString(optarg);
@@ -126,6 +130,9 @@ bool cPluginWebvideo::ProcessArgs(int argc, char *argv[])
       break;
     case 'm':
       prefermplayer = true;
+      break;
+    case 'v':
+      vfatnames = true;
       break;
     default:
       return false;
@@ -157,6 +164,8 @@ bool cPluginWebvideo::Initialize(void)
     webvideoConfig->SetPostProcessCmd(postprocesscmd);
   if (prefermplayer)
     webvideoConfig->SetPreferXineliboutput(false);
+  if (vfatnames)
+    webvideoConfig->SetUseVFATNames(vfatnames);
 
   cString mymimetypes = AddDirectory(ConfigDirectory(Name()), "mime.types");
   const char *mimefiles [] = {"/etc/mime.types", (const char *)mymimetypes, NULL};

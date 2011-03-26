@@ -36,6 +36,7 @@ private:
   char *templatePath;
   char *postProcessCmd;
   bool preferXine;
+  bool vfatNames;
   cList<cDownloadQuality> downloadLimits;
   cList<cDownloadQuality> streamLimits;
 
@@ -55,6 +56,9 @@ public:
 
   void SetPreferXineliboutput(bool pref);
   bool GetPreferXineliboutput();
+
+  void SetUseVFATNames(bool vfat);
+  bool GetUseVFATNames();
 
   const char *GetMinQuality(const char *site, eRequestType type);
   const char *GetMaxQuality(const char *site, eRequestType type);

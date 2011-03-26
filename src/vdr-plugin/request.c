@@ -320,7 +320,7 @@ bool cFileDownloadRequest::OpenDestFile() {
 
   const char *destdir = webvideoConfig->GetDownloadPath();
   char *basename = strdup(title ? title : "???");
-  basename = safeFilename(basename);
+  basename = safeFilename(basename, webvideoConfig->GetUseVFATNames());
 
   i = 1;
   filename = cString::sprintf("%s/%s%s", destdir, basename, ext);

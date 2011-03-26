@@ -36,10 +36,12 @@ char *URLencode(const char *s);
 // Remove URL encoding from s. The called must free the returned
 // memory.
 char *URLdecode(const char *s);
-// Return a "safe" version of filename. Remove path (replace '/' with
-// '!') and dots from the beginning. The string is modified in-place,
-// i.e. returns the pointer filename that was passed as argument.
-char *safeFilename(char *filename);
+// Return a "safe" version of filename. Replace '/' with '_' and
+// remove dots from the beginning. If vfatnames is true, replace also
+// other characters which are not allowed on VFAT. The string is
+// modified in-place, i.e. returns the pointer filename that was
+// passed as argument.
+char *safeFilename(char *filename, bool vfatnames);
 // Escape s so that it can be passed as parameter to a shell command.
 cString shellEscape(const char *s);
 // Convert string s to lower case

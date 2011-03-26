@@ -194,9 +194,20 @@ char *URLdecode(const char *s) {
   return res;
 }
 
-char *safeFilename(char *filename) {
+char *safeFilename(char *filename, bool vfatnames) {
   if (filename) {
-    strreplace(filename, '/', '!');
+    strreplace(filename, '/', '_');
+
+    if (vfatnames) {
+      strreplace(filename, '\\', '_');
+      strreplace(filename, '"', '_');
+      strreplace(filename, '*', '_');
+      strreplace(filename, ':', '_');
+      strreplace(filename, '<', '_');
+      strreplace(filename, '>', '_');
+      strreplace(filename, '?', '_');
+      strreplace(filename, '|', '_');
+    }
 
     char *p = filename;
     while ((*p == '.') || isspace(*p)) {
