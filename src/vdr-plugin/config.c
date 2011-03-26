@@ -118,6 +118,27 @@ bool cWebvideoConfig::ReadConfigFile(const char *inifile) {
     SetTemplatePath(templatepath);
   }
 
+  const char *vfat = iniparser_getstring(conf, "webvi:vfat", NULL);
+  if (vfat) {
+    debug("vfat = %s (from %s)", vfat, inifile);
+
+    if (strcmp(vfat, "1") == 0 || 
+        strcmp(vfat, "true") == 0 ||
+        strcmp(vfat, "yes") == 0 ||
+        strcmp(vfat, "on") == 0)
+    {
+      vfatNames = true;
+    } else if (strcmp(vfat, "0") == 0 || 
+               strcmp(vfat, "false") == 0 ||
+               strcmp(vfat, "no") == 0 ||
+               strcmp(vfat, "off") == 0)
+    {
+      vfatNames = false;
+    } else {
+      warning("Invalid value for config option vfat: %s in %s", vfat, inifile);
+    }
+  }
+
   for (int i=0; i<iniparser_getnsec(conf); i++) {
     const char *section = iniparser_getsecname(conf, i);
 

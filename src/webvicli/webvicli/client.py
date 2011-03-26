@@ -698,7 +698,21 @@ def load_config(options):
     for sec in cfgprs.sections():
         if sec == 'webvi':
             for opt, val in cfgprs.items('webvi'):
-                options[opt] = val
+                if opt in ['vfat', 'verbose']:
+                    try:
+                        options[opt] = cfgprs.getboolean(sec, opt)
+                    except ValueError:
+                        print 'Invalid config: %s = %s' % (opt, val)
+
+                    # convert verbose to integer
+                    if opt == 'verbose':
+                        if options['verbose']:
+                            options['verbose'] = 1
+                        else:
+                            options['verbose'] = 0
+
+                else:
+                    options[opt] = val
 
         else:
             sitename = urlparse(sec).netloc
@@ -741,7 +755,8 @@ def parse_command_line(cmdlineargs, options):
         options['templatepath'] = cmdlineopt.templatepath
     if cmdlineopt.verbose > 0:
         options['verbose'] = cmdlineopt.verbose
-    options['vfat'] = cmdlineopt.vfat
+    if cmdlineopt.vfat:
+        options['vfat'] = cmdlineopt.vfat
 
     return options
 
