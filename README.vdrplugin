@@ -104,11 +104,20 @@ Config file
 -----------
 
 Config file VDRPLUGINCONFDIR/webvi.plugin.conf (the default path can
-be overridden with the --conf argument) controls the quality of the
-downloaded and streamed videos.
+be overridden with the --conf argument) can be used to configure the
+plugin.
 
-Currently only Youtube module supports multiple qualities. The
-following options are recognized in section [www.youtube.com]:
+The global options that can be set in section [webvi]:
+
+vfat
+
+Generate Windows compatible filenames. Allowed values: true, false.
+
+Quality of the downloaded and streamed videos can be selected in video
+site specific sections. Currently only YouTube module supports
+multiple qualities. The following options are recognized in section
+[www.youtube.com]:
+
 
 download-min-quality, download-max-quality
 
