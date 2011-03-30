@@ -217,9 +217,15 @@ Video site modules:
 
 2011-xx-xx: Version 0.4.1
 
-- Accept -p as alternative to --postprocess (thanks to Matti Lehtimäki).
+- Fixed Youtube and Metacafe modules
+- Removed SVT Play module which was not working anymore.
+- Accept -p as alternative to --postprocess (thanks to Matti
+  Lehtimäki).
 - New option --prefermplayer prefers mplayer over xineliboutput when
   streaming (thanks to Matti Lehtimäki).
 - Bookmarklet for saving a video from the web browser (a patch by
   Samuli Sorvakko).
 - Updated Italian translation (thanks to Diego Pierotto)
+- New option --verbose (webvi)
+- New option --vfat (or vfat in config file) generates Windows
+  compatible filenames (plugin, webvi)
