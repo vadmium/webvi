@@ -311,6 +311,8 @@ class WVClient:
                 finished, status, errmsg, remaining = webvi.api.pop_message()
                 if finished == handle:
                     return (status, errmsg)
+                else if finished != -1:
+                    return (501, 'Unexpected handle (got %d, expected %d)' % (finished, handle))
                 else:
                     return (501, 'No active sockets')
             
