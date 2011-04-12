@@ -527,11 +527,6 @@ class Request:
 
         xsltpath = os.path.join(template_path, self.xsltfile)
 
-        # Check that xsltpath is inside the template directory
-        if os.path.commonprefix([template_path, os.path.realpath(xsltpath)]) != template_path:
-            self.request_done(503, 'Insecure template path')
-            return
-
         xml = self.dl.get_body()
         encoding = self.dl.get_encoding()
 
