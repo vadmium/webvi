@@ -89,6 +89,11 @@ dist: clean
 	@-rm -rf $(TMPDIR)/$(ARCHIVE)
 	@echo Distribution package created as $(PACKAGE).tgz
 
+check:
+	make -C src/unittest check
+
+test: check
+
 clean:
 	$(MAKE) -C src/vdr-plugin clean
 	$(MAKE) -C src/libwebvi clean
@@ -97,4 +102,4 @@ clean:
 	find . -name "*~" -exec rm {} \;
 	find . -name "*.pyc" -exec rm {} \;
 
-.PHONY: vdr-plugin libwebvi build-python install install-vdr-plugin install-webvi dist clean
+.PHONY: vdr-plugin libwebvi build-python install install-vdr-plugin install-webvi dist clean check test

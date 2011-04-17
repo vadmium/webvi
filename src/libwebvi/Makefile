@@ -20,6 +20,8 @@ $(LIBMINOR): libwebvi.o
 	ln -sf $(LIBMINOR) $(LIBSONAME)
 	ln -sf $(LIBSONAME) $(LIBNAME)
 
+libwebvi.so: $(LIBMINOR)
+
 libwebvi.a: libwebvi.o
 	ar rsc libwebvi.a libwebvi.o
 

@@ -23,7 +23,7 @@
 
 #include "libwebvi.h"
 
-#define WVTREFERENCE "wvt:///youtube/video.xsl?srcurl=http%3A//www.youtube.com/watch%3Fv%3Dk5LmKNYTqvk"
+#define WVTREFERENCE "wvt:///www.youtube.com/videopage.xsl?srcurl=http%3A//www.youtube.com/watch%3Fv%3Dk5LmKNYTqvk"
 
 #define CHECK_WEBVI_CALL(err, funcname) \
   if (err != WEBVIERR_OK) { \
@@ -180,8 +180,13 @@ int main(int argc, const char* argv[]) {
     } while (msg_remaining > 0);
   } while (!done);
 
-  printf("\nRead %ld bytes.\n"
-         "Test successful.\n", callback_data.bytes_downloaded);
+  if (donemsg->status_code != 0) {
+    printf("Error: Unexpected status code %d\n", donemsg->status_code);
+    returncode = 127;
+  } else {
+    printf("\nRead %ld bytes.\n"
+           "Test successful.\n", callback_data.bytes_downloaded);
+  }
 
 cleanup:
   if (ctx != 0) {
