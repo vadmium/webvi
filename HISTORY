@@ -217,7 +217,8 @@ Video site modules:
 
 2011-xx-xx: Version 0.4.1
 
-- Fixed Youtube and Metacafe modules
+- Fixed Youtube, Metacafe and Vimeo modules. Streaming does not work
+  on Vimeo.
 - Removed SVT Play module which was not working anymore.
 - Accept -p as alternative to --postprocess (thanks to Matti
   Lehtimäki).
