@@ -1,6 +1,6 @@
 # asyncurl.py - Wrapper class for using pycurl objects in asyncore
 #
-# Copyright (c) 2009, 2010 Antti Ajanki <antti.ajanki@iki.fi>
+# Copyright (c) 2009-2011 Antti Ajanki <antti.ajanki@iki.fi>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

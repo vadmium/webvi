@@ -2,7 +2,7 @@
 
 # webvicli.py - webvi command line client
 #
-# Copyright (c) 2009, 2010 Antti Ajanki <antti.ajanki@iki.fi>
+# Copyright (c) 2009-2011 Antti Ajanki <antti.ajanki@iki.fi>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ from urlparse import urlparse
 from webvi.constants import WebviRequestType, WebviErr, WebviOpt, WebviInfo, WebviSelectBitmask, WebviConfig
 from . import menu
 
-VERSION = '0.4.0'
+VERSION = '0.4.1'
 
 # Default options
 DEFAULT_PLAYERS = ['vlc --play-and-exit "%s"', 

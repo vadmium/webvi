@@ -3,7 +3,7 @@
 
 # This file is part of vdr-webvideo-plugin.
 #
-# Copyright 2009,2010 Antti Ajanki <antti.ajanki@iki.fi>
+# Copyright 2009-2011 Antti Ajanki <antti.ajanki@iki.fi>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

@@ -215,7 +215,7 @@ Video site modules:
 - Command line arguments override config file options.
 - Fixes for Youtube, Metacafe and Google modules.
 
-2011-xx-xx: Version 0.4.1
+2011-04-17: Version 0.4.1
 
 - Fixed Youtube, Metacafe and Vimeo modules. Streaming does not work
   on Vimeo.
