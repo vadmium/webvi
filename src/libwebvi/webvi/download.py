@@ -17,8 +17,6 @@
 
 import os
 import asyncore
-import asynchat
-import cStringIO
 import urllib
 import subprocess
 import socket

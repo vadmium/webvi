@@ -33,7 +33,7 @@ import webvi.utils
 from optparse import OptionParser
 from ConfigParser import RawConfigParser
 from urlparse import urlparse
-from webvi.constants import WebviRequestType, WebviErr, WebviOpt, WebviInfo, WebviSelectBitmask, WebviConfig
+from webvi.constants import WebviRequestType, WebviOpt, WebviInfo, WebviSelectBitmask, WebviConfig
 from . import menu
 
 VERSION = '0.4.1'

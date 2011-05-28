@@ -24,7 +24,6 @@ asyncurl.loop() instead of asyncore.loop().
 import asyncore
 import pycurl
 import traceback
-import os
 import select
 import time
 import cStringIO
