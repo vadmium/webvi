@@ -37,7 +37,7 @@ def debug(msg):
             sys.stderr.write(msg.encode('ascii', 'replace'))
         else:
             sys.stderr.write(msg)
-	sys.stderr.write('\n')
+        sys.stderr.write('\n')
 
 def set_template_path(path):
     global template_path
@@ -193,6 +193,7 @@ class Request:
         self.status = -1
         self.errmsg = None
         self.mediaurls = []
+        self.checking_url = None
 
         # stream information
         self.contenttype = 'text/xml'
@@ -333,7 +334,7 @@ class Request:
             try:
                 doc = libxml2.parseFile(filename)
             except libxml2.parserError:
-                debug("Failed to parse " + filename);
+                debug("Failed to parse " + filename)
                 continue
 
             title = ''
@@ -341,7 +342,7 @@ class Request:
 
             root = doc.getRootElement()
             if (root is None) or (root.name != 'service'):
-                debug("Root node is not 'service' in " + filename);
+                debug("Root node is not 'service' in " + filename)
                 doc.freeDoc()
                 continue
             node = root.children
@@ -354,7 +355,7 @@ class Request:
             doc.freeDoc()
 
             if (title == '') or (url == ''):
-                debug("Empty <title> or <ref> in " + filename);
+                debug("Empty <title> or <ref> in " + filename)
                 continue
             
             menuitems[title.lower()] = ('<link>\n'

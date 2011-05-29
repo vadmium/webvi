@@ -8,7 +8,7 @@ except ImportError:
         import simplejson as json
     except ImportError:
         print 'Error: install simplejson'
-	raise
+        raise
 
 def _serialize_to_xml(obj, xmlnode):
     """Create XML representation of a Python object (list, tuple,

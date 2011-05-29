@@ -31,7 +31,7 @@ MOZILLA_USER_AGENT = 'Mozilla/5.0 (X11; U; Linux i686 (x86_64); en-US; rv:1.9.1.
 
 try:
     from libmimms import libmms
-except ImportError, e:
+except ImportError, exc:
     pass
 
 # Mapping from curl error codes to webvi errors. The error constants
@@ -61,6 +61,7 @@ else:
 
 class DownloaderException(Exception):
     def __init__(self, errcode, errmsg):
+        Exception.__init__(self)
         self.code = errcode
         self.msg = errmsg
     
@@ -328,8 +329,8 @@ class MMSDownload(DownloaderBase, asyncore.file_dispatcher):
     def start(self):
         try:
             self.stream = libmms.Stream(self.url, 1000000)
-        except libmms.Error, e:
-            self.errmsg = e.message
+        except libmms.Error, exc:
+            self.errmsg = exc.message
             self.handle_close()
             return
 
@@ -362,8 +363,8 @@ class MMSDownload(DownloaderBase, asyncore.file_dispatcher):
             data = self.recv(4096)
             if data and (self.writefunc is not None):
                 self.writefunc(data)
-        except libmms.Error, e:
-            self.errmsg = e.message
+        except libmms.Error, exc:
+            self.errmsg = exc.message
             self.handle_close()
             return
 
@@ -390,6 +391,9 @@ class ExternalDownloader(DownloaderBase, asyncore.file_dispatcher):
     def __init__(self, executable, parameters, writefunc=None,
                  headerfunc=None, donefunc=None, headers_only=False):
         DownloaderBase.__init__(self, '')
+        # Call the direct base class file_dispatcher.__init__() later
+        # in start() because we don't have the file descriptor yet.
+        # TODO: rework this
         asyncore.dispatcher.__init__(self, None, None)
         self.executable = executable
         self.writefunc = writefunc
