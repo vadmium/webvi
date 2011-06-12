@@ -97,6 +97,7 @@ test: check
 clean:
 	$(MAKE) -C src/vdr-plugin clean
 	$(MAKE) -C src/libwebvi clean
+	$(MAKE) -C src/unittest clean
 	rm -rf src/vdr-plugin/locale webvi.conf
 	python setup.py clean -a
 	find . -name "*~" -exec rm {} \;
