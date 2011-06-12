@@ -5,27 +5,69 @@
   xmlns:str="http://exslt.org/strings"
   exclude-result-prefixes="str">
 
-<xsl:template match="a">
-  <xsl:variable name="progId" select="substring-after(@href, 'progId=')"/>
-  <xsl:variable name="title" select="normalize-space(.)"/>
+<!-- Helper function for extracting progId from href -->
+<xsl:template name="extract_pid">
+  <xsl:param name="href"/>
+
+  <xsl:choose>
+    <xsl:when test="contains(substring-after($href, 'progId='), '&amp;')">
+      <xsl:value-of select="substring-before(substring-after($href, 'progId='), '&amp;')"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="substring-after($href, 'progId=')"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<!-- Create video link -->
+<xsl:template name="video_link">
+  <xsl:param name="title"/>
+  <xsl:param name="href"/>
+  <xsl:variable name="pid">
+    <xsl:call-template name="extract_pid"> 
+      <xsl:with-param name="href" select="$href"/> 
+    </xsl:call-template> 
+  </xsl:variable>
 
   <link>
     <label><xsl:value-of select="$title"/></label>
-    <stream>wvt:///katsomo.fi/video.xsl?srcurl=<xsl:value-of select="str:encode-uri(concat('http://katsomo.fi/showContent.do?progId=', $progId, '&amp;adData=%7B%22ad%22%3A%20%7B%7D%7D&amp;ajax=true&amp;serial=1'), true())"/>&amp;param=title,<xsl:value-of select="str:encode-uri($title, true())"/>&amp;HTTP-header=cookie,webtv.bandwidth%3D1000%3BautoFullScreen%3Dfalse%3Bwebtv.playerPlatform%3D0</stream>
+    <ref>wvt:///katsomo.fi/description.xsl?srcurl=<xsl:value-of select="str:encode-uri($href, true())"/></ref>
+    <stream>wvt:///katsomo.fi/video.xsl?param=pid,<xsl:value-of select="$pid"/>&amp;param=title,<xsl:value-of select="str:encode-uri($title, true())"/></stream>
   </link>
+</xsl:template>
+
+<xsl:template match="id('search_episodes')/div">
+  <xsl:call-template name="video_link">
+    <xsl:with-param name="title" select="normalize-space(h4/a)"/>
+    <xsl:with-param name="href" select="h4/a/@href"/>
+  </xsl:call-template>
+</xsl:template>
+
+<xsl:template match="id('search_clips')/div">
+  <xsl:call-template name="video_link">
+    <xsl:with-param name="title" select="normalize-space(concat(p/a[1], ' ', h4/a))"/>
+    <xsl:with-param name="href" select="h4/a/@href"/>
+  </xsl:call-template>
 </xsl:template>
 
 <xsl:template match="/">
 <wvmenu>
-  <title>Hakutulokset: <xsl:value-of select="id('searchResults')/div/div[@class='description']/span"/></title>
+  <title><xsl:value-of select="/html/head/title"/></title>
 
-  <xsl:if test="not(id('resultList')/div[@class='item'])">
-    <textarea>
-      <label><xsl:value-of select="normalize-space(id('siteMapList')/p)"/></label>
-    </textarea>
-  </xsl:if>
+  <!-- Program search results require javascript. This is not a -->
+  <!-- problem because all programs are listed on the main page -->
+  <!-- anyway. -->
+  <!-- <xsl:apply-templates select="id('search_results')/div[contains(@class, 'item')]"/> -->
 
-  <xsl:apply-templates select="id('resultList')/div[@class='item']/h6/a[not(@class='programType')]"/>
+  <textarea>
+    <label>Jaksot</label>
+  </textarea>
+  <xsl:apply-templates select="id('search_episodes')/div[contains(@class, 'item')]"/>
+
+  <textarea>
+    <label>Klipit</label>
+  </textarea>
+  <xsl:apply-templates select="id('search_clips')/div[contains(@class, 'item')]"/>
 </wvmenu>
 </xsl:template>
 

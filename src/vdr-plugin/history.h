@@ -35,7 +35,7 @@ public:
   int GetSelected() const { return selected; }
   
   int QuerySize() const;
-  char *GetQueryFragment(int i) const;
+  char *GetQueryFragment(int i, const char *encoding) const;
   cTextFieldData *GetTextFieldData(const char *controlName);
   cItemListData *GetItemListData(const char *controlName,
                                  cStringList &items,

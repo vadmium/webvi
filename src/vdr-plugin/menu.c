@@ -291,6 +291,7 @@ void cNavigationMenu::NewButton(xmlDocPtr doc, xmlNodePtr node) {
   // label and submission tags
   xmlChar *itemtitle = NULL, *submission = NULL;
   cHistoryObject *curhistpage = history->Current();
+  xmlChar *encoding = NULL;
 
   node = node->xmlChildrenNode;
   while (node) {
@@ -302,6 +303,13 @@ void cNavigationMenu::NewButton(xmlDocPtr doc, xmlNodePtr node) {
       if (submission)
         xmlFree(submission);
       submission = xmlNodeListGetString(doc, node->xmlChildrenNode, 1);
+
+      xmlChar *enc = xmlGetProp(node, BAD_CAST "encoding");
+      if (enc) {
+        if (encoding)
+          xmlFree(encoding);
+        encoding = enc;
+      }
     }
     node = node->next;
   }
@@ -309,7 +317,8 @@ void cNavigationMenu::NewButton(xmlDocPtr doc, xmlNodePtr node) {
     itemtitle = xmlCharStrdup("???");
 
   cSubmissionButtonData *data = \
-          new cSubmissionButtonData((char *)submission, curhistpage);
+    new cSubmissionButtonData((char *)submission, curhistpage,
+                              (char *)encoding);
   const char *titleconv = csc.Convert((char *)itemtitle); // do not free
   char *newtitle = (char *)malloc((strlen(titleconv)+3)*sizeof(char));
   if (newtitle) {
@@ -326,6 +335,8 @@ void cNavigationMenu::NewButton(xmlDocPtr doc, xmlNodePtr node) {
   xmlFree(itemtitle);
   if (submission)
     xmlFree(submission);
+  if (encoding)
+    xmlFree(encoding);
 }
 
 void cNavigationMenu::NewTitle(xmlDocPtr doc, xmlNodePtr node) {

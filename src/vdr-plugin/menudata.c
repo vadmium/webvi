@@ -55,13 +55,20 @@ cTextFieldData::~cTextFieldData() {
     free(valuebuffer);
 }
 
-char *cTextFieldData::GetQueryFragment() {
+char *cTextFieldData::GetQueryFragment(const char *encoding) {
   const char *name = GetName();
+  char *val;
 
   if (name && *name && valuebuffer) {
-    char *encoded = URLencode(valuebuffer);
-    cString tmp = cString::sprintf("%s,%s", name, encoded);
-    free(encoded);
+    if (encoding) {
+      cCharSetConv charsetconv = cCharSetConv("UTF-8", encoding);
+      val = URLencode(charsetconv.Convert(valuebuffer));
+    } else {
+      val = URLencode(valuebuffer);
+    }
+
+    cString tmp = cString::sprintf("%s,%s", name, val);
+    free(val);
     return strdup(tmp);
   }
 
@@ -98,11 +105,20 @@ cItemListData::~cItemListData() {
     free(stringvalues);
 }
 
-char *cItemListData::GetQueryFragment() {
+char *cItemListData::GetQueryFragment(const char *encoding) {
   const char *name = GetName();
+  char *val;
 
   if (name && *name) {
-    cString tmp = cString::sprintf("%s,%s", name, stringvalues[value]);
+    if (encoding) {
+      cCharSetConv charsetconv = cCharSetConv("UTF-8", encoding);
+      val = URLencode(charsetconv.Convert(stringvalues[value]));
+    } else {
+      val = URLencode(stringvalues[value]);
+    }
+
+    cString tmp = cString::sprintf("%s,%s", name, val);
+    free(val);
     return strdup(tmp);
   }
 
@@ -128,15 +144,19 @@ int *cItemListData::GetValuePtr() {
 // --- cSubmissionButtonData -----------------------------------------------
 
 cSubmissionButtonData::cSubmissionButtonData(
-        const char *queryUrl, const cHistoryObject *currentPage)
+        const char *queryUrl, const cHistoryObject *currentPage,
+        const char *enc)
 {
   querybase = queryUrl ? strdup(queryUrl) : NULL;
   page = currentPage;
+  encoding = enc ? strdup(enc) : NULL;
 }
 
 cSubmissionButtonData::~cSubmissionButtonData() {
   if (querybase)
     free(querybase);
+  if (encoding)
+    free(encoding);
   // do not free page
 }
 
@@ -157,9 +177,10 @@ char *cSubmissionButtonData::GetURL() {
 
   int numparameters = 0;
   for (int i=0; i<page->QuerySize(); i++) {
-    char *parameter = page->GetQueryFragment(i);
+    char *parameter = page->GetQueryFragment(i, encoding);
     if (parameter) {
-      querystr = (char *)realloc(querystr, (strlen(querystr)+strlen(parameter)+8)*sizeof(char));
+      size_t len = strlen(querystr) + strlen(parameter) + 8;
+      querystr = (char *)realloc(querystr, len*sizeof(char));
       if (i > 0)
 	strcat(querystr, "&");
       strcat(querystr, "subst=");

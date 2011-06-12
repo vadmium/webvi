@@ -15,7 +15,7 @@
 
   <button>
     <label>Hae</label>
-    <submission>wvt:///katsomo.fi/searchresults.xsl?srcurl=<xsl:value-of select="str:encode-uri('http://katsomo.fi/search.do?keywords={query}&amp;treeId=9992', true())"/></submission>
+    <submission encoding='iso-8859-1'>wvt:///katsomo.fi/searchresults.xsl?srcurl=<xsl:value-of select="str:encode-uri('http://katsomo.fi/search.do?keywords={query}&amp;treeId=33992', true())"/></submission>
   </button>
 </wvmenu>
 </xsl:template>

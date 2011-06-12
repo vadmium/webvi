@@ -43,11 +43,11 @@ int cHistoryObject::QuerySize() const {
   return editData.Size();
 }
 
-char *cHistoryObject::GetQueryFragment(int i) const {
+char *cHistoryObject::GetQueryFragment(int i, const char *encoding) const {
   if (i < 0 && i >= editData.Size())
     return NULL;
   else
-    return editData[i]->GetQueryFragment();
+    return editData[i]->GetQueryFragment(encoding);
 }
 
 cTextFieldData *cHistoryObject::GetTextFieldData(const char *controlName) {

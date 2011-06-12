@@ -142,6 +142,9 @@ char *URLencode(const char *s) {
       '\0'
     };
 
+  if (!s)
+    return NULL;
+
   char *buf = (char *)malloc((3*strlen(s)+1)*sizeof(char));
   if (!buf)
     return NULL;

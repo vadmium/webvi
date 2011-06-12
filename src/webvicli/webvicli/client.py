@@ -279,14 +279,18 @@ class WVClient:
     def parse_button(self, node, queryitems):
         label = ''
         submission = None
+        encoding = 'utf-8'
         child = node.children
         while child:
             if child.name == 'label':
                 label = webvi.utils.get_content_unicode(child)
             elif child.name == 'submission':
                 submission = webvi.utils.get_content_unicode(child)
+                enc = child.hasProp('encoding')
+                if enc is not None:
+                    encoding = webvi.utils.get_content_unicode(enc)
             child = child.next
-        return menu.MenuItemSubmitButton(label, submission, queryitems)
+        return menu.MenuItemSubmitButton(label, submission, queryitems, encoding)
 
     def guess_extension(self, mimetype, url):
         ext = mimetypes.guess_extension(mimetype)

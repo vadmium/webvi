@@ -145,13 +145,14 @@ class MenuItemList:
 
 
 class MenuItemSubmitButton:
-    def __init__(self, label, baseurl, subitems):
+    def __init__(self, label, baseurl, subitems, encoding):
         self.label = label
         if type(baseurl) == unicode:
             self.baseurl = baseurl.encode('utf-8')
         else:
             self.baseurl = baseurl
         self.subitems = subitems
+        self.encoding = encoding
 
     def __str__(self):
         return '[' + self.label + ']'
@@ -166,6 +167,11 @@ class MenuItemSubmitButton:
         parts = []
         for sub in self.subitems:
             for key, val in sub.get_query().iteritems():
-                parts.append('subst=' + urllib.quote_plus(key.encode('utf-8')) + ',' + urllib.quote_plus(val.encode('utf-8')))
+                try:
+                    parts.append('subst=' + \
+                       urllib.quote_plus(key.encode(self.encoding, 'ignore')) + ',' + \
+                       urllib.quote_plus(val.encode(self.encoding, 'ignore')))
+                except LookupError:
+                    pass
 
         return baseurl + '&'.join(parts)

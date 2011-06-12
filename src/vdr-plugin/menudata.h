@@ -30,7 +30,7 @@ public:
   virtual ~cQueryData();
 
   const char *GetName() { return name; }
-  virtual char *GetQueryFragment() = 0;
+  virtual char *GetQueryFragment(const char *encoding) = 0;
 };
 
 // --- cSimpleLink ---------------------------------------------------------
@@ -56,7 +56,7 @@ public:
   cTextFieldData(const char *Name, int Length);
   virtual ~cTextFieldData();
 
-  virtual char *GetQueryFragment();
+  virtual char *GetQueryFragment(const char *encoding);
   char *GetValue();
   int GetLength();
 };
@@ -74,7 +74,7 @@ public:
   cItemListData(const char *Name, char **Strings, char **StringValues, int NumStrings);
   virtual ~cItemListData();
 
-  virtual char *GetQueryFragment();
+  virtual char *GetQueryFragment(const char *encoding);
   char **GetStrings();
   char **GetStringValues();
   int GetNumStrings();
@@ -89,9 +89,11 @@ class cSubmissionButtonData : public cLinkBase {
 private:
   char *querybase;
   const cHistoryObject *page;
+  char *encoding;
 public:
   cSubmissionButtonData(const char *queryUrl,
-                        const cHistoryObject *currentPage);
+                        const cHistoryObject *currentPage,
+                        const char *encoding);
   virtual ~cSubmissionButtonData();
 
   virtual char *GetURL();

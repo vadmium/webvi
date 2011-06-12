@@ -5,6 +5,14 @@
   xmlns:str="http://exslt.org/strings"
   exclude-result-prefixes="str">
 
+<xsl:template match="id('all_programs_tab1')//a">
+  <link>
+    <label><xsl:value-of select="normalize-space(string(.))"/></label>
+    <ref>wvt:///katsomo.fi/program.xsl?srcurl=<xsl:value-of select="str:encode-uri(@href, true())"/></ref>
+  </link>
+</xsl:template>
+
+
 <xsl:template match="/">
 <wvmenu>
   <title>MTV3 Katsomo</title>
@@ -14,12 +22,7 @@
     <ref>wvt:///katsomo.fi/search.xsl</ref>
   </link>
 
-  <xsl:for-each select="id('mainMenu')/li[a/@href != '/']"> 
-    <link>
-      <label><xsl:value-of select="a"/></label>
-      <ref>wvt:///katsomo.fi/navigation.xsl?srcurl=<xsl:value-of select="str:encode-uri(a/@href, true())"/></ref>
-    </link>
-  </xsl:for-each>
+  <xsl:apply-templates select="id('all_programs_tab1')//a"/>
 </wvmenu>
 </xsl:template>
 
