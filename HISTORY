@@ -231,7 +231,7 @@ Video site modules:
 - New option --vfat (or vfat in config file) generates Windows
   compatible filenames (plugin, webvi)
 
-2011-xx-xx: Version 0.4.2
+2011-06-12: Version 0.4.2
 
 - Fixed katsomo.fi module.
 - Watch on vdr bookmarklet now works also on katsomo.fi.

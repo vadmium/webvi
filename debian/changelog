@@ -1,3 +1,11 @@
+vdr-plugin-webvideo (0.4.2-1) unstable; urgency=low
+
+  * Fixed katsomo.fi module.
+  * Watch on vdr bookmarklet now works also on katsomo.fi.
+  * webvi: Space in search terms was errornously replaced by plus.
+
+ -- Antti Ajanki <antti.ajanki@iki.fi>  Sun, 12 Jun 2011 21:43:33 +0300
+
 vdr-plugin-webvideo (0.4.1-1) unstable; urgency=low
 
   * Fixed Youtube, Metacafe and Vimeo modules. Streaming does not
