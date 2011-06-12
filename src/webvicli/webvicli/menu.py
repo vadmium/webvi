@@ -168,9 +168,9 @@ class MenuItemSubmitButton:
         for sub in self.subitems:
             for key, val in sub.get_query().iteritems():
                 try:
-                    parts.append('subst=' + \
-                       urllib.quote_plus(key.encode(self.encoding, 'ignore')) + ',' + \
-                       urllib.quote_plus(val.encode(self.encoding, 'ignore')))
+                    parts.append('subst=%s,%s' % \
+                      (urllib.quote(key.encode(self.encoding, 'ignore')),
+                       urllib.quote(val.encode(self.encoding, 'ignore'))))
                 except LookupError:
                     pass
 
