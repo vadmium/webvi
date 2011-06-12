@@ -21,7 +21,16 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 <xsl:template match="/">
 <wvmenu>
-  <title><xsl:value-of select="/rss/channel/title"/></title>
+  <title>
+    <xsl:choose>
+      <xsl:when test="/rss/channel/title/text()">
+	<xsl:value-of select="/rss/channel/title"/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:value-of select="/rss/channel/item[1]/category"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </title>
 
   <xsl:apply-templates select="/rss/channel/item"/>
 
