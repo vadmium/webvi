@@ -317,8 +317,10 @@ class WVClient:
                     return (status, errmsg)
                 elif finished != -1:
                     return (501, 'Unexpected handle (got %d, expected %d)' % (finished, handle))
+                elif status != -1 or errmsg:
+                    return (status, errmsg)
                 else:
-                    return (501, 'No active sockets')
+                    return (502, 'empty fdset but handle is not ready!')
             
             readyread, readywrite, readyexc = select.select(readfds, writefds, excfds, 30.0)
 
