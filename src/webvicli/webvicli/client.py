@@ -575,7 +575,9 @@ class WVShell(cmd.Cmd):
 
     def display_menu(self, menupage):
         if menupage is not None:
-            self.stdout.write(unicode(menupage).encode(self.stdout.encoding, 'replace'))
+            enc = self.stdout.encoding or 'UTF-8'
+            self.stdout.write(unicode(menupage).encode(enc, 'replace'))
+            self.stdout.flush()
     
     def _get_numbered_item(self, arg):
         menupage = self.client.get_current_menu()
@@ -585,6 +587,7 @@ class WVShell(cmd.Cmd):
                 raise ValueError
         except ValueError:
             self.stdout.write('Invalid selection: %s\n' % arg)
+            self.stdout.flush()
             return None
         return menupage[v]
 
@@ -609,6 +612,7 @@ Select the link whose index is x.
                 self.client.history_add(menupage)
             else:
                 self.stdout.write('Error: %d %s\n' % (status, statusmsg))
+                self.stdout.flush()
         else:
             menupage = self.client.get_current_menu()
         self.display_menu(menupage)
@@ -635,6 +639,7 @@ URL of a video page.
             self.client.download(stream)
         else:
             self.stdout.write('Not a stream\n')
+            self.stdout.flush()
         return False
 
     def do_stream(self, arg):
@@ -657,6 +662,7 @@ Play a stream. x can be an integer referring to a downloadable item
             self.client.play_stream(stream)
         else:
             self.stdout.write('Not a stream\n')
+            self.stdout.flush()
         return False
 
     def do_display(self, arg):
@@ -665,6 +671,7 @@ Play a stream. x can be an integer referring to a downloadable item
             self.display_menu(self.client.get_current_menu())
         else:
             self.stdout.write('Unknown parameter %s\n' % arg)
+            self.stdout.flush()
         return False
 
     def do_menu(self, arg):
@@ -675,6 +682,7 @@ Play a stream. x can be an integer referring to a downloadable item
             self.display_menu(menupage)
         else:
             self.stdout.write('Error: %d %s\n' % (status, statusmsg))
+            self.stdout.flush()
             return True
         return False
 
