@@ -178,7 +178,7 @@ class DummyDownloader(DownloaderBase, asyncore.file_dispatcher):
         self._fileno = self.socket.fileno()
 
     def start(self):
-        if self.headers_only:
+        if self.headers_only and self.donefunc:
             self.donefunc(0, None)
         else:
             self.add_channel()
@@ -200,7 +200,7 @@ class DummyDownloader(DownloaderBase, asyncore.file_dispatcher):
     def handle_close(self):
         self.close()
 
-        if self.donefunc is not None:
+        if self.donefunc:
             self.donefunc(0, '')
 
 
@@ -220,7 +220,7 @@ class CurlDownload(DownloaderBase, asyncurl.async_curl_dispatcher):
         self.curl.setopt(pycurl.USERAGENT, WEBVID_USER_AGENT)
         if headers_only:
             self.curl.setopt(pycurl.NOBODY, 1)
-        if headerfunc is not None:
+        if headerfunc:
             self.curl.setopt(pycurl.HEADERFUNCTION, headerfunc)
         self.curl.setopt(pycurl.WRITEFUNCTION, self.writewrapper)
 
@@ -279,7 +279,7 @@ class CurlDownload(DownloaderBase, asyncurl.async_curl_dispatcher):
 
     def handle_completed(self, err, errmsg):
         asyncurl.async_curl_dispatcher.handle_completed(self, err, errmsg)
-        if self.donefunc is not None:
+        if self.donefunc:
             err, errmsg = convert_curl_error(err, errmsg, self.aborted)
             self.donefunc(err, errmsg)
 
@@ -423,9 +423,10 @@ class ExternalDownloader(DownloaderBase, asyncore.file_dispatcher):
         self.process = None
 
     def start(self):
-        self.headerfunc('Content-Type: ' + self.contenttype)
+        if self.headerfunc:
+            self.headerfunc('Content-Type: ' + self.contenttype)
 
-        if self.headers_only:
+        if self.headers_only and self.donefunc:
             self.donefunc(0, None)
             return
 
@@ -460,7 +461,7 @@ class ExternalDownloader(DownloaderBase, asyncore.file_dispatcher):
         self.close()
         self.process.wait()
 
-        if self.donefunc is not None:
+        if self.donefunc:
             if self.process.returncode == 0:
                 self.donefunc(0, '')
             elif self.aborted and self.process.returncode == -signal.SIGTERM:
