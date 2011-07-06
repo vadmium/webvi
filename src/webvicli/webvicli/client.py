@@ -26,6 +26,7 @@ import os.path
 import subprocess
 import time
 import re
+import datetime
 import urllib
 import libxml2
 import webvi.api
@@ -33,7 +34,7 @@ import webvi.utils
 from optparse import OptionParser
 from ConfigParser import RawConfigParser
 from urlparse import urlparse
-from webvi.constants import WebviRequestType, WebviOpt, WebviInfo, WebviSelectBitmask, WebviConfig
+from webvi.constants import WebviRequestType, WebviOpt, WebviInfo, WebviSelectBitmask, WebviConfig, WebviSelect
 from . import menu
 
 VERSION = '0.4.2'
@@ -188,6 +189,15 @@ class WVClient:
         self.quality_limits = {'download': downloadlimits,
                                 'stream': streamlimits}
         self.vfatfilenames = vfatfilenames
+        self.alarm = None
+        webvi.api.set_config(WebviConfig.TIMEOUT_CALLBACK, self.update_timeout)
+
+    def update_timeout(self, timeout_ms, data):
+        if timeout_ms < 0:
+            self.alarm = None
+        else:
+            now = datetime.datetime.now()
+            self.alarm = now + datetime.timedelta(milliseconds=timeout_ms)
 
     def parse_page(self, page):
         if page is None:
@@ -226,7 +236,7 @@ class WVClient:
             node = node.next
         doc.freeDoc()
         return menupage
-        
+
     def parse_link(self, node):
         label = ''
         ref = None
@@ -319,10 +329,24 @@ class WVClient:
                     return (501, 'Unexpected handle (got %d, expected %d)' % (finished, handle))
                 elif status != -1 or errmsg:
                     return (status, errmsg)
-                else:
-                    return (502, 'empty fdset but handle is not ready!')
             
-            readyread, readywrite, readyexc = select.select(readfds, writefds, excfds, 30.0)
+            if self.alarm is None:
+                timeout = 10.0
+            else:
+                delta = self.alarm - datetime.datetime.now()
+                if delta < datetime.timedelta(0):
+                    timeout = 10.0
+                    self.alarm = None
+                else:
+                    timeout = delta.microseconds/1000000.0 + delta.seconds
+
+            readyread, readywrite, readyexc = \
+                select.select(readfds, writefds, excfds, timeout)
+
+            if readyread == readywrite == readyexc == []:
+                webvi.api.perform(WebviSelect.TIMEOUT, WebviSelectBitmask.CHECK)
+                self.alarm = None
+                continue
 
             for fd in readyread:
                 webvi.api.perform(fd, WebviSelectBitmask.READ)

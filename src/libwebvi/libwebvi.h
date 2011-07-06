@@ -26,6 +26,7 @@
 typedef int WebviHandle;
 
 typedef ssize_t (*webvi_callback)(const char *, size_t, void *);
+typedef void (*webvi_timeout_callback)(long, void *);
 
 typedef enum {
   WEBVIMSG_DONE
@@ -65,8 +66,10 @@ typedef enum {
   WEBVIINFO_STREAM_TITLE
 } WebviInfo;
 
+#define WEBVI_SELECT_TIMEOUT -1
+
 typedef enum {
-  WEBVI_SELECT_TIMEOUT = 0,
+  WEBVI_SELECT_CHECK = 0,
   WEBVI_SELECT_READ = 1,
   WEBVI_SELECT_WRITE = 2,
   WEBVI_SELECT_EXCEPTION = 4
@@ -74,7 +77,9 @@ typedef enum {
 
 typedef enum {
   WEBVI_CONFIG_TEMPLATE_PATH,
-  WEBVI_CONFIG_DEBUG
+  WEBVI_CONFIG_DEBUG,
+  WEBVI_CONFIG_TIMEOUT_CALLBACK,
+  WEBVI_CONFIG_TIMEOUT_DATA
 } WebviConfig;
 
 typedef long WebviCtx;
@@ -133,12 +138,24 @@ const char* webvi_strerror(WebviCtx ctx, WebviResult err);
  * Set a new value for a global configuration option conf.
  *
  * Possible values and their meanings:
- * TEMPLATE_PATH   Set the base directory for the XSLT templates
- * DEBUG           If value is not "0", print debug output to stdin
  *
- * The string pointed by value is copied to the library.
+ * WEBVI_CONFIG_TEMPLATE_PATH
+ *   Set the base directory for the XSLT templates (char *)
+ *
+ * WEBVI_CONFIG_DEBUG
+ *   If value is not "0", print debug output to stdin (char *)
+ *
+ * WEBVI_CONFIG_TIMEOUT_CALLBACK
+ *   Set timeout callback function (webvi_timeout_callback)
+ *
+ * WEBVI_CONFIG_TIMEOUT_DATA
+ *   Set user data which will passed as second argument of the timeout
+ *   callback (void *)
+ *
+ * The strings (char * arguments) are copied to the library (the user
+ * can free their original copy).
  */
-WebviResult webvi_set_config(WebviCtx ctx, WebviConfig conf, const char *value);
+WebviResult webvi_set_config(WebviCtx ctx, WebviConfig conf, ...);
 
 /*
  * Creates a new download request.
@@ -301,14 +318,13 @@ WebviResult webvi_fdset(WebviCtx ctx, fd_set *readfd, fd_set *writefd, fd_set *e
  * WEBVI_SELECT_READ, WEBVI_SELECT_WRITE, WEBVI_SELECT_EXCEPTION to
  * indicate that activefd has been signalled to be ready for reading,
  * writing or being in exception state, respectively. ev_bitmask can
- * also set to WEBVI_SELECT_TIMEOUT which means that the state is
+ * also set to WEBVI_SELECT_CHECK which means that the state is
  * checked internally. On return, running_handles will contain the
  * number of still active file descriptors.
  *
- * This function should be called with activefd set to 0 and
- * ev_bitmask to WEBVI_SELECT_TIMEOUT periodically (every few seconds)
- * even if no file descriptors have become ready to allow for timeout
- * handling and other internal tasks.
+ * If a timeout occurs before any file descriptor becomes ready, this
+ * function should be called with sockfd set to WEBVI_SELECT_TIMEOUT
+ * and ev_bitmask set to WEBVI_SELECT_CHECK.
  */
 WebviResult webvi_perform(WebviCtx ctx, int sockfd, int ev_bitmask, long *running_handles);
 

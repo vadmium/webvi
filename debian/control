@@ -20,7 +20,7 @@ Description: Web video downloader library - Python module
  This is the Python module.
 XB-Python-Version: ${python:Versions}
 
-Package: libwebvi0
+Package: libwebvi1
 Architecture: any
 Section: libs
 Depends: ${shlibs:Depends}, ${misc:Depends}, python, python-webvi
@@ -34,7 +34,7 @@ XB-Python-Version: ${python:Versions}
 Package: libwebvi-dev
 Architecture: any
 Section: libdevel
-Depends: ${misc:Depends}, libc-dev
+Depends: ${misc:Depends}, libc-dev, python-dev
 Description: Web video downloader library - development files
  This package provides a library for downloading video and audio
  streams from media sharing websites, such as YouTube or Google Video.
@@ -44,7 +44,7 @@ Description: Web video downloader library - development files
 Package: vdr-plugin-webvideo
 Architecture: any
 Section: video
-Depends: ${shlibs:Depends}, ${misc:Depends}, ${vdr:Depends}, libwebvi0
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${vdr:Depends}, libwebvi1
 Suggests: vdr-plugin-mplayer | vdr-plugin-xineliboutput
 Description: VDR plugin for downloading videos from the Web
  This plugin for the Linux Video Disc Recorder (VDR) provides ability

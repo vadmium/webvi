@@ -9,6 +9,7 @@
 #ifndef __WEBVIDEO_DOWNLOAD_H
 #define __WEBVIDEO_DOWNLOAD_H
 
+#include <sys/time.h>
 #include <vdr/thread.h>
 #include <libwebvi.h>
 #include "request.h"
@@ -23,6 +24,8 @@ private:
   cRequestVector newRequestList;
   cRequestVector finishedRequestList;
   int newreqread, newreqwrite;
+  bool timerActive;
+  struct timeval timer;
 
   void MoveToFinishedList(cMenuRequest *req);
   void ActivateNewRequest();
@@ -30,6 +33,7 @@ private:
 
 protected:
   void Action(void);
+  static void UpdateTimeout(long timeout, void *data);
 
 public:
   cWebviThread();

@@ -231,9 +231,11 @@ WebviCtx webvi_initialize_context(void) {
 
   /* These are used to wrap C-callbacks into Python callables. 
      Keep in sync with libwebvi.h. */
-  if (PyRun_SimpleString("from ctypes import CFUNCTYPE, c_int, c_size_t, c_char_p, c_void_p\n"
-                         "WriteCallback = CFUNCTYPE(c_size_t, c_char_p, c_size_t, c_void_p)\n"
-                         "ReadCallback = CFUNCTYPE(c_size_t, c_char_p, c_size_t, c_void_p)\n") != 0) {
+  if (PyRun_SimpleString(
+       "from ctypes import CFUNCTYPE, c_int, c_long, c_size_t, c_char_p, c_void_p\n"
+       "WriteCallback = CFUNCTYPE(c_size_t, c_char_p, c_size_t, c_void_p)\n"
+       "ReadCallback = CFUNCTYPE(c_size_t, c_char_p, c_size_t, c_void_p)\n"
+       "TimeoutCallback = CFUNCTYPE(c_long, c_void_p)\n") != 0) {
     debug("callback definitions failed\n");
     goto err;
   }
@@ -322,18 +324,51 @@ const char* webvi_strerror(WebviCtx ctx, WebviResult res) {
   return c->last_error;
 }
 
-WebviResult webvi_set_config(WebviCtx ctx, WebviConfig conf, const char *value) {
+WebviResult webvi_set_config(WebviCtx ctx, WebviConfig conf, ...) {
+  va_list argptr;
   WebviResult res;
   per_interpreter_data *c = (per_interpreter_data *)ctx;
 
   PyEval_AcquireThread(c->interp);
 
-  PyObject *args = Py_BuildValue("(is)", conf, value);
-  PyObject *v = call_python(c->webvi_module, "set_config", args);
-  Py_DECREF(args);
+  PyObject *m = PyImport_AddModule("__main__");
+  if (!m) {
+    handle_pyerr();
+    PyEval_ReleaseThread(c->interp);
+    return WEBVIERR_UNKNOWN_ERROR;
+  }
 
-  res = pyint_as_webviresult(v);
-  Py_XDECREF(v);
+  va_start(argptr, conf);
+
+  PyObject *args = NULL;
+  if (conf == WEBVI_CONFIG_TIMEOUT_CALLBACK) {
+    PyObject *maindict = PyModule_GetDict(m);
+    PyObject *prototype = PyDict_GetItemString(maindict, "TimeoutCallback");
+    PyObject *cb_addr = Py_BuildValue("(l)", va_arg(argptr, long));
+    PyObject *cb_as_pyobject = PyObject_CallObject(prototype, cb_addr);
+    args = Py_BuildValue("(iO)", conf, cb_as_pyobject);
+    Py_DECREF(cb_as_pyobject);
+    Py_DECREF(cb_addr);
+
+  } else if (conf == WEBVI_CONFIG_TIMEOUT_DATA) {
+    args = Py_BuildValue("(il)", conf, va_arg(argptr, long));
+
+  } else {
+    args = Py_BuildValue("(is)", conf, va_arg(argptr, char *));
+  }
+
+  if (args) {
+    PyObject *v = call_python(c->webvi_module, "set_config", args);
+    Py_DECREF(args);
+
+    res = pyint_as_webviresult(v);
+    Py_XDECREF(v);
+  } else {
+    handle_pyerr();
+    res = WEBVIERR_UNKNOWN_ERROR;
+  }
+
+  va_end(argptr);
 
   PyEval_ReleaseThread(c->interp);
 

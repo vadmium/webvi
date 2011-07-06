@@ -40,7 +40,8 @@ def poll(timeout=0.0, map=None, mdisp=None):
     if mdisp is None:
         mdisp = multi_dispatcher
     if map:
-        timeout = min(timeout, mdisp.timeout/1000.0)
+        if mdisp.timeout != -1:
+            timeout = min(timeout, mdisp.timeout/1000.0)
 
         r = []; w = []; e = []
         for fd, obj in map.items():
@@ -53,7 +54,8 @@ def poll(timeout=0.0, map=None, mdisp=None):
             if is_r or is_w:
                 e.append(fd)
         if [] == r == w == e:
-            time.sleep(timeout)
+            if timeout > 0:
+                time.sleep(timeout)
         else:
             try:
                 r, w, e = select.select(r, w, e, timeout)
@@ -84,6 +86,11 @@ def poll(timeout=0.0, map=None, mdisp=None):
             if obj is None:
                 continue
             asyncore._exception(obj)
+
+def poll_timeout(mdisp=None):
+    if mdisp is None:
+        mdisp = multi_dispatcher
+    mdisp.socket_action(SOCKET_TIMEOUT, 0)
 
 def loop(timeout=30.0, use_poll=False, map=None, count=None, mdisp=None):
     if map is None:
@@ -118,13 +125,15 @@ class curl_multi_dispatcher:
         else:
             self._map = socket_map
         self.dispatchers = {}
-        self.timeout = 1000
+        self.timeout = -1
+        # The lambda is to avoid "not callable" error from pylint
+        self.timeout_callback = lambda x, y: None
         self._sockets_removed = False
         self._curlm = pycurl.CurlMulti()
-        self._curlm.setopt(pycurl.M_SOCKETFUNCTION, self.socket_callback)
-        self._curlm.setopt(pycurl.M_TIMERFUNCTION, self.timeout_callback)
+        self._curlm.setopt(pycurl.M_SOCKETFUNCTION, self._socket_callback)
+        self._curlm.setopt(pycurl.M_TIMERFUNCTION, self._update_timeout)
         
-    def socket_callback(self, action, socket, user_data, socket_data):
+    def _socket_callback(self, action, socket, user_data, socket_data):
 #         print 'socket callback: %d, %s' % \
 #               (socket, {pycurl.POLL_NONE: "NONE",
 #                         pycurl.POLL_IN: "IN",
@@ -155,8 +164,10 @@ class curl_multi_dispatcher:
             obj.set_readable(True)
             obj.set_writable(True)
 
-    def timeout_callback(self, msec):
+    def _update_timeout(self, msec):
         self.timeout = msec
+        if self.timeout_callback:
+            self.timeout_callback(self, msec)
 
     def attach(self, curldisp):
         """Starts a transfer on curl handle by attaching it to this
@@ -168,9 +179,9 @@ class curl_multi_dispatcher:
            # the curl object is already on this multi-stack
             pass
 
-        while self._curlm.socket_all()[0] == pycurl.E_CALL_MULTI_PERFORM:
-            pass
-
+        # _curlm.timeout() seems to be needed, although curl
+        # documentation doesn't mention it.
+        self._update_timeout(self._curlm.timeout())
         self.check_completed(True)
 
     def detach(self, curldisp):
@@ -181,9 +192,6 @@ class curl_multi_dispatcher:
         # libcurl does not send POLL_REMOVE when a handle is aborted
         for socket, curlobj in self._map.items():
             if curlobj == curldisp:
-
-                print 'handle stopped but socket in map'
-                
                 del self._map[socket]
                 break
 

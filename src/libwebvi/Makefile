@@ -2,8 +2,8 @@ PREFIX ?= /usr/local
 SYSLIBDIR = $(PREFIX)/lib
 
 LIBNAME=libwebvi.so
-LIBSONAME=$(LIBNAME).0
-LIBMINOR=$(LIBSONAME).4
+LIBSONAME=$(LIBNAME).1
+LIBMINOR=$(LIBSONAME).0
 
 VERSION:=$(shell grep VERSION webvi/version.py | cut -d \' -f 2)
 PYLIB:=$(shell python pythonlibname.py)

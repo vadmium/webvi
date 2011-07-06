@@ -23,29 +23,45 @@ Example workflow:
 
 handle = new_request(ref, WebviRequestType.MENU)
 
-2) Setup a callback function:
+2) Setup a timeout callback:
 
-setopt(handle, WebviOpt.WRITEFUNC, my_callback)
+def timeout_func(t, ignored):
+    global alarm
+    now = current_time_in_milliseconds()
+    alarm = now + t
 
-3) Start the network transfer:
+set_config(WebviConfig.TIMEOUT_CALLBACK, timeout_func)
+
+3) Setup a data callback:
+
+set_opt(handle, WebviOpt.WRITEFUNC, write_func)
+
+4) Start the network transfer:
 
 start_handle(handle)
 
-4) Get active file descriptors, wait for activity on them, and let
-webvi process the file descriptor.
+5) Get active file descriptors, wait for activity using the timeout
+value supplied by timeout callback, and let webvi process the file
+descriptor.
 
 import select
 
 ...
 
 readfd, writefd, excfd = fdset()[1:4]
-readfd, writefd, excfd = select.select(readfd, writefd, excfd, 5.0)
-for fd in readfd:
-    perform(fd, WebviSelectBitmask.READ)
-for fd in writefd:
-    perform(fd, WebviSelectBitmask.WRITE)
+timeout = alarm - current_time_in_milliseconds()
+if timeout < 0:
+    timeout = 10.0
+readfd, writefd, excfd = select.select(readfd, writefd, excfd, timeout)
+if readfd == writefd == excfd == []: # timeout
+    perform(WebviSelect.TIMEOUT, WebviSelectBitmask.CHECK)
+else:
+    for fd in readfd:
+        perform(fd, WebviSelectBitmask.READ)
+    for fd in writefd:
+        perform(fd, WebviSelectBitmask.WRITE)
 
-5) Iterate 4) until pop_message returns handle, which indicates that
+6) Iterate 5) until pop_message returns handle, which indicates that
 the request has been completed.
 
 finished, status, errmsg, remaining = pop_message()
@@ -104,6 +120,12 @@ def set_config(conf, value):
             request.DEBUG = False
         else:
             request.DEBUG = True
+        return WebviErr.OK
+    elif conf == WebviConfig.TIMEOUT_CALLBACK:
+        request.set_timeout_callback(value)
+        return WebviErr.OK
+    elif conf == WebviConfig.TIMEOUT_DATA:
+        request.timeout_data = value
         return WebviErr.OK
     else:
         return WebviErr.INVALID_PARAMETER
@@ -242,7 +264,7 @@ def fdset():
     """Get the list of file descriptors that are currently in use by
     the library.
 
-    Returrns a tuple, where the first item is a constants.WebviErr
+    Returns a tuple, where the first item is a constants.WebviErr
     value indicating the success of the call, the next three values
     are lists of descriptors that should be monitored for reading,
     writing, and exceptional conditions, respectively. The last item
@@ -272,24 +294,24 @@ def perform(fd, ev_bitmask):
     select() or similar system call. ev_bitmask specifies what kind of
     activity has been detected using values of
     constants.WebviSelectBitmask. If ev_bitmask is
-    constants.WebviSelectBitmask.TIMEOUT the type of activity is check
-    by the function.
+    constants.WebviSelectBitmask.CHECK the type of activity is
+    checked by the function.
 
-    This function should be called every few seconds with fd=-1,
-    ev_bitmask=constants.WebviSelectBitmask.TIMEOUT even if no
-    activity has been signalled on the file descriptors to ensure
-    correct handling of timeouts and other internal processing.
+    If a timeout occurs before any file descriptor becomes ready, this
+    function should be called with fd set to
+    constants.WebviSelect.TIMEOUT and ev_bitmask set to
+    constants.WebviSelectBitmask.CHECK.
     """
     if fd < 0:
-        asyncurl.poll()
+        asyncurl.poll_timeout()
     else:
         disp = socket_map.get(fd)
         if disp is not None:
             if ev_bitmask & WebviSelectBitmask.READ != 0 or \
-               (ev_bitmask == 0 and disp.readable()):
+               (ev_bitmask == WebviSelectBitmask.CHECK and disp.readable()):
                 disp.handle_read_event()
             if ev_bitmask & WebviSelectBitmask.WRITE != 0 or \
-               (ev_bitmask == 0 and disp.writable()):
+               (ev_bitmask == WebviSelectBitmask.CHECK and disp.writable()):
                 disp.handle_write_event()
 
     return (WebviErr.OK, len(socket_map))

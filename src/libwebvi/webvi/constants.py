@@ -41,11 +41,16 @@ class WebviInfo:
     STREAM_TITLE = 3
 
 class WebviSelectBitmask:
-    TIMEOUT = 0
+    CHECK = 0
     READ = 1
     WRITE = 2
     EXCEPTION = 4
 
+class WebviSelect:
+    TIMEOUT = -1
+
 class WebviConfig:
     TEMPLATE_PATH = 0
     DEBUG = 1
+    TIMEOUT_CALLBACK = 2
+    TIMEOUT_DATA = 3

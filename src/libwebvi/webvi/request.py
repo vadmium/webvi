@@ -24,12 +24,14 @@ import download
 import sys
 import utils
 import json2xml
+import asyncurl
 from constants import WebviRequestType
 
 DEBUG = False
 
 DEFAULT_TEMPLATE_PATH = '/usr/local/share/webvi/templates'
 template_path = DEFAULT_TEMPLATE_PATH
+timeout_data = None
 
 def debug(msg):
     if DEBUG:
@@ -48,6 +50,10 @@ def set_template_path(path):
         template_path = os.path.realpath(path)
     
     debug("set_template_path " + template_path)
+
+def set_timeout_callback(callback):
+    c_api_callback = lambda mdisp, timeout: callback(timeout, timeout_data)
+    asyncurl.multi_dispatcher.timeout_callback = c_api_callback
 
 def parse_reference(reference):
     """Parses URLs of the following form:

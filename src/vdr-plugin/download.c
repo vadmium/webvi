@@ -14,6 +14,19 @@
 #include "download.h"
 #include "common.h"
 
+static void diff_timeval(struct timeval *a, struct timeval *b,
+                         struct timeval *result) {
+  long usec_diff = a->tv_usec - b->tv_usec;
+  result->tv_sec = a->tv_sec - b->tv_sec;
+
+  while (usec_diff < 0) {
+    usec_diff += 1000000;
+    result->tv_sec -= 1;
+  }
+
+  result->tv_usec = usec_diff;
+}
+
 // --- cWebviThread --------------------------------------------------------
 
 cWebviThread::cWebviThread() {
@@ -25,8 +38,13 @@ cWebviThread::cWebviThread() {
   newreqwrite = pipefd[1];
   //fcntl(newreqread, F_SETFL, O_NONBLOCK);
   //fcntl(newreqwrite, F_SETFL, O_NONBLOCK);
+  timerActive = false;
 
   webvi = webvi_initialize_context();
+  if (webvi != 0) {
+    webvi_set_config(webvi, WEBVI_CONFIG_TIMEOUT_DATA, this);
+    webvi_set_config(webvi, WEBVI_CONFIG_TIMEOUT_CALLBACK, UpdateTimeout);
+  }
 }
 
 cWebviThread::~cWebviThread() {
@@ -44,6 +62,24 @@ cWebviThread::~cWebviThread() {
 
   if (numactive > 0) {
     esyslog("%d requests failed to complete", numactive);
+  }
+}
+
+void cWebviThread::UpdateTimeout(long timeout, void *instance) {
+  cWebviThread *self = (cWebviThread *)instance;
+  if (!self)
+    return;
+
+  if (timeout < 0) {
+    self->timerActive = false;
+  } else {
+    struct timeval now;
+    long alrm;
+    gettimeofday(&now, NULL);
+    alrm = timeout + now.tv_usec/1000;
+    self->timer.tv_sec = now.tv_sec + alrm/1000;
+    self->timer.tv_usec = (alrm % 1000) * 1000;
+    self->timerActive = true;
   }
 }
 
@@ -128,8 +164,8 @@ void cWebviThread::Stop() {
 
 void cWebviThread::Action(void) {
   fd_set readfds, writefds, excfds;
-  int maxfd;
-  struct timeval timeout;
+  int maxfd, s;
+  struct timeval timeout, now;
   long running_handles;
   bool check_done = false;
   bool has_request_files = false;
@@ -161,11 +197,20 @@ void cWebviThread::Action(void) {
     }
     requestMutex.Unlock();
 
-    timeout.tv_sec = 5;
-    timeout.tv_usec = 0;
+    if (!timerActive) {
+      timeout.tv_sec = 60;
+      timeout.tv_usec = 0;
+    } else {
+      gettimeofday(&now, NULL);
+      diff_timeval(&timer, &now, &timeout);
+      if (timeout.tv_sec < 0 || timeout.tv_usec < 0) {
+        timeout.tv_sec = 0;
+        timeout.tv_usec = 0;
+      }
+    }
 
-    int s = TEMP_FAILURE_RETRY(select(maxfd+1, &readfds, &writefds, NULL, 
-                                      &timeout));
+    s = TEMP_FAILURE_RETRY(select(maxfd+1, &readfds, &writefds, NULL,
+                                  &timeout));
     if (s == -1) {
       // select error
       LOG_ERROR_STR("select() error in webvideo downloader thread:");
@@ -173,7 +218,8 @@ void cWebviThread::Action(void) {
 
     } else if (s == 0) {
       // timeout
-      webvi_perform(webvi, 0, WEBVI_SELECT_TIMEOUT, &running_handles);
+      timerActive = false;
+      webvi_perform(webvi, WEBVI_SELECT_TIMEOUT, WEBVI_SELECT_CHECK, &running_handles);
       check_done = true;
 
     } else {
