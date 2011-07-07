@@ -40,9 +40,9 @@ from . import menu
 VERSION = '0.4.2'
 
 # Default options
-DEFAULT_PLAYERS = ['vlc --play-and-exit --file-caching 5000 "%s"', 
-                   'totem "%s"', 
-                   'mplayer "%s"', 
+DEFAULT_PLAYERS = ['mplayer -cache-min 10 "%s"',
+                   'vlc --play-and-exit --file-caching 5000 "%s"',
+                   'totem "%s"',
                    'xine "%s"']
 
 # These mimetypes are common but often missing
