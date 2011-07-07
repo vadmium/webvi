@@ -40,7 +40,7 @@ from . import menu
 VERSION = '0.4.2'
 
 # Default options
-DEFAULT_PLAYERS = ['vlc --play-and-exit "%s"', 
+DEFAULT_PLAYERS = ['vlc --play-and-exit --file-caching 5000 "%s"', 
                    'totem "%s"', 
                    'mplayer "%s"', 
                    'xine "%s"']
@@ -490,6 +490,10 @@ class WVClient:
                 playcmd = player + ' ' + streamurl
             else:
                 try:
+                    # Hack for playing from fifo in VLC
+                    if 'vlc' in player and streamurl.startswith('file://'):
+                        streamurl = 'stream://' + streamurl[len('file://'):]
+
                     playcmd = player % streamurl
                 except TypeError:
                     print 'Can\'t substitute URL in', player
