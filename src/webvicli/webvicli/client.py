@@ -487,17 +487,17 @@ class WVClient:
         # Found url, now find a working media player
         for player in self.streamplayers:
             if '%s' not in player:
-                playcmd = player + ' ' + streamurl
-            else:
-                try:
-                    # Hack for playing from fifo in VLC
-                    if 'vlc' in player and streamurl.startswith('file://'):
-                        streamurl = 'stream://' + streamurl[len('file://'):]
+                player = player + ' %s'
 
-                    playcmd = player % streamurl
-                except TypeError:
-                    print 'Can\'t substitute URL in', player
-                    continue
+            try:
+                # Hack for playing from fifo in VLC
+                if 'vlc' in player and streamurl.startswith('file://'):
+                    streamurl = 'stream://' + streamurl[len('file://'):]
+
+                playcmd = player.replace('%s', streamurl, 1)
+            except TypeError:
+                print 'Can\'t substitute URL in', player
+                continue
 
             try:
                 print 'Trying player: ' + playcmd
