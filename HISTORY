@@ -242,3 +242,5 @@ Video site modules:
 - Streaming works on YLE Areena and on other sources which use
   external downloaders (playback in VLC does not work very well)
 - Prefer mplayer over VLC when playing streams
+- Fixed "Error 501: No active sockets" by properly implementing
+  timeouts
