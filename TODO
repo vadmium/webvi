@@ -13,8 +13,6 @@ yt-* -> youtube).
 Download percentage on the VDR plugin status page does is not updated
 when using external downloader process (YLE Areena)
 
-Streaming does not work with external downloader process (YLE Areena)
-
 Fix support for mplayer plugin
 
 Fix Vimeo search
