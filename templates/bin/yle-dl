@@ -1,7 +1,8 @@
 #!/bin/sh
 
 # Downloads a video stream from Yle Areena to stdout using yle-dl
-# script. The first parameter is the video page URL.
+# script. The first parameter is the video page URL. Second parameter
+# is the output file (optional).
 
 YLEDL=yle-dl
 
@@ -17,6 +18,11 @@ if [ "x$1" = "x" ]; then
     exit 1
 fi
 
-$YLEDL $1 -q -o -
+OUTFILE="$2"
+if [ "x$OUTFILE" = "x" ]; then
+    OUTFILE=-
+fi
+
+$YLEDL $1 -q -o "$OUTFILE"
 
 exit $?

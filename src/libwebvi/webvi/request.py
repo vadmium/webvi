@@ -22,6 +22,7 @@ import cStringIO
 import re
 import download
 import sys
+import tempfile
 import utils
 import json2xml
 import asyncurl
@@ -312,9 +313,32 @@ class Request:
             self.setup_downloader(url, None, None,
                                   self.finished_check_url,
                                   self.processing['HTTP-headers'], True)
+        elif url.startswith('wvt://'):
+            if not url.startswith('wvt:///bin/'):
+                self.request_done(406,'Streaming not supported')
+
+            fifo = self.create_fifo()
+            fifourl = url + '&arg=' + fifo
+
+            # Unlink fifo when downloader has finished. Note: If the
+            # reader doesn't read the fifo for some reason, the writer
+            # process will deadlock and the fifo is never unlinked.
+            self.setup_downloader(fifourl, None, None,
+                                  lambda x, y: os.unlink(fifo))
+            self.writewrapper('file://' + fifo)
+            self.request_done(0, None)
         else:
             self.writewrapper(url)
             self.request_done(0, None)
+
+    def create_fifo(self):
+        while True:
+            fifoname = tempfile.mktemp()
+            try:
+                os.mkfifo(fifoname, 0600)
+                return fifoname
+            except IOError:
+                pass
 
     def send_mainmenu(self):
         """Build the XML main menu from the module description files

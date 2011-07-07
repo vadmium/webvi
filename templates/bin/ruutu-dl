@@ -2,7 +2,8 @@
 
 # Downloads a video stream from ruutu.fi to stdout using
 # rtmpdump(-yle). The first parameter is the rtmp URL, the second
-# parameter is the video page URL.
+# parameter is the video page URL, the optional third parameter is the
+# output file.
 
 RTMPDUMP=
 
@@ -31,6 +32,11 @@ if [ "x$2" = "x" ]; then
     exit 1
 fi
 
-$RTMPDUMP -q -r "$1" -W http://n.sestatic.fi/sites/all/modules/media/Nelonen_mediaplayer_5.3.2.swf -p "$2" -o -
+OUTFILE="$3"
+if [ "x$OUTFILE" = "x" ]; then
+    OUTFILE=-
+fi
+
+$RTMPDUMP -q -r "$1" -W http://n.sestatic.fi/sites/all/modules/media/Nelonen_mediaplayer_5.3.2.swf -p "$2" -o "$OUTFILE"
 
 exit $?
