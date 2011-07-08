@@ -24,8 +24,17 @@
   <link>
     <label>
       <xsl:choose>
-	<xsl:when test="program_episode_name">
-	  <xsl:value-of select="concat(program_episode_name, ' ', video_datetime_to_use)"/>
+	<xsl:when test="video_name_to_use != '' and program_episode_name != '' and video_name_to_use != program_episode_name">
+	  <xsl:value-of select="normalize-space(concat(video_name_to_use, ': ', program_episode_name, ' ', video_datetime_to_use))"/>
+	</xsl:when>
+	<xsl:when test="clip_series_name != '' and video_name_to_use != ''">
+	  <xsl:value-of select="normalize-space(concat(clip_series_name, ': ', video_name_to_use, ' ', video_datetime_to_use))"/>
+	</xsl:when>
+	<xsl:when test="video_name_to_use != ''">
+	  <xsl:value-of select="normalize-space(concat(video_name_to_use, ' ', video_datetime_to_use))"/>
+	</xsl:when>
+	<xsl:when test="program_episode_name != ''">
+	  <xsl:value-of select="normalize-space(concat(program_episode_name, ' ', video_datetime_to_use))"/>
 	</xsl:when>
 	<xsl:otherwise>
 	  <xsl:value-of select="title"/>
@@ -47,17 +56,7 @@
   </xsl:variable>
 
   <!-- title -->
-  <title>
-    <xsl:choose>
-      <xsl:when test="/jsondocument/dict/video_episode/list/li[1]/dict/series_name">
-	<xsl:value-of select="/jsondocument/dict/video_episode/list/li[1]/dict/series_name"/>
-      </xsl:when>
-      <xsl:when test="/jsondocument/dict/video/list/li[1]/dict/clip_series_name">
-	<xsl:value-of select="/jsondocument/dict/video/list/li[1]/dict/clip_series_name"/>
-      </xsl:when>
-      <xsl:otherwise>Ruutu.fi</xsl:otherwise>
-    </xsl:choose>
-  </title>
+  <title>Ruutu.fi</title>
 
   <!-- Video links -->
   <xsl:if test="not(/jsondocument/dict/video | /jsondocument/dict/video_episode)">

@@ -244,3 +244,4 @@ Video site modules:
 - Prefer mplayer over VLC when playing streams
 - Fixed "Error 501: No active sockets" by properly implementing
   timeouts
+- Improved ruutu.fi support
