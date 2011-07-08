@@ -15,6 +15,15 @@
 bool cXineliboutputPlayer::Launch(const char *url) {
   debug("launching xinelib player, url = %s", url);
 
+  char *url2;
+  if (strncmp(url, "file://", 7) == 0) {
+    url2 = (char *)malloc(strlen(url)+1);
+    strcpy(url2, "fifo://");
+    strcat(url2, url+7);
+  } else {
+    url2 = strdup(url);
+  }
+
   /*
    * xineliboutput plugin insists on percent encoding (certain
    * characters in) the URL. A properly encoded URL will get broken if
@@ -26,10 +35,11 @@ bool cXineliboutputPlayer::Launch(const char *url) {
    * removed here. There simply isn't a way to make all URLs work
    * because of the way xineliboutput handles the encoding.
    */
-  char *decoded = URLdecode(url);
+  char *decoded = URLdecode(url2);
   debug("decoded = %s", decoded);
   bool ret = cPluginManager::CallFirstService("MediaPlayer-1.0", (void *)decoded);
   free(decoded);
+  free(url2);
   return ret;
 }
 
