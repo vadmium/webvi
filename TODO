@@ -16,3 +16,5 @@ when using external downloader process (YLE Areena)
 Fix support for mplayer plugin
 
 Fix Vimeo search
+
+Kill external downloader process when the player stops mid-stream
