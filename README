@@ -30,7 +30,7 @@ Known problems:
 
 * MTV3 Katsomo and Subtv: often the connection is lost before the
   video is fully downloaded.
-* Vimeo, YLE Areena, ruutu.fi: Streaming does not work.
+* Vimeo: Streaming does not work.
 
 Because of the modular design it is possible to add support for new
 sites quite easily. See doc/developers.txt for more information.
