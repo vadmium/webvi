@@ -185,6 +185,21 @@ def brace_substitution(template, subs):
     strbuf.write(template[last_pos:])
     return strbuf.getvalue()
 
+def create_fifo():
+    while True:
+        fifoname = tempfile.mktemp()
+        try:
+            os.mkfifo(fifoname, 0600)
+            return fifoname
+        except IOError:
+            pass
+
+def safe_unlink(name):
+    try:
+        os.unlink(name)
+    except OSError:
+        pass
+
 
 class Request:
     DEFAULT_URL_PRIORITY = 50
@@ -317,28 +332,19 @@ class Request:
             if not url.startswith('wvt:///bin/'):
                 self.request_done(406,'Streaming not supported')
 
-            fifo = self.create_fifo()
+            fifo = create_fifo()
             fifourl = url + '&arg=' + fifo
 
             # Unlink fifo when downloader has finished. Note: If the
             # reader doesn't read the fifo for some reason, the writer
             # process will deadlock and the fifo is never unlinked.
             self.setup_downloader(fifourl, None, None,
-                                  lambda x, y: os.unlink(fifo))
+                                  lambda x, y: safe_unlink(fifo))
             self.writewrapper('file://' + fifo)
             self.request_done(0, None)
         else:
             self.writewrapper(url)
             self.request_done(0, None)
-
-    def create_fifo(self):
-        while True:
-            fifoname = tempfile.mktemp()
-            try:
-                os.mkfifo(fifoname, 0600)
-                return fifoname
-            except IOError:
-                pass
 
     def send_mainmenu(self):
         """Build the XML main menu from the module description files
