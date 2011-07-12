@@ -28,6 +28,7 @@ import time
 import re
 import datetime
 import urllib
+import shlex
 import libxml2
 import webvi.api
 import webvi.utils
@@ -489,19 +490,23 @@ class WVClient:
             if '%s' not in player:
                 player = player + ' %s'
 
-            try:
-                # Hack for playing from fifo in VLC
-                if 'vlc' in player and streamurl.startswith('file://'):
-                    streamurl = 'stream://' + streamurl[len('file://'):]
+            playcmd = shlex.split(player)
 
-                playcmd = player.replace('%s', streamurl, 1)
-            except TypeError:
+            # Hack for playing from fifo in VLC
+            if 'vlc' in playcmd[0] and streamurl.startswith('file://'):
+                realurl = 'stream://' + streamurl[len('file://'):]
+            else:
+                realurl = streamurl
+
+            try:
+                playcmd[playcmd.index('%s')] = realurl
+            except ValueError:
                 print 'Can\'t substitute URL in', player
                 continue
 
             try:
-                print 'Trying player: ' + playcmd
-                retcode = subprocess.call(playcmd, shell=True)
+                print 'Trying player: ' + ' '.join(playcmd)
+                retcode = subprocess.call(playcmd)
                 if retcode > 0:
                     print 'Player failed with returncode', retcode
                 else:
