@@ -24,7 +24,7 @@
 #include "common.h"
 #include "timer.h"
 
-const char *VERSION               = "0.4.2";
+const char *VERSION               = "0.4.3";
 static const char *DESCRIPTION    = trNOOP("Download video files from the web");
 static const char *MAINMENUENTRY  = "Webvideo";
 cMimeTypes *MimeTypes             = NULL;

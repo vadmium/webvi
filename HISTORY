@@ -237,7 +237,7 @@ Video site modules:
 - Watch on vdr bookmarklet now works also on katsomo.fi.
 - webvi: Space in search terms was errornously replaced by plus.
 
-2011-xx-xx: Version 0.4.3
+2011-07-12: Version 0.4.3
 
 - Streaming works on YLE Areena and on other sources which use
   external downloaders (playback in VLC does not work very well)

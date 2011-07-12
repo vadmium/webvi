@@ -1,3 +1,14 @@
+vdr-plugin-webvideo (0.4.3-1) unstable; urgency=low
+
+  * Streaming works on YLE Areena and on other sources which use
+    external downloaders (playback in VLC does not work very well)
+  * Prefer mplayer over VLC when playing streams
+  * Fixed "Error 501: No active sockets" by properly implementing
+    timeouts
+  * Improved ruutu.fi support
+
+ -- Antti Ajanki <antti.ajanki@iki.fi>  Tue, 12 Jul 2011 10:31:50 +0300
+
 vdr-plugin-webvideo (0.4.2-1) unstable; urgency=low
 
   * Fixed katsomo.fi module.

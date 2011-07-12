@@ -38,7 +38,7 @@ from urlparse import urlparse
 from webvi.constants import WebviRequestType, WebviOpt, WebviInfo, WebviSelectBitmask, WebviConfig, WebviSelect
 from . import menu
 
-VERSION = '0.4.2'
+VERSION = '0.4.3'
 
 # Default options
 DEFAULT_PLAYERS = ['mplayer -cache-min 10 "%s"',
