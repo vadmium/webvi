@@ -505,6 +505,18 @@ class WVClient:
                 if retcode > 0:
                     print 'Player failed with returncode', retcode
                 else:
+                    # After the player has finished, the library
+                    # generates a read event on a control socket. When
+                    # the client calls perform on the socket the
+                    # library removes temporary files.
+                    readfds, writefds = webvi.api.fdset()[1:3]
+                    readyread, readywrite, readyexc = \
+                        select.select(readfds, writefds, [], 0.1)
+                    for fd in readyread:
+                        webvi.api.perform(fd, WebviSelectBitmask.READ)
+                    for fd in readywrite:
+                        webvi.api.perform(fd, WebviSelectBitmask.WRITE)
+
                     return True
             except OSError, err:
                 print 'Execution failed:', err
