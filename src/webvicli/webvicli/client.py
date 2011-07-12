@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# webvicli.py - webvi command line client
+# client.py - webvi command line client
 #
 # Copyright (c) 2009-2011 Antti Ajanki <antti.ajanki@iki.fi>
 #
