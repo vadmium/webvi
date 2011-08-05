@@ -37,6 +37,6 @@ if [ "x$OUTFILE" = "x" ]; then
     OUTFILE=-
 fi
 
-$RTMPDUMP -q -r "$1" -W http://n.sestatic.fi/sites/all/modules/media/Nelonen_mediaplayer_5.3.2.swf -p "$2" -o "$OUTFILE"
+$RTMPDUMP -q -r "$1" -W http://n.sestatic.fi/sites/all/modules/media/Nelonen_mediaplayer_static_latest.swf -p "$2" -o "$OUTFILE"
 
 exit $?
