@@ -9,23 +9,32 @@
 <!-- Mapping from Youtube fmt parameter (key) to webvideo priority
      score (value) -->
 <map:associativearray>
-  <map:item key="17" value="40"/>
-  <map:item key="5" value="50"/>
-  <map:item key="34" value="52"/>
-  <map:item key="35" value="54"/>
-  <map:item key="18" value="60"/>
-  <map:item key="43" value="65"/>
-  <map:item key="22" value="70"/>
-  <map:item key="45" value="75"/>
-  <map:item key="37" value="80"/>
+  <map:item key="17" value="40"/> <!-- 176x144 3GP   -->
+  <map:item key="5" value="50"/>  <!-- 320x240 FLV   -->
+  <map:item key="34" value="52"/> <!-- 640x360 FLV   -->
+  <map:item key="35" value="54"/> <!-- 854x480 FLV   -->
+  <map:item key="18" value="60"/> <!-- 640x360 MP4   -->
+  <map:item key="43" value="65"/> <!-- 640x360 WebM  -->
+  <map:item key="44" value="67"/> <!-- 854x480 WebM  -->
+  <map:item key="22" value="70"/> <!-- 720p MP4      -->
+  <map:item key="45" value="75"/> <!-- 720p WebM     -->
+  <map:item key="37" value="80"/> <!-- 1080p MP4     -->
 </map:associativearray>
 
 <xsl:template name="fmturl">
   <xsl:variable name="fmt">
-    <xsl:value-of select="str:split(., '|')[1]"/>
+    <xsl:for-each select="str:tokenize(., '&amp;')">
+      <xsl:if test="starts-with(., 'itag=')">
+	<xsl:value-of select="substring-after(., 'itag=')"/>
+      </xsl:if>
+    </xsl:for-each>
   </xsl:variable>
   <xsl:variable name="url">
-    <xsl:value-of select="str:split(., '|')[2]"/>
+    <xsl:for-each select="str:tokenize(., '&amp;')">
+      <xsl:if test="starts-with(., 'url=')">
+	<xsl:value-of select="str:decode-uri(substring-after(., 'url='))"/>
+      </xsl:if>
+    </xsl:for-each>
   </xsl:variable>
 
   <xsl:if test="$url">
@@ -68,7 +77,7 @@
       <xsl:value-of select="str:decode-uri(str:replace($titleparam, '+', ' '))"/>
     </title>
 
-    <xsl:for-each select="str:split(str:decode-uri(substring-before(substring-after($videoinfo, '&amp;fmt_url_map='), '&amp;')), ',')">
+    <xsl:for-each select="str:split(str:decode-uri(substring-before(substring-after($videoinfo, '&amp;url_encoded_fmt_stream_map='), '&amp;')), ',')">
       <xsl:call-template name="fmturl"/>
     </xsl:for-each>
 
@@ -83,7 +92,7 @@
 
   <xsl:call-template name="mediaurl">
     <xsl:with-param name="videoinfo" select="$videoinfo"/>
-    <xsl:with-param name="title" select="/html/head/meta/@content"/>
+    <xsl:with-param name="title" select="/html/head/meta[@name='title']/@content"/>
   </xsl:call-template>
 </xsl:template>
 
