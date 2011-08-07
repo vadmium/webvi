@@ -12,18 +12,27 @@
 <xsl:variable name="episodetitle">
   <xsl:choose>
     <xsl:when test="contains(/html/head/meta[@name='title']/@content, ' - Katsomo')">
-      <xsl:value-of select="substring-before(/html/head/meta[@name='title']/@content, ' - Katsomo')"/>
+      <xsl:value-of select="normalize-space(substring-before(/html/head/meta[@name='title']/@content, ' - Katsomo'))"/>
     </xsl:when>
     <xsl:when test="contains(/html/head/meta[@name='title']/@content, ' - MTV3 Katsomo')">
-      <xsl:value-of select="substring-before(/html/head/meta[@name='title']/@content, ' - MTV3 Katsomo')"/>
+      <xsl:value-of select="normalize-space(substring-before(/html/head/meta[@name='title']/@content, ' - MTV3 Katsomo'))"/>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:value-of select="/html/head/meta[@name='title']/@content"/>
+      <xsl:value-of select="normalize-space(/html/head/meta[@name='title']/@content)"/>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:variable>
 
-<xsl:variable name="title" select="normalize-space(concat(id('program_content')/h1, ' ', $episodetitle))"/>
+<xsl:variable name="title">
+  <xsl:choose>
+    <xsl:when test="normalize-space(id('program_content')/h1) = $episodetitle">
+      <xsl:value-of select="$episodetitle"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="normalize-space(concat(id('program_content')/h1, ': ', $episodetitle))"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:variable>
 
 <xsl:variable name="pid" select="substring-after($docurl, 'progId=')"/>
 
