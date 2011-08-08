@@ -417,15 +417,21 @@ class TestServiceModules(unittest.TestCase):
         links = self.downloadAndExtractLinks(ref, 4, 'series')
 
         # Program page
-        links = self.downloadAndExtractLinks(links[0].ref, 1, 'program')
+        plinks = []
+        for li in links:
+            plinks = self.downloadAndExtractLinks(li.ref, 0, 'program')
+            if plinks:
+                break
+        if not plinks:
+            self.assertTrue(False, 'None of the program pages has links')
 
         # Video link
-        videolink = links[0]
+        videolink = plinks[0]
         self.assertNotEqual(videolink.stream, None, 'No media object in a video link')
         self.assertNotEqual(videolink.ref, None, 'No description page in a video link')
 
         # Direct video page link
-        queries, params = self.extractQueryParams(links[0].stream)
+        queries, params = self.extractQueryParams(plinks[0].stream)
         self.assertTrue('srcurl' in queries and 'pid' in params, 'Required parameter missing in video link')
         videopageurl = queries['srcurl'] + '?' + params['pid']
         videopageref = self.urlToWvtref(videopageurl)
