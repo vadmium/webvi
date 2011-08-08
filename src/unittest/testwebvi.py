@@ -220,12 +220,11 @@ class TestServiceModules(unittest.TestCase):
     def testVimeo(self):
         # Category page
         ref = self.getServiceReference('../../templates/vimeo.com')
-        links = self.downloadAndExtractLinks(ref, 3, 'Vimeo main page')
+        links = self.downloadAndExtractLinks(ref, 2, 'Vimeo main page')
 
-        # The first is "Search", the second is "Channels" and the
-        # third is "Groups"
-        channelsref = links[1].ref
-        groupsref = links[2].ref
+        # The first "Channels" and the second is "Groups"
+        channelsref = links[0].ref
+        groupsref = links[1].ref
 
         # Channels page
         links = self.downloadAndExtractLinks(channelsref, 2, 'channels')
@@ -246,24 +245,6 @@ class TestServiceModules(unittest.TestCase):
 
         # Navigation page
         links = self.downloadAndExtractLinks(links[0].ref, 2, 'groups navigation')
-
-    def testVimeoSearch(self):
-        menuobj = self.downloadMenuPage('wvt:///vimeo.com/search.xsl?srcurl=http://www.vimeo.com/', 'search')
-        self.assertTrue(len(menuobj) >= 3, 'Too few items in search menu')
-
-        self.assertTrue(isinstance(menuobj[0], menu.MenuItemTextField))
-        self.assertTrue(isinstance(menuobj[1], menu.MenuItemList))
-        self.assertTrue(len(menuobj[1].items) >= 2)
-        self.assertTrue(isinstance(menuobj[2], menu.MenuItemSubmitButton))
-
-        # Query term
-        menuobj[0].value = 'vimeo'
-        # Sort by: newest
-        menuobj[1].current = 1
-
-        resultref = menuobj[2].activate()
-        self.assertNotEqual(resultref, None)
-        self.downloadAndExtractLinks(resultref, 1, 'search result')
 
     def testYLEAreena(self):
         # Category page

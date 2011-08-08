@@ -7,10 +7,14 @@
 <wvmenu>
   <title>Vimeo</title>
 
+<!-- Disabled 08082011 -->
+<!-- "The requested URL returned error" when retrieving the results -->
+<!-- 
   <link>
     <label>Search</label>
     <ref>wvt:///vimeo.com/search.xsl?srcurl=http://vimeo.com/</ref>
   </link>
+-->
 
   <link>
     <label>Channels</label>
