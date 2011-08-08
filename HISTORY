@@ -245,3 +245,9 @@ Video site modules:
 - Fixed "Error 501: No active sockets" by properly implementing
   timeouts
 - Improved ruutu.fi support
+
+2011-08-08: Version 0.4.4
+
+- Fixed Youtube support
+- Minor improvements in Katsomo and ruutu.fi support
+- Disabled broken Vimeo search

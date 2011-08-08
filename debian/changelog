@@ -1,3 +1,11 @@
+vdr-plugin-webvideo (0.4.4-1) unstable; urgency=low
+
+  * Fixed Youtube support
+  * Minor improvements in Katsomo and ruutu.fi support
+  * Disabled broken Vimeo search
+
+ -- Antti Ajanki <antti.ajanki@iki.fi>  Mon, 08 Aug 2011 21:28:54 +0300
+
 vdr-plugin-webvideo (0.4.3-1) unstable; urgency=low
 
   * Streaming works on YLE Areena and on other sources which use
