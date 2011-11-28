@@ -83,6 +83,17 @@ is URL encoded presentation of the <textfield>'s UTF-8 input or value
 attribute of currently selected <item> in an <itemlist>. The encodings
 are joined by putting a "&" between them.
 
+<stream> URLs return XML of the form
+
+<mediaurl>
+  <title/>
+  <url/>
+</mediaurl>
+
+<title> is actually used as the basis for a download file name
+
+<url> gives the location to download or stream
+
 
 Format of wvt:// references
 ===========================
@@ -94,7 +105,7 @@ explains the format of the references.
 
 The references are of the form
 
-wvt://templatedir/template.xsl?srcurl=...&other_params=value
+wvt:///templatedir/template.xsl?srcurl=...&other_params=value
 
 The value of the srcurl parameter is a URL (typically an HTTP URL) of
 a web page on a video site. templatedir/template.xsl specifies a name
