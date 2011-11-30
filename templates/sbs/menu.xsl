@@ -7,9 +7,9 @@
 <xsl:param name="links"/>
 
 <xsl:template match="/">
-<wvmenu>
   <xsl:choose>
   <xsl:when test="$links">
+  <wvmenu>
     <xsl:for-each select="str:split($links)">
     <link>
       <label>
@@ -20,19 +20,23 @@
       </ref>
     </link>
     </xsl:for-each>
+  </wvmenu>
   </xsl:when>
   <xsl:otherwise>
     <xsl:apply-templates/>
   </xsl:otherwise>
   </xsl:choose>
-</wvmenu>
 </xsl:template>
 
 <xsl:template match="/settings//setting[@name='menuURL']">
-<link>
-  <label>Menu</label>
-  <ref>wvt:///sbs/menu.xsl?srcurl=http://player.sbs.com.au<xsl:value-of select="@value"/></ref>
-</link>
+  <xsl:apply-templates
+    select="document(concat('http://player.sbs.com.au', @value))"/>
+</xsl:template>
+
+<xsl:template match="/menu | /playlist | /smil">
+<wvmenu>
+  <xsl:apply-templates/>
+</wvmenu>
 </xsl:template>
 
 <xsl:template match="/menu/title">
