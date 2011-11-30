@@ -73,6 +73,8 @@ import request
 import asyncore
 import asyncurl
 from constants import WebviErr, WebviOpt, WebviInfo, WebviSelectBitmask, WebviConfig
+from ConfigParser import RawConfigParser
+import os.path
 
 # Human readable messages for WebviErr items
 error_messages = {
@@ -129,6 +131,37 @@ def set_config(conf, value):
         return WebviErr.OK
     else:
         return WebviErr.INVALID_PARAMETER
+
+def load_config(bool=()):
+    """Load options from config files."""
+    cfgprs = RawConfigParser()
+    cfgprs.read(['/etc/webvi.conf', os.path.expanduser('~/.webvi')])
+    options = dict()
+    if cfgprs.has_section('webvi'):
+        for opt, val in cfgprs.items('webvi'):
+            if opt in ('verbose',) + bool:
+                try:
+                    options[opt] = cfgprs.getboolean('webvi', opt)
+                except ValueError:
+                    print 'Invalid config: %s = %s' % (opt, val)
+
+                # convert verbose to integer
+                if opt == 'verbose':
+                    if options['verbose']:
+                        options['verbose'] = 1
+                    else:
+                        options['verbose'] = 0
+
+            else:
+                options[opt] = val
+
+    return (options, cfgprs)
+
+def apply_config(options):
+    if options.has_key('verbose'):
+        set_config(WebviConfig.DEBUG, options['verbose'])
+    if options.has_key('templatepath'):
+        set_config(WebviConfig.TEMPLATE_PATH, options['templatepath'])
 
 def new_request(reference, reqtype):
     """Create a new request.

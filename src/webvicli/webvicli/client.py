@@ -33,7 +33,6 @@ import libxml2
 import webvi.api
 import webvi.utils
 from optparse import OptionParser
-from ConfigParser import RawConfigParser
 from urlparse import urlparse
 from webvi.constants import WebviRequestType, WebviOpt, WebviInfo, WebviSelectBitmask, WebviConfig, WebviSelect
 from . import menu
@@ -754,48 +753,33 @@ Play a stream. x can be an integer referring to a downloadable item
 
 def load_config(options):
     """Load options from config files."""
-    cfgprs = RawConfigParser()
-    cfgprs.read(['/etc/webvi.conf', os.path.expanduser('~/.webvi')])
+    (parsed, cfgprs) = webvi.api.load_config(bool=('vfat',))
+    options.update(parsed)
+    
     for sec in cfgprs.sections():
         if sec == 'webvi':
-            for opt, val in cfgprs.items('webvi'):
-                if opt in ['vfat', 'verbose']:
-                    try:
-                        options[opt] = cfgprs.getboolean(sec, opt)
-                    except ValueError:
-                        print 'Invalid config: %s = %s' % (opt, val)
+            continue
+        
+        sitename = urlparse(sec).netloc
+        if sitename == '':
+            sitename = sec
 
-                    # convert verbose to integer
-                    if opt == 'verbose':
-                        if options['verbose']:
-                            options['verbose'] = 1
-                        else:
-                            options['verbose'] = 0
+        if not options.has_key('download-limits'):
+            options['download-limits'] = {}
+        if not options.has_key('stream-limits'):
+            options['stream-limits'] = {}
+        options['download-limits'][sitename] = {}
+        options['stream-limits'][sitename] = {}
 
-                else:
-                    options[opt] = val
-
-        else:
-            sitename = urlparse(sec).netloc
-            if sitename == '':
-                sitename = sec
-
-            if not options.has_key('download-limits'):
-                options['download-limits'] = {}
-            if not options.has_key('stream-limits'):
-                options['stream-limits'] = {}
-            options['download-limits'][sitename] = {}
-            options['stream-limits'][sitename] = {}
-
-            for opt, val in cfgprs.items(sec):
-                if opt == 'download-min-quality':
-                    options['download-limits'][sitename]['min'] = val
-                elif opt == 'download-max-quality':
-                    options['download-limits'][sitename]['max'] = val
-                elif opt == 'stream-min-quality':
-                    options['stream-limits'][sitename]['min'] = val
-                elif opt == 'stream-max-quality':
-                    options['stream-limits'][sitename]['max'] = val
+        for opt, val in cfgprs.items(sec):
+            if opt == 'download-min-quality':
+                options['download-limits'][sitename]['min'] = val
+            elif opt == 'download-max-quality':
+                options['download-limits'][sitename]['max'] = val
+            elif opt == 'stream-min-quality':
+                options['stream-limits'][sitename]['min'] = val
+            elif opt == 'stream-max-quality':
+                options['stream-limits'][sitename]['max'] = val
 
     return options
 
@@ -847,11 +831,7 @@ def player_list(options):
 def main(argv):
     options = load_config({})
     options = parse_command_line(argv, options)
-
-    if options.has_key('verbose'):
-        webvi.api.set_config(WebviConfig.DEBUG, options['verbose'])
-    if options.has_key('templatepath'):
-        webvi.api.set_config(WebviConfig.TEMPLATE_PATH, options['templatepath'])
+    webvi.api.apply_config(options)
 
     shell = WVShell(WVClient(player_list(options),
                              options.get('download-limits', {}),
