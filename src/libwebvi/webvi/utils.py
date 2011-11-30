@@ -132,3 +132,37 @@ def apply_xslt(buf, encoding, url, xsltfile, params=None):
     ret = resultdoc.serialize('UTF-8')
     resultdoc.freeDoc()
     return ret
+
+def xpath_str(str):
+    """Convert a string to an X Path expression, which can be tricky if the
+    string contains both single (') and double (") quotes. See
+    http://kushalm.com/the-perils-of-xpath-expressions-specifically-escaping-quotes
+    """
+    
+    try:
+        sq = str.index("'")
+    except ValueError:
+        return "'" + str + "'"
+    
+    try:
+        dq = str.index('"')
+    except ValueError:
+        return '"' + str + '"'
+    
+    quotes = ("'", '"')
+    if dq > sq:
+        i = 1
+    else:
+        i = 0
+    
+    parts = list()
+    pos = 0
+    while pos < len(str):
+        try:
+            partend = str.index(quotes[i], pos)
+        except:
+            partend = len(str)
+        parts.append(quotes[i] + str[pos:partend] + quotes[i])
+        pos = partend
+        i ^= 1
+    return 'concat(' + ', '.join(parts) + ')'

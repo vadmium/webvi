@@ -108,10 +108,10 @@ def parse_reference(reference):
             fields2 = value.split(',', 1)
             pname = fields2[0].lower()
             if len(fields2) == 2:
-                pvalue = "'" + fields2[1] + "'"
+                pvalue = fields2[1]
             else:
-                pvalue = "''"
-            parameters[pname] = pvalue
+                pvalue = ''
+            parameters[pname] = utils.xpath_str(pvalue)
             
         elif key.lower() == 'subst':
             substfields = value.split(',', 1)
@@ -557,7 +557,7 @@ class Request:
 
         # Add input documentURL to the parameters
         params = self.xsltparameters.copy()
-        params['docurl'] = "'" + url + "'"
+        params['docurl'] = utils.xpath_str(url)
 
         minpriority = self.processing.get('minquality', 0)
         maxpriority = self.processing.get('maxquality', 100)
