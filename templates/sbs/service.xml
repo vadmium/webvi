@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<service>
+  <title>SBS video player</title>
+  <ref>wvt:///sbs/menu.xsl?srcurl=http://player.sbs.com.au/playerassets/programs/standalone_settings.xml</ref>
+</service>

@@ -1,0 +1,25 @@
+#!/usr/bin/env python2
+"""Wrapper around "rtmpdump" to downloads a video stream"""
+
+# Parts taken from python-iview
+
+from sys import argv
+from os import execvp
+
+executables = (
+    'rtmpdump',
+    'rtmpdump_x86',
+    'flvstreamer',
+    'flvstreamer_x86',
+    'rtmpdump-yle',
+)
+
+args = [None] + list(argv[1:])
+
+for args[0] in executables:
+    try:
+        execvp(args[0], args)
+    except OSError:
+        continue
+else:
+    raise EnvironmentError('No rtmpdump program found')
