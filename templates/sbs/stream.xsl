@@ -10,7 +10,13 @@
 <xsl:template match="/">
 <mediaurl>
   <title><xsl:value-of select="str:tokenize($src, '/')[last()]"/></title>
-  <url>wvt:///bin/rtmpdump?arg=--rtmp&amp;arg=<xsl:value-of select="str:encode-uri($base, true())"/>&amp;arg=--playpath&amp;arg=<xsl:value-of select="str:encode-uri($src, true())"/>&amp;arg=--quiet</url>
+  <url>
+    <xsl:text>wvt:///bin/rtmpdump?arg=--rtmp&amp;arg=</xsl:text>
+    <xsl:value-of select="str:encode-uri($base, true())"/>
+    <xsl:text>&amp;arg=--playpath&amp;arg=</xsl:text>
+    <xsl:value-of select="str:encode-uri($src, true())"/>
+    <xsl:text>&amp;arg=--quiet&amp;arg=--</xsl:text>
+  </url>
 </mediaurl>
 </xsl:template>
 

@@ -1,5 +1,8 @@
 #!/usr/bin/env python2
-"""Wrapper around "rtmpdump" to downloads a video stream"""
+"""Wrapper around "rtmpdump" to downloads a video stream
+
+Arguments to "rtmpdump" terminated by "--"; optionally followed by output
+file name"""
 
 # Parts taken from python-iview
 
@@ -14,7 +17,12 @@ executables = (
     'rtmpdump-yle',
 )
 
-args = [None] + list(argv[1:])
+end = argv.index('--')
+args = [None] + list(argv[1:end])
+
+if len(argv) >= end + 2:
+    args.append("--flv")
+    args.append(argv[end + 1])
 
 for args[0] in executables:
     try:

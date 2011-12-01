@@ -114,8 +114,10 @@ srcurl can be empty.
 
 templatedir called bin is a special directory. It contains executable
 programs or scripts instead of XSLT templates. When a reference to the
-bin directory is encountered, the named script is executed. Script's
-standard output is returned as the results of the operation. The
+bin directory is encountered, the named script is executed. The script's
+standard output is returned as the results of the operation, or a final
+argument may be given to the script, in which case the output should be
+directed into the file named by the argument. The
 script should return 0 on success.
 
 Parameters that affect the template processing can be appended to the
