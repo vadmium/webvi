@@ -268,7 +268,7 @@ class Request:
         else:
             self.setup_downloader(self.srcurl, None,
                                   self.handle_header,
-                                  self.finished_apply_xslt,
+                                  self.finished_postprocess,
                                   self.processing['HTTP-headers'])
 
     def stop(self):
@@ -548,7 +548,7 @@ class Request:
                 else:
                     self.start_download()
 
-    def finished_apply_xslt(self, err, errmsg):
+    def finished_postprocess(self, err, errmsg):
         if err != 0:
             self.request_done(err, errmsg)
             return
@@ -562,24 +562,24 @@ class Request:
         minpriority = self.processing.get('minquality', 0)
         maxpriority = self.processing.get('maxquality', 100)
 
-        xsltpath = os.path.join(template_path, self.xsltfile)
+        templatefile = os.path.join(template_path, self.xsltfile)
 
-        xml = self.dl.get_body()
+        src = self.dl.get_body()
         encoding = self.dl.get_encoding()
 
         if self.processing.has_key('postprocess') and \
                 'json2xml' in self.processing['postprocess']:
-            xmldoc = json2xml.json2xml(xml, encoding)
+            xmldoc = json2xml.json2xml(src, encoding)
             if xmldoc is None:
                 self.request_done(503, 'Invalid JSON content')
                 return
-            xml = xmldoc.serialize('utf-8')
+            src = xmldoc.serialize('utf-8')
             encoding = 'utf-8'
 
-        #debug(xml)
+        #debug(src)
 
-        resulttree = utils.apply_xslt(xml, encoding, url,
-                                      xsltpath, params)
+        resulttree = utils.apply_xslt(src, encoding, url,
+                                      templatefile, params)
         if resulttree is None:
             self.request_done(503, 'XSLT transformation failed')
             return
