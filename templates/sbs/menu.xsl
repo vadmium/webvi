@@ -8,17 +8,18 @@
 <xsl:import href="../wvmenu-ref.xsl"/>
 
 <xsl:template match="/">
-  <xsl:apply-templates/>
+  <xsl:apply-templates select="/settings | /menu | /playlist | /smil"/>
 </xsl:template>
 
-<xsl:template match="/settings//setting[@name='menuURL']">
-  <xsl:apply-templates
-    select="document(concat('http://player.sbs.com.au', @value))"/>
+<xsl:template match="/settings">
+  <xsl:apply-templates select="document(concat(
+    'http://player.sbs.com.au', setting[@name = 'menuURL']/@value))"/>
 </xsl:template>
 
 <xsl:template match="/menu | /playlist | /smil">
 <wvmenu>
-  <xsl:apply-templates/>
+  <xsl:apply-templates select="/menu/title | /menu/menu | /playlist/video |
+    /smil/body/switch/video"/>
 </wvmenu>
 </xsl:template>
 
