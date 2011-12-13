@@ -25,6 +25,7 @@ import pycurl
 import asyncurl
 import utils
 import version
+from cStringIO import StringIO
 
 WEBVID_USER_AGENT = 'libwebvi/%s %s' % (version.VERSION, pycurl.version)
 MOZILLA_USER_AGENT = 'Mozilla/5.0 (X11; U; Linux i686 (x86_64); en-US; rv:1.9.1.5) Gecko/20091102 Firefox/3.5.5'
@@ -130,8 +131,12 @@ def _new_process_group():
 
 class DownloaderBase:
     """Base class for downloaders."""
-    def __init__(self, url):
+    def __init__(self, url, writefunc=None):
         self.url = url
+        if writefunc is None:
+            self.body = StringIO()
+        else:
+            self.writefunc = writefunc
 
     def start(self):
         """Should start the download process."""
@@ -145,8 +150,12 @@ class DownloaderBase:
         """Return the URL where the data was downloaded."""
         return self.url
 
+    def writefunc(self, data):
+        self.body.write(data)
+    
     def get_body(self):
-        return ''
+        """Called to get the data after finished if "writefunc" is None"""
+        return self.body.getvalue()
 
     def get_encoding(self):
         """Return the encoding of the downloaded object, or None if
@@ -160,9 +169,8 @@ class DummyDownloader(DownloaderBase, asyncore.file_dispatcher):
     """
     def __init__(self, msg, writefunc=None, headerfunc=None,
                  donefunc=None, headers_only=False):
-        DownloaderBase.__init__(self, '')
+        DownloaderBase.__init__(self, '', writefunc=writefunc)
         self.donefunc = donefunc
-        self.writefunc = writefunc
         self.headers_only = headers_only
 
         readfd, writefd = os.pipe()
@@ -192,7 +200,7 @@ class DummyDownloader(DownloaderBase, asyncore.file_dispatcher):
     def handle_read(self):
         try:
             data = self.recv(4096)
-            if data and self.writefunc is not None:
+            if data:
                 self.writefunc(data)
         except socket.error:
             self.handle_error()
@@ -209,10 +217,11 @@ class CurlDownload(DownloaderBase, asyncurl.async_curl_dispatcher):
     libcurl."""
     def __init__(self, url, writefunc=None, headerfunc=None,
                  donefunc=None, HTTPheaders=None, headers_only=False):
-        DownloaderBase.__init__(self, url)
+        if writefunc is None:
+            writefunc = self.write_to_buf
+        DownloaderBase.__init__(self, url, writefunc=writefunc)
         asyncurl.async_curl_dispatcher.__init__(self, url, False)
         self.donefunc = donefunc
-        self.writefunc = writefunc
         self.contenttype = None
         self.running = True
         self.aborted = False
@@ -249,10 +258,7 @@ class CurlDownload(DownloaderBase, asyncurl.async_curl_dispatcher):
         if self.aborted:
             return 0
 
-        if self.writefunc is None:
-            return self.write_to_buf(data)
-        else:
-            return self.writefunc(data)
+        return self.writefunc(data)
 
     def get_body(self):
         return self.buffer.getvalue()
@@ -287,11 +293,10 @@ class CurlDownload(DownloaderBase, asyncurl.async_curl_dispatcher):
 class MMSDownload(DownloaderBase, asyncore.file_dispatcher):
     def __init__(self, url, writefunc=None, headerfunc=None,
                  donefunc=None, headers_only=False):
-        DownloaderBase.__init__(self, url)
+        DownloaderBase.__init__(self, url, writefunc=writefunc)
         self.r, self.w = os.pipe()
         asyncore.file_dispatcher.__init__(self, self.r)
 
-        self.writefunc = writefunc
         self.headerfunc = headerfunc
         self.donefunc = donefunc
         self.relaylen = -1
@@ -361,7 +366,7 @@ class MMSDownload(DownloaderBase, asyncore.file_dispatcher):
 
         try:
             data = self.recv(4096)
-            if data and (self.writefunc is not None):
+            if data:
                 self.writefunc(data)
         except libmms.Error, exc:
             self.errmsg = exc.message
@@ -390,13 +395,12 @@ class ExternalDownloader(DownloaderBase, asyncore.file_dispatcher):
     output."""
     def __init__(self, executable, parameters, writefunc=None,
                  headerfunc=None, donefunc=None, headers_only=False):
-        DownloaderBase.__init__(self, '')
+        DownloaderBase.__init__(self, '', writefunc=writefunc)
         # Call the direct base class file_dispatcher.__init__() later
         # in start() because we don't have the file descriptor yet.
         # TODO: rework this
         asyncore.dispatcher.__init__(self, None, None)
         self.executable = executable
-        self.writefunc = writefunc
         self.headerfunc = headerfunc
         self.donefunc = donefunc
         self.headers_only = headers_only
@@ -451,7 +455,7 @@ class ExternalDownloader(DownloaderBase, asyncore.file_dispatcher):
     def handle_read(self):
         try:
             data = self.recv(4096)
-            if data and self.writefunc is not None:
+            if data:
                 self.writefunc(data)
         except socket.error:
             self.handle_error()
