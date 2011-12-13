@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<service>
+  <title>ABC Iview</title>
+  <ref>wvt:///pass.xsl?srcurl=wvt:///bin/iview?arg=--index%26arg=--</ref>
+</service>
