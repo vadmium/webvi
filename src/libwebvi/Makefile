@@ -6,17 +6,17 @@ LIBSONAME=$(LIBNAME).1
 LIBMINOR=$(LIBSONAME).0
 
 VERSION:=$(shell grep VERSION webvi/version.py | cut -d \' -f 2)
-PYLIB:=$(shell python pythonlibname.py)
+PYLIB:=$(shell $(PYTHON) pythonlibname.py)
 DEFINES:=-DPYTHONSHAREDLIB=\"$(PYLIB)\" -DLIBWEBVI_VERSION=\"$(VERSION)\"
 # append -DDEBUG to DEFINES to get debug output
 
 all: $(LIBMINOR)
 
 libwebvi.o: libwebvi.c libwebvi.h
-	$(CC) -fPIC -Wall -O2 -g $(CFLAGS) $(DEFINES) `python-config --cflags` -c -o libwebvi.o libwebvi.c
+	$(CC) -fPIC -Wall -O2 -g $(CFLAGS) $(DEFINES) `$(PYTHON)-config --cflags` -c -o libwebvi.o libwebvi.c
 
 $(LIBMINOR): libwebvi.o
-	$(CC) -shared -Wl,-soname,$(LIBSONAME) -Wl,--as-needed libwebvi.o `python-config --ldflags` -o $(LIBMINOR)
+	$(CC) -shared -Wl,-soname,$(LIBSONAME) -Wl,--as-needed libwebvi.o `$(PYTHON)-config --ldflags` -o $(LIBMINOR)
 	ln -sf $(LIBMINOR) $(LIBSONAME)
 	ln -sf $(LIBSONAME) $(LIBNAME)
 
