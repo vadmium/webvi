@@ -60,13 +60,15 @@ install-libwebvi: libwebvi
 install-python: uninstall-deprecated-templates
 	$(PYTHON) setup.py install --skip-build --prefix $(PREFIX) $${DESTDIR:+--root $(DESTDIR)}
 
-install-conf: webvi.conf webvi.plugin.conf
+install-conf: install-webvi-conf install-vdr-conf
+install-webvi-conf: webvi.conf
 	mkdir -p $(DESTDIR)/etc
 	cp -f webvi.conf $(DESTDIR)/etc
+install-vdr-conf: webvi.plugin.conf
 	mkdir -p $(DESTDIR)$(VDRPLUGINCONFDIR)/webvideo
 	cp -f webvi.plugin.conf $(DESTDIR)$(VDRPLUGINCONFDIR)/webvideo
 
-install-webvi: install-libwebvi install-python
+install-webvi: install-libwebvi install-python install-webvi-conf
 
 install: install-vdr-plugin install-webvi install-conf
 
@@ -105,4 +107,4 @@ clean:
 	find . -name "*~" -exec rm {} \;
 	find . -name "*.pyc" -exec rm {} \;
 
-.PHONY: vdr-plugin libwebvi build-python install install-vdr-plugin install-webvi dist clean check test
+.PHONY: vdr-plugin libwebvi build-python install install-vdr-plugin install-webvi dist clean check test install-conf install-webvi-conf install-vdr-conf

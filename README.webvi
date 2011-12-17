@@ -28,7 +28,7 @@ By default the program is installed under /usr/local. You can specify
 a different installation location by
 
 make libwebvi PREFIX=/usr
-make install-webvi install-conf PREFIX=/usr
+make install-webvi install-webvi-conf PREFIX=/usr
 
 If you use an alternative installation location, you may need to put
 PREFIX/lib/pythonX.Y/site-packages/ or
