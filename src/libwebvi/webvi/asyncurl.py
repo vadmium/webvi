@@ -26,7 +26,6 @@ import pycurl
 import traceback
 import select
 import time
-import cStringIO
 from errno import EINTR
 
 SOCKET_TIMEOUT = pycurl.SOCKET_TIMEOUT
@@ -289,37 +288,25 @@ class dispatcher_wrapper:
 class async_curl_dispatcher:
     """A dispatcher class for pycurl transfers."""
     def __init__(self, url, auto_start=True):
-        """Initializes a pycurl object self.curl. The default is to
-        download url to an internal buffer whose content can be read
-        with self.recv(). If auto_start is False, the transfer is not
+        """Initializes a pycurl object self.curl. Chunks of downloaded data
+        are passed to self.curl_write(), which should be provided by the
+        subclass. If auto_start is False, the transfer is not
         started before a call to add_channel().
         """
         self.url = url
         self.socket = None
-        self.buffer = cStringIO.StringIO()
         self.curl = pycurl.Curl()
         self.curl.setopt(pycurl.URL, self.url)
         self.curl.setopt(pycurl.FOLLOWLOCATION, 1)
         self.curl.setopt(pycurl.AUTOREFERER, 1)
         self.curl.setopt(pycurl.MAXREDIRS, 10)
         self.curl.setopt(pycurl.FAILONERROR, 1)
-        self.curl.setopt(pycurl.WRITEFUNCTION, self.write_to_buf)
+        self.curl.setopt(pycurl.WRITEFUNCTION, self.curl_write)
         if auto_start:
             self.add_channel()
 
-    def write_to_buf(self, msg):
-        self.buffer.write(msg)
-        self.handle_read()
-
     def send(self, data):
         raise NotImplementedError
-
-    def recv(self, buffer_size):
-        # buffer_size is ignored
-        ret = self.buffer.getvalue()
-        self.buffer.reset()
-        self.buffer.truncate()
-        return ret
 
     def add_channel(self, multidisp=None):
         if multidisp is None:
@@ -342,9 +329,6 @@ class async_curl_dispatcher:
         print 'Exception occurred during processing of a curl request'
         print traceback.format_exc()
         self.close()
-
-    def handle_read(self):
-        self.log_info('unhandled read event', 'warning')
 
     def handle_write(self):
         self.log_info('unhandled write event', 'warning')
@@ -370,8 +354,7 @@ def test():
             self.outfile = outfile
             self.add_channel()
 
-        def handle_read(self):
-            buf = self.recv(4096)
+        def curl_write(self, buf):
             print '%s: writing %d bytes' % (self.id, len(buf))
             self.outfile.write(buf)
 

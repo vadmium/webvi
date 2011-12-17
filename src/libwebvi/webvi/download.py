@@ -25,7 +25,7 @@ import pycurl
 import asyncurl
 import utils
 import version
-from cStringIO import StringIO
+import cStringIO
 
 WEBVID_USER_AGENT = 'libwebvi/%s %s' % (version.VERSION, pycurl.version)
 MOZILLA_USER_AGENT = 'Mozilla/5.0 (X11; U; Linux i686 (x86_64); en-US; rv:1.9.1.5) Gecko/20091102 Firefox/3.5.5'
@@ -134,7 +134,7 @@ class DownloaderBase:
     def __init__(self, url, writefunc=None):
         self.url = url
         if writefunc is None:
-            self.body = StringIO()
+            self.buffer = cStringIO.StringIO()
         else:
             self.writefunc = writefunc
 
@@ -150,12 +150,12 @@ class DownloaderBase:
         """Return the URL where the data was downloaded."""
         return self.url
 
-    def writefunc(self, data):
-        self.body.write(data)
+    def writefunc(self, msg):
+        self.buffer.write(msg)
     
     def get_body(self):
         """Called to get the data after finished if "writefunc" is None"""
-        return self.body.getvalue()
+        return self.buffer.getvalue()
 
     def get_encoding(self):
         """Return the encoding of the downloaded object, or None if
@@ -217,8 +217,6 @@ class CurlDownload(DownloaderBase, asyncurl.async_curl_dispatcher):
     libcurl."""
     def __init__(self, url, writefunc=None, headerfunc=None,
                  donefunc=None, HTTPheaders=None, headers_only=False):
-        if writefunc is None:
-            writefunc = self.write_to_buf
         DownloaderBase.__init__(self, url, writefunc=writefunc)
         asyncurl.async_curl_dispatcher.__init__(self, url, False)
         self.donefunc = donefunc
@@ -231,7 +229,6 @@ class CurlDownload(DownloaderBase, asyncurl.async_curl_dispatcher):
             self.curl.setopt(pycurl.NOBODY, 1)
         if headerfunc:
             self.curl.setopt(pycurl.HEADERFUNCTION, headerfunc)
-        self.curl.setopt(pycurl.WRITEFUNCTION, self.writewrapper)
 
         headers = []
         if HTTPheaders is not None:
@@ -254,14 +251,11 @@ class CurlDownload(DownloaderBase, asyncurl.async_curl_dispatcher):
     def abort(self):
         self.aborted = True
 
-    def writewrapper(self, data):
+    def curl_write(self, data):
         if self.aborted:
             return 0
 
         return self.writefunc(data)
-
-    def get_body(self):
-        return self.buffer.getvalue()
 
     def get_encoding(self):
         if self.running:
@@ -277,11 +271,6 @@ class CurlDownload(DownloaderBase, asyncurl.async_curl_dispatcher):
                     return par[len('charset='):].strip('"')
 
         return None
-
-    def handle_read(self):
-        # Do nothing to the read data here. Instead, let the base
-        # class to collect the data to self.buffer.
-        pass
 
     def handle_completed(self, err, errmsg):
         asyncurl.async_curl_dispatcher.handle_completed(self, err, errmsg)
