@@ -127,7 +127,6 @@ class curl_multi_dispatcher:
         self.timeout = -1
         # The lambda is to avoid "not callable" error from pylint
         self.timeout_callback = lambda x, y: None
-        self._sockets_removed = False
         self._curlm = pycurl.CurlMulti()
         self._curlm.setopt(pycurl.M_SOCKETFUNCTION, self._socket_callback)
         self._curlm.setopt(pycurl.M_TIMERFUNCTION, self._update_timeout)
@@ -145,7 +144,6 @@ class curl_multi_dispatcher:
         elif action == pycurl.POLL_REMOVE:
             if socket in self._map:
                 del self._map[socket]
-            self._sockets_removed = True
             return
 
         obj = self._map.get(socket)
@@ -181,7 +179,7 @@ class curl_multi_dispatcher:
         # _curlm.timeout() seems to be needed, although curl
         # documentation doesn't mention it.
         self._update_timeout(self._curlm.timeout())
-        self.check_completed(True)
+        self.check_completed()
 
     def detach(self, curldisp):
         """Removes curl handle from this multihandle, and fire its
@@ -217,13 +215,10 @@ class curl_multi_dispatcher:
                 # exception. If that happens, call socket_action
                 # again.
                 pass
+        self.check_completed()
         return res
     
-    def check_completed(self, force):
-        if not force and not self._sockets_removed:
-            return
-        self._sockets_removed = False
-
+    def check_completed(self):
         nmsg, success, failed = self._curlm.info_read()
         for handle in success:
             disp = self.dispatchers.get(handle)
@@ -270,15 +265,12 @@ class dispatcher_wrapper:
 
     def handle_read_event(self):
         self.multicurl.socket_action(self.fd, CSELECT_IN)
-        self.multicurl.check_completed(False)
 
     def handle_write_event(self):
         self.multicurl.socket_action(self.fd, CSELECT_OUT)
-        self.multicurl.check_completed(False)
 
     def handle_expt_event(self):
         self.multicurl.socket_action(self.fd, CSELECT_ERR)
-        self.multicurl.check_completed(False)
 
     def handle_error(self):
         print 'Exception occurred during processing of a curl request'
