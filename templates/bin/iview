@@ -45,8 +45,8 @@ while i < len(argv):
     if argv[i] == "--":
         break
     else:
-        raise ValueError("Unknown argument {}".format(argv[i]))
+        raise ValueError("Unknown argument {0}".format(argv[i]))
 
 # XML declaration required otherwise the XSLT processor adds <html><body>!
-# The "xml_declaration=True" parameter only works if encoding is explicit
-ElementTree(wvmenu).write(stdout, encoding="UTF-8", xml_declaration=True)
+# XML declaration written if encoding is not lowercase "utf-8"
+ElementTree(wvmenu).write(stdout, encoding="UTF-8")
