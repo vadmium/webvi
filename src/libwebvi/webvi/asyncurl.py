@@ -26,7 +26,6 @@ import pycurl
 import traceback
 import select
 import time
-import cStringIO
 from errno import EINTR
 
 SOCKET_TIMEOUT = pycurl.SOCKET_TIMEOUT
@@ -128,7 +127,6 @@ class curl_multi_dispatcher:
         self.timeout = -1
         # The lambda is to avoid "not callable" error from pylint
         self.timeout_callback = lambda x, y: None
-        self._sockets_removed = False
         self._curlm = pycurl.CurlMulti()
         self._curlm.setopt(pycurl.M_SOCKETFUNCTION, self._socket_callback)
         self._curlm.setopt(pycurl.M_TIMERFUNCTION, self._update_timeout)
@@ -146,7 +144,6 @@ class curl_multi_dispatcher:
         elif action == pycurl.POLL_REMOVE:
             if socket in self._map:
                 del self._map[socket]
-            self._sockets_removed = True
             return
 
         obj = self._map.get(socket)
@@ -182,7 +179,7 @@ class curl_multi_dispatcher:
         # _curlm.timeout() seems to be needed, although curl
         # documentation doesn't mention it.
         self._update_timeout(self._curlm.timeout())
-        self.check_completed(True)
+        self.check_completed()
 
     def detach(self, curldisp):
         """Removes curl handle from this multihandle, and fire its
@@ -218,13 +215,10 @@ class curl_multi_dispatcher:
                 # exception. If that happens, call socket_action
                 # again.
                 pass
+        self.check_completed()
         return res
     
-    def check_completed(self, force):
-        if not force and not self._sockets_removed:
-            return
-        self._sockets_removed = False
-
+    def check_completed(self):
         nmsg, success, failed = self._curlm.info_read()
         for handle in success:
             disp = self.dispatchers.get(handle)
@@ -271,15 +265,12 @@ class dispatcher_wrapper:
 
     def handle_read_event(self):
         self.multicurl.socket_action(self.fd, CSELECT_IN)
-        self.multicurl.check_completed(False)
 
     def handle_write_event(self):
         self.multicurl.socket_action(self.fd, CSELECT_OUT)
-        self.multicurl.check_completed(False)
 
     def handle_expt_event(self):
         self.multicurl.socket_action(self.fd, CSELECT_ERR)
-        self.multicurl.check_completed(False)
 
     def handle_error(self):
         print 'Exception occurred during processing of a curl request'
@@ -289,37 +280,25 @@ class dispatcher_wrapper:
 class async_curl_dispatcher:
     """A dispatcher class for pycurl transfers."""
     def __init__(self, url, auto_start=True):
-        """Initializes a pycurl object self.curl. The default is to
-        download url to an internal buffer whose content can be read
-        with self.recv(). If auto_start is False, the transfer is not
+        """Initializes a pycurl object self.curl. Chunks of downloaded data
+        are passed to self.curl_write(), which should be provided by the
+        subclass. If auto_start is False, the transfer is not
         started before a call to add_channel().
         """
         self.url = url
         self.socket = None
-        self.buffer = cStringIO.StringIO()
         self.curl = pycurl.Curl()
         self.curl.setopt(pycurl.URL, self.url)
         self.curl.setopt(pycurl.FOLLOWLOCATION, 1)
         self.curl.setopt(pycurl.AUTOREFERER, 1)
         self.curl.setopt(pycurl.MAXREDIRS, 10)
         self.curl.setopt(pycurl.FAILONERROR, 1)
-        self.curl.setopt(pycurl.WRITEFUNCTION, self.write_to_buf)
+        self.curl.setopt(pycurl.WRITEFUNCTION, self.curl_write)
         if auto_start:
             self.add_channel()
 
-    def write_to_buf(self, msg):
-        self.buffer.write(msg)
-        self.handle_read()
-
     def send(self, data):
         raise NotImplementedError
-
-    def recv(self, buffer_size):
-        # buffer_size is ignored
-        ret = self.buffer.getvalue()
-        self.buffer.reset()
-        self.buffer.truncate()
-        return ret
 
     def add_channel(self, multidisp=None):
         if multidisp is None:
@@ -342,9 +321,6 @@ class async_curl_dispatcher:
         print 'Exception occurred during processing of a curl request'
         print traceback.format_exc()
         self.close()
-
-    def handle_read(self):
-        self.log_info('unhandled read event', 'warning')
 
     def handle_write(self):
         self.log_info('unhandled write event', 'warning')
@@ -370,8 +346,7 @@ def test():
             self.outfile = outfile
             self.add_channel()
 
-        def handle_read(self):
-            buf = self.recv(4096)
+        def curl_write(self, buf):
             print '%s: writing %d bytes' % (self.id, len(buf))
             self.outfile.write(buf)
 
